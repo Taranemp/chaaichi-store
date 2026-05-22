@@ -1,0 +1,10 @@
+.DS_Store
+*/.DS_Store
+.idea
+.idea/*
+*/__pycache__/*
+*.pyc
+*/migrations/*
+!*/migrations/__init__.py
+
+media/*

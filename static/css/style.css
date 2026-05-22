@@ -1,0 +1,93 @@
+@font-face {
+	font-family: "Vazir";
+	src: url("/static/fonts/vazir.woff") format("woff");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+
+@font-face {
+	font-family: "Iransans";
+	src: url("/static/fonts/iransans.woff") format("woff");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Vazir', sans-serif;
+	overflow-wrap: anywhere;
+}
+
+
+/* Form errors */
+.form-errors {
+	color: red;
+	padding-left: 1rem !important;
+	margin-top: 20px;
+	list-style: none;
+}
+
+
+.language-python {
+	font-family: monospace;
+	direction: ltr;
+}
+
+
+.text-fa {
+	direction: rtl !important;
+	text-align: right;
+	font-family: 'Iransans', sans-serif;
+}
+
+
+.active {
+	font-weight: 400;
+	border-bottom: 2px solid #555557;
+}
+
+
+.hover-bg-darker {
+	opacity: 60%;
+	border: 2px solid rgba(0, 0, 0, 0);
+}
+
+.hover-bg-darker:hover {
+	opacity: 100%;
+	border: 1px solid white;
+}
+
+.smaller {
+	font-size: 0.75rem;
+}
+
+pre, code {
+	font-family: monospace;
+	color: deepskyblue;
+}
+
+pre {
+	font-size: 0.95rem;
+	line-height: 1.5;
+	overflow: auto;
+	padding: 1rem;
+	border-radius: 8px;
+}
+
+.free {
+	background-color: #e0e12b !important;
+	color: black !important;
+	opacity: 0.5 !important;
+}
+
+.busy {
+	opacity: 0.1 !important;
+}
+
+.free:hover, .busy:hover {
+	opacity: 1 !important;
+}
