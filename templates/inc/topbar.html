@@ -30,24 +30,8 @@
                     <div>
                         <ul class="navbar-nav me-auto gap-0 gap-lg-3">
                             <li class="nav-item">
-                                <a class="nav-link text-nowrap {% if request.resolver_match.url_name == 'post_list' %}active{% endif %}"
+                                <a class="nav-link text-nowrap"
                                    href="/">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-nowrap {% if request.resolver_match.url_name == 'mft_page' %}active{% endif %}"
-                                   href="/mft/">MFT's</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-nowrap {% if request.resolver_match.url_name == 'download_page' %}active{% endif %}"
-                                   href="/downloads/">Downloads</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-nowrap {% if request.resolver_match.url_name == 'events_page' %}active{% endif %}"
-                                   href="/events/">Events</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-nowrap {% if request.resolver_match.url_name == 'contact_us_page' %}active{% endif %}"
-                                   href="/contact-us/">Contact Us</a>
                             </li>
                         </ul>
                     </div>
@@ -81,8 +65,11 @@
                                             </span>
                                         </a>
                                         <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="{% url 'account:login' %}">Login</a></li>
-                                            {% comment %} <li><a class="dropdown-item" href="{% url 'account:signup' %}">Register</a> {% endcomment %}
+                                            <li>
+                                                <a class="dropdown-item" href="{% url 'account:login' %}">Login</a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="{% url 'account:signup' %}">Register</a>
                                             </li>
                                         </ul>
                                     {% endif %}
