@@ -1,10 +1,36 @@
-.DS_Store
-*/.DS_Store
-.idea
-.idea/*
-*/__pycache__/*
-*.pyc
-*/migrations/*
-!*/migrations/__init__.py
+# Environment
+.venv/
+venv/
+env/
+ENV/
 
-media/*
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Database
+db.sqlite3
+*.sqlite3
+
+# Static & Media
+staticfiles/
+media/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Django
+*.pot
+local_settings.py
+
+# OS
+.DS_Store
+Thumbs.db
