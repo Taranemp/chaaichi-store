@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'shop',
     'order',
     'payment',
+    'website'
 ]
 
 MIDDLEWARE = [
@@ -65,13 +66,15 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "templates"],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 'cart.context_processors.cart_processor'
             ],
         },
     },
@@ -148,3 +151,4 @@ CSRF_TRUSTED_ORIGINS = [
     'https://mft.runflare.run',
     'https://www.mft.runflare.run',
 ]
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

@@ -1,84 +1,104 @@
 {% load static %}
 
-<nav class="navbar navbar-expand-lg bg-body-tertiary px-0 px-lg-2 px-lg-5">
-    <div class="container-fluid">
-        <a class="navbar-brand me-4 fw-bold text-primary" href="/">
-            <img class="img-fluid me-1" style="width:24px" src="{% static 'img/logo.png' %}" alt="">
-            <span>
-                Chaai Chi
-            </span>
+<nav class="navbar navbar-expand-lg py-3" style="background: #faf7f2; border-bottom: 2px solid #e8e0d5; box-shadow: 0 2px 12px rgba(0,0,0,0.02);">
+    <div class="container">
+        
+        <!-- لوگو -->
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <div class="bg-white rounded-circle p-2 me-2 shadow-sm" style="border: 1px solid #e0d6c8;">
+                <img src="{% static 'img/logo.png' %}" alt="Chaai Chi" height="30">
+            </div>
+            <div class="d-flex flex-column">
+                <span class="fw-bold" style="color: #2c5f2d; font-size: 1.25rem;">Chaai Chi</span>
+                <span class="text-muted small" style="font-size: 0.7rem;">فروشگاه تخصصی چای</span>
+            </div>
         </a>
 
-        <div class="d-flex flex-row justify-content-end align-items-center">
-            {% if not user.is_authenticated %}
-                <a class="btn btn-primary btn-sm float-end mx-2 d-block d-lg-none" href="{% url 'account:login' %}">Login</a>
-                {% else %}
-                <a class="btn btn-danger btn-sm float-end mx-2 d-block d-lg-none" href="{% url 'account:logout' %}">Logout</a>
-            {% endif %}
+        <!-- دکمه منو موبایل -->
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <i class="bi bi-list fs-1" style="color: #2c5f2d;"></i>
+        </button>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon fs-6"></span>
-            </button>
-        </div>
+        <!-- منو -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto gap-2 gap-lg-3">
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold px-3" href="/" style="color: #4a4a4a;">
+                        <i class="bi bi-house-door me-1"></i> خانه
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link fw-semibold dropdown-toggle px-3" href="#" data-bs-toggle="dropdown" style="color: #4a4a4a;">
+                        <i class="bi bi-cup-hot me-1"></i> محصولات
+                    </a>
+                    <ul class="dropdown-menu border-0 shadow-lg mt-2" style="background: #ffffff; border-radius: 16px;">
+                        <li><a class="dropdown-item py-2" href="#"><i class="bi bi-droplet me-2" style="color: #2c5f2d;"></i>چای سیاه</a></li>
+                        <li><a class="dropdown-item py-2" href="#"><i class="bi bi-flower1 me-2" style="color: #2c5f2d;"></i>چای سبز</a></li>
+                        <li><a class="dropdown-item py-2" href="#"><i class="bi bi-flower2 me-2" style="color: #2c5f2d;"></i>دمنوش</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item py-2" href="#"><i class="bi bi-grid-3x3-gap me-2" style="color: #2c5f2d;"></i>همه محصولات</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold px-3" href="#" style="color: #4a4a4a;">
+                        <i class="bi bi-tags me-1"></i> برندها
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold px-3" href="/about/" style="color: #4a4a4a;">
+                        <i class="bi bi-info-circle me-1"></i> درباره ما
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold px-3" href="/contact/" style="color: #4a4a4a;">
+                        <i class="bi bi-envelope me-1"></i> تماس با ما
+                    </a>
+                </li>
+            </ul>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <div class="row w-100 mt-2 px-2 mt-lg-0 px-lg-0">
-                <div class="d-flex flex-lg-row flex-column justify-content-between align-items-start">
-                    <div>
-                        <ul class="navbar-nav me-auto gap-0 gap-lg-3">
-                            <li class="nav-item">
-                                <a class="nav-link text-nowrap"
-                                   href="/">Home</a>
-                            </li>
-                        </ul>
-                    </div>
-
-                    <div class="d-none w-100 d-lg-flex flex-row justify-content-between justify-content-lg-end align-items-center gap-3">
-                        <div>
-                            <ul class="navbar-nav me-auto">
-                                <li class="nav-item dropdown">
-                                    {% if user.is_authenticated %}
-                                        <a class="nav-link dropdown-toggle" href="#" role="button"
-                                           data-bs-toggle="dropdown"
-                                           aria-expanded="false">
-                                            {{ user.fullname|default:"Unknown" }}
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="#">Dashboard</a></li>
-                                            <li><a class="dropdown-item" href="#">Settings</a></li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li><a class="dropdown-item" href="{% url 'account:logout' %}">Logout</a>
-                                            </li>
-                                        </ul>
-                                    {% else %}
-                                        <a class="nav-link d-flex flex-row justify-content-start align-items-center "
-                                           href="{% url 'account:login' %}"
-                                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="bi bi-person-circle h5 p-0 m-0 pe-2"></i>
-                                            <span>
-                                                Dashboard
-                                            </span>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a class="dropdown-item" href="{% url 'account:login' %}">Login</a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item" href="{% url 'account:signup' %}">Register</a>
-                                            </li>
-                                        </ul>
-                                    {% endif %}
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+            <!-- آیکون‌های راست -->
+            <div class="d-flex align-items-center gap-2">
+                
+                <!-- جستجو -->
+                <a href="#" class="btn btn-light btn-sm rounded-circle shadow-sm" style="width: 38px; height: 38px; line-height: 38px; background: #ffffff; border: 1px solid #e0d6c8; color: #2c5f2d;">
+                    <i class="bi bi-search"></i>
+                </a>
+                
+                <!-- سبد خرید -->
+                <a href="/cart/" class="btn btn-light btn-sm rounded-circle shadow-sm position-relative" style="width: 38px; height: 38px; line-height: 38px; background: #ffffff; border: 1px solid #e0d6c8; color: #2c5f2d;">
+                    <i class="bi bi-basket"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background: #c17b4c; font-size: 10px;">0</span>
+                </a>
+                
+                <!-- کاربر -->
+                {% if user.is_authenticated %}
+                <div class="dropdown">
+                    <a href="#" class="btn btn-light btn-sm rounded-circle shadow-sm" data-bs-toggle="dropdown" style="width: 38px; height: 38px; line-height: 38px; background: #ffffff; border: 1px solid #e0d6c8; color: #2c5f2d;">
+                        <i class="bi bi-person-circle"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg mt-2" style="border-radius: 16px;">
+                        <li><a class="dropdown-item py-2" href="#"><i class="bi bi-person me-2" style="color: #2c5f2d;"></i>پروفایل</a></li>
+                        <li><a class="dropdown-item py-2" href="/wallet/"><i class="bi bi-wallet2 me-2" style="color: #2c5f2d;"></i>کیف پول</a></li>
+                        <li><a class="dropdown-item py-2" href="#"><i class="bi bi-bag me-2" style="color: #2c5f2d;"></i>سفارشات</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item py-2 text-danger" href="{% url 'account:logout' %}"><i class="bi bi-box-arrow-right me-2"></i>خروج</a></li>
+                    </ul>
                 </div>
+                {% else %}
+                <div class="dropdown">
+                    <a href="#" class="btn btn-light btn-sm rounded-circle shadow-sm" data-bs-toggle="dropdown" style="width: 38px; height: 38px; line-height: 38px; background: #ffffff; border: 1px solid #e0d6c8; color: #2c5f2d;">
+                        <i class="bi bi-person"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg mt-2" style="border-radius: 16px;">
+                        <li><a class="dropdown-item py-2" href="{% url 'account:login' %}"><i class="bi bi-box-arrow-in-right me-2" style="color: #2c5f2d;"></i>ورود</a></li>
+                        <li><a class="dropdown-item py-2" href="{% url 'account:signup' %}"><i class="bi bi-person-plus me-2" style="color: #2c5f2d;"></i>ثبت‌نام</a></li>
+                    </ul>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
 </nav>
+
+<!-- خط باریک مسی رنگ زیر هدر -->
+<div style="height: 2px; background: linear-gradient(90deg, #e8e0d5, #c17b4c, #e8e0d5);"></div>

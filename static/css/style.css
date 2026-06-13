@@ -1,93 +1,400 @@
-@font-face {
-	font-family: "Vazir";
-	src: url("/static/fonts/vazir.woff") format("woff");
-	font-weight: normal;
-	font-style: normal;
-	font-display: swap;
+```css
+/* =========================
+   RESET
+========================= */
+
+body {
+	overflow-x: hidden;
 }
 
 
-@font-face {
-	font-family: "Iransans";
-	src: url("/static/fonts/iransans.woff") format("woff");
-	font-weight: normal;
-	font-style: normal;
-	font-display: swap;
+/* =========================
+   NAVBAR
+========================= */
+
+.custom-navbar {
+	background: #fff;
+	border-bottom: 1px solid #f3f3f3;
+	padding: 14px 0;
 }
 
-
-/* Headings */
-h1, h2, h3, h4, h5, h6 {
-	font-family: 'Vazir', sans-serif;
-	overflow-wrap: anywhere;
+/* container */
+.custom-navbar .container {
+	max-width: 1250px;
 }
 
+/* =========================
+   LOGO
+========================= */
 
-/* Form errors */
-.form-errors {
-	color: red;
-	padding-left: 1rem !important;
-	margin-top: 20px;
-	list-style: none;
+.custom-logo {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	text-decoration: none;
 }
 
-
-.language-python {
-	font-family: monospace;
-	direction: ltr;
+.custom-logo img {
+	width: 34px !important;
+	height: 34px !important;
+	object-fit: contain;
 }
 
-
-.text-fa {
-	direction: rtl !important;
-	text-align: right;
-	font-family: 'Iransans', sans-serif;
+.custom-logo span {
+	font-family: 'Vazir';
+	font-size: 18px;
+	font-weight: 700;
+	color: #111;
 }
 
+/* =========================
+   MENU
+========================= */
 
-.active {
+.navbar-nav {
+	gap: 28px;
+}
+
+.nav-link {
+	color: #444 !important;
+	font-size: 14px;
 	font-weight: 400;
-	border-bottom: 2px solid #555557;
+	padding-bottom: 6px;
+	transition: .25s;
 }
 
-
-.hover-bg-darker {
-	opacity: 60%;
-	border: 2px solid rgba(0, 0, 0, 0);
+.nav-link:hover {
+	color: #000 !important;
 }
 
-.hover-bg-darker:hover {
-	opacity: 100%;
-	border: 1px solid white;
+.nav-link.active {
+	color: #000 !important;
+	border-bottom: 2px solid #111;
 }
 
-.smaller {
-	font-size: 0.75rem;
+/* =========================
+   RIGHT SECTION
+========================= */
+
+.nav-icon-btn {
+	background: transparent;
+	border: none;
+	font-size: 19px;
+	color: #333;
+	transition: .2s;
 }
 
-pre, code {
-	font-family: monospace;
-	color: deepskyblue;
+.nav-icon-btn:hover {
+	color: #000;
 }
 
-pre {
-	font-size: 0.95rem;
-	line-height: 1.5;
-	overflow: auto;
-	padding: 1rem;
-	border-radius: 8px;
+/* =========================
+   CART BADGE
+========================= */
+
+.cart-badge {
+	position: absolute;
+	top: -4px;
+	right: -6px;
+	width: 16px;
+	height: 16px;
+	border-radius: 50%;
+	background: #6f42c1;
+	color: white;
+	font-size: 9px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
-.free {
-	background-color: #e0e12b !important;
-	color: black !important;
-	opacity: 0.5 !important;
+/* =========================
+   LOGIN BUTTON
+========================= */
+
+.login-btn {
+	text-decoration: none;
+	color: #222;
+	font-size: 14px;
+	transition: .25s;
 }
 
-.busy {
-	opacity: 0.1 !important;
+.login-btn:hover {
+	color: #000;
 }
 
-.free:hover, .busy:hover {
-	opacity: 1 !important;
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:991px) {
+
+	.custom-navbar {
+		padding: 12px 0;
+	}
+
+	.navbar-collapse {
+		margin-top: 20px;
+	}
+
+	.navbar-nav {
+		gap: 5px;
+		margin-bottom: 20px;
+	}
+
+	.custom-logo span {
+		font-size: 16px;
+	}
+
 }
+
+```
+/* =========================
+   LOGO
+========================= */
+
+.custom-logo {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	text-decoration: none;
+}
+
+.custom-logo img {
+	width: 42px !important;
+	height: 42px !important;
+	object-fit: contain;
+}
+
+.custom-logo span {
+	font-family: 'Vazir';
+	font-size: 24px;
+	color: #222;
+	font-weight: bold;
+}
+
+/* =========================
+   MENU
+========================= */
+
+.navbar-nav {
+	gap: 15px;
+}
+
+.nav-link {
+	color: #444 !important;
+	font-size: 15px;
+	transition: .3s;
+}
+
+.nav-link:hover {
+	color: #000 !important;
+}
+
+.nav-link.active {
+	color: #000 !important;
+	border-bottom: 2px solid #000;
+}
+
+/* =========================
+   ICONS
+========================= */
+
+.nav-icon-btn {
+	border: none;
+	background: transparent;
+	font-size: 20px;
+	color: #444;
+}
+
+.cart-badge {
+	position: absolute;
+	top: -5px;
+	right: -8px;
+	width: 18px;
+	height: 18px;
+	border-radius: 50%;
+	background: #6f42c1;
+	color: white;
+	font-size: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+.login-btn {
+	text-decoration: none;
+	color: #222;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:991px) {
+
+	.navbar-collapse {
+		margin-top: 20px;
+	}
+
+	.navbar-nav {
+		margin-bottom: 20px;
+	}
+
+}
+
+``` ```css id="lw7t4x"
+/* =========================
+   FOOTER
+========================= */
+
+.custom-footer {
+	background: #f7f7f7;
+	padding: 80px 0 40px;
+	margin-top: 80px;
+}
+
+.footer-card {
+	background: white;
+	border-radius: 18px;
+	padding: 35px;
+	height: 100%;
+}
+
+/* =========================
+   FEATURES
+========================= */
+
+.feature-box {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 30px;
+}
+
+.feature-item {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+}
+
+.feature-item img {
+	width: 70px;
+	opacity: .9;
+}
+
+.feature-item p {
+	margin: 0;
+	font-size: 15px;
+	color: #333;
+	line-height: 1.8;
+}
+
+/* =========================
+   CONTACT
+========================= */
+
+.footer-title {
+	font-family: 'Vazir';
+	margin-bottom: 25px;
+}
+
+.socials {
+	display: flex;
+	gap: 12px;
+	margin-bottom: 25px;
+}
+
+.socials a {
+	width: 45px;
+	height: 45px;
+	border-radius: 50%;
+	background: #f3f3f3;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #111;
+	text-decoration: none;
+	transition: .3s;
+}
+
+.socials a:hover {
+	background: #111;
+	color: white;
+}
+
+.footer-contact {
+	color: #444;
+	line-height: 2;
+	font-size: 15px;
+}
+
+/* =========================
+   BOTTOM
+========================= */
+
+.footer-bottom {
+	margin-top: 60px;
+}
+
+.footer-logo {
+	width: 180px;
+	object-fit: contain;
+}
+
+.footer-bottom h4 {
+	font-family: 'Vazir';
+	margin-bottom: 20px;
+	color: #222;
+}
+
+.footer-bottom p {
+	color: #666;
+	line-height: 2.2;
+	font-size: 15px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:991px) {
+
+	.custom-footer {
+		padding: 60px 0 30px;
+	}
+
+	.feature-box {
+		grid-template-columns: 1fr;
+	}
+
+	.footer-logo {
+		margin-bottom: 30px;
+	}
+
+}
+
+```
+
+```css id="s4g1hp"
+/* =========================
+   STICKY FOOTER LAYOUT
+========================= */
+
+html,
+body{
+    height: 100%;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main{
+    flex: 1;
+}
+```
