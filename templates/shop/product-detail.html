@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{{ object.title }} - Chaai Chi
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+    <div class="row">
+        
+        <!-- ستون راست: تصاویر محصول -->
+        <div class="col-md-6 mb-4 mb-md-0">
+            <!-- تصویر اصلی -->
+            <div class="card shadow-sm border-0 mb-3">
+                <img src="{{ object.image.url }}" class="card-img-top rounded" alt="{{ object.title }}" style="max-height: 400px; object-fit: contain;">
+            </div>
+            
+            <!-- تصاویر اضافی -->
+            {% if object.images.all %}
+            <div class="row g-2">
+                {% for img in object.images.all %}
+                <div class="col-3">
+                    <img src="{{ img.file.url }}" class="img-fluid rounded border" alt="" style="height: 80px; object-fit: cover; cursor: pointer;" onclick="changeMainImage(this.src)">
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- ستون چپ: اطلاعات محصول -->
+        <div class="col-md-6">
+            <!-- عنوان -->
+            <h1 class="h2 mb-2" style="color: #2c5f2d;">{{ object.title }}</h1>
+            
+            <!-- برند -->
+            {% if object.brand %}
+            <p class="text-muted mb-2">
+                <i class="bi bi-tag"></i> برند: 
+                <a href="#" class="text-decoration-none">{{ object.brand.name }}</a>
+            </p>
+            {% endif %}
+            
+            <!-- دسته‌بندی‌ها -->
+            <p class="text-muted mb-3">
+                <i class="bi bi-folder"></i> دسته‌بندی:
+                {% for cat in object.category.all %}
+                <a href="#" class="text-decoration-none">{{ cat.title }}</a>{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+            
+            <!-- توضیحات کوتاه -->
+            <p class="text-secondary mb-4">{{ object.brief_description|default:object.description|truncatewords:30 }}</p>
+            
+            <!-- قیمت -->
+            <div class="mb-4">
+                {% if object.is_discounted %}
+                <h2 class="text-primary d-inline">{{ object.get_price|floatformat:0 }} <small>تومان</small></h2>
+                <span class="text-muted text-decoration-line-through ms-2">{{ object.price|floatformat:0 }} تومان</span>
+                <span class="badge bg-danger ms-2">{{ object.discount_percent }}% تخفیف</span>
+                {% else %}
+                <h2 class="text-primary">{{ object.price|floatformat:0 }} <small>تومان</small></h2>
+                {% endif %}
+            </div>
+            
+            <!-- درجه (Grade) و نوع بسته‌بندی (Package) -->
+            <div class="row mb-4">
+                {% if object.grade %}
+                <div class="col-6">
+                    <div class="border rounded p-2 text-center">
+                        <i class="bi bi-star text-warning"></i>
+                        <span class="d-block small">درجه</span>
+                        <span class="fw-bold">{{ object.grade.name }}</span>
+                    </div>
+                </div>
+                {% endif %}
+                {% if object.package %}
+                <div class="col-6">
+                    <div class="border rounded p-2 text-center">
+                        <i class="bi bi-box text-info"></i>
+                        <span class="d-block small">بسته‌بندی</span>
+                        <span class="fw-bold">{{ object.package.name }}</span>
+                        {% if object.package.weight_grams %}
+                        <span class="small">({{ object.package.weight_grams }} گرم)</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <!-- موجودی -->
+            <div class="mb-4">
+                {% if object.stock > 0 %}
+                <span class="text-success"><i class="bi bi-check-circle"></i> موجود در انبار ({{ object.stock }} عدد)</span>
+                {% else %}
+                <span class="text-danger"><i class="bi bi-x-circle"></i> ناموجود</span>
+                {% endif %}
+            </div>
+            
+            <!-- انتخاب تعداد -->
+            <div class="row align-items-center mb-4 g-2">
+                <div class="col-auto">
+                    <span class="fw-bold">تعداد:</span>
+                </div>
+                <div class="col-auto">
+                    <div class="input-group" style="width: 120px;">
+                        <button class="btn btn-outline-secondary" type="button" onclick="decrementQuantity()">-</button>
+                        <input type="number" id="quantity" class="form-control text-center" value="1" min="1" max="{{ object.stock }}">
+                        <button class="btn btn-outline-secondary" type="button" onclick="incrementQuantity()">+</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- دکمه افزودن به سبد خرید -->
+            <div class="d-grid gap-2 mb-4">
+                <button class="btn btn-primary btn-lg rounded-pill" onclick="addToCart('{{ object.id }}')">
+                    <i class="bi bi-basket"></i> افزودن به سبد خرید
+                </button>
+            </div>
+            
+            <!-- اطلاعات اضافی -->
+            <div class="border-top pt-3">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <i class="bi bi-truck fs-5 text-primary"></i>
+                        <p class="small mb-0">ارسال سریع</p>
+                    </div>
+                    <div class="col-4">
+                        <i class="bi bi-shield-check fs-5 text-primary"></i>
+                        <p class="small mb-0">ضمانت کیفیت</p>
+                    </div>
+                    <div class="col-4">
+                        <i class="bi bi-arrow-return-left fs-5 text-primary"></i>
+                        <p class="small mb-0">۷ روز گارانتی</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- توضیحات کامل محصول -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h4 class="border-bottom pb-2" style="color: #2c5f2d;">توضیحات محصول</h4>
+            <div class="mt-3">
+                {{ object.description|linebreaks }}
+            </div>
+        </div>
+    </div>
+    
+    <!-- محصولات مرتبط -->
+    {% if related_products %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <h4 class="border-bottom pb-2" style="color: #2c5f2d;">محصولات مرتبط</h4>
+        </div>
+        {% for product in related_products %}
+        <div class="col-md-3 col-6 mt-3">
+            <div class="card h-100 shadow-sm">
+                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}" style="height: 150px; object-fit: cover;">
+                <div class="card-body text-center">
+                    <h6 class="card-title">{{ product.title }}</h6>
+                    <p class="card-text text-primary fw-bold">{{ product.get_price|floatformat:0 }} تومان</p>
+                    <a href="{% url 'shop:product_detail' product.slug %}" class="btn btn-sm btn-outline-primary">مشاهده</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    function changeMainImage(src) {
+        document.querySelector('.card-img-top').src = src;
+    }
+    
+    function incrementQuantity() {
+        let input = document.getElementById('quantity');
+        let max = parseInt(input.getAttribute('max')) || 999;
+        if (parseInt(input.value) < max) {
+            input.value = parseInt(input.value) + 1;
+        }
+    }
+    
+    function decrementQuantity() {
+        let input = document.getElementById('quantity');
+        if (parseInt(input.value) > 1) {
+            input.value = parseInt(input.value) - 1;
+        }
+    }
+    
+    function addToCart(productId) {
+        let quantity = document.getElementById('quantity').value;
+        alert('محصول با شناسه ' + productId + ' و تعداد ' + quantity + ' به سبد خرید اضافه شد');
+    }
+</script>
+
+{% endblock %}

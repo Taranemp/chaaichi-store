@@ -1,104 +1,264 @@
 {% load static %}
 
-<nav class="navbar navbar-expand-lg py-3" style="background: #faf7f2; border-bottom: 2px solid #e8e0d5; box-shadow: 0 2px 12px rgba(0,0,0,0.02);">
-    <div class="container">
-        
-        <!-- لوگو -->
-        <a class="navbar-brand d-flex align-items-center" href="/">
-            <div class="bg-white rounded-circle p-2 me-2 shadow-sm" style="border: 1px solid #e0d6c8;">
-                <img src="{% static 'img/logo.png' %}" alt="Chaai Chi" height="30">
-            </div>
-            <div class="d-flex flex-column">
-                <span class="fw-bold" style="color: #2c5f2d; font-size: 1.25rem;">Chaai Chi</span>
-                <span class="text-muted small" style="font-size: 0.7rem;">فروشگاه تخصصی چای</span>
-            </div>
+<nav
+  class="navbar navbar-expand-lg py-3"
+  style="
+    background: #faf7f2;
+    border-bottom: 2px solid #e8e0d5;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.02);
+  "
+>
+  <div class="container">
+    <!-- لوگو -->
+    <a
+      class="navbar-brand d-flex align-items-center"
+      href="{% url 'website:index' %}"
+    >
+      <div
+        class="bg-white rounded-circle p-2 me-2 shadow-sm"
+        style="border: 1px solid #e0d6c8"
+      >
+        <img src="{% static 'img/logo.png' %}" alt="Chaai Chi" height="30" />
+      </div>
+
+      <div class="d-flex flex-column">
+        <span class="fw-bold" style="color: #2c5f2d; font-size: 1.25rem">
+          Chaai Chi
+        </span>
+
+        <span class="text-muted small" style="font-size: 0.7rem">
+          فروشگاه تخصصی چای
+        </span>
+      </div>
+    </a>
+
+    <!-- دکمه موبایل -->
+    <button
+      class="navbar-toggler border-0"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+    >
+      <i class="bi bi-list fs-1" style="color: #2c5f2d"></i>
+    </button>
+
+    <!-- منو -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto gap-2 gap-lg-3">
+        <!-- خانه -->
+        <li class="nav-item">
+          <a
+            class="nav-link fw-semibold px-3"
+            href="{% url 'website:index' %}"
+            style="color: #4a4a4a"
+          >
+            <i class="bi bi-house-door me-1"></i>
+            خانه
+          </a>
+        </li>
+
+        <!-- محصولات -->
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link fw-semibold dropdown-toggle px-3"
+            href="#"
+            data-bs-toggle="dropdown"
+            style="color: #4a4a4a"
+          >
+            <i class="bi bi-cup-hot me-1"></i>
+            دسته بندی
+          </a>
+
+          <ul
+            class="dropdown-menu border-0 shadow-lg mt-2"
+            style="border-radius: 16px"
+          >
+            <li><a class="dropdown-item py-2" href="#">چای سیاه</a></li>
+            <li><a class="dropdown-item py-2" href="#">چای سبز</a></li>
+            <li><a class="dropdown-item py-2" href="#">دمنوش</a></li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item py-2" href="{% url 'shop:product_grid' %}"
+                >همه محصولات</a
+              >
+            </li>
+          </ul>
+        </li>
+
+        <!-- درباره ما -->
+        <li class="nav-item">
+          <a
+            class="nav-link fw-semibold px-3"
+            href="{% url 'website:about' %}"
+            style="color: #4a4a4a"
+          >
+            <i class="bi bi-info-circle me-1"></i>
+            درباره ما
+          </a>
+        </li>
+
+        <!-- تماس با ما -->
+        <li class="nav-item">
+          <a
+            class="nav-link fw-semibold px-3"
+            href="{% url 'website:contact' %}"
+            style="color: #4a4a4a"
+          >
+            <i class="bi bi-envelope me-1"></i>
+            تماس با ما
+          </a>
+        </li>
+      </ul>
+
+      <!-- سمت راست -->
+      <div class="d-flex align-items-center gap-2">
+        <!-- سرچ -->
+        <a
+          href="#"
+          class="btn btn-light btn-sm rounded-circle shadow-sm"
+          style="
+            width: 38px;
+            height: 38px;
+            line-height: 38px;
+            background: #ffffff;
+            border: 1px solid #e0d6c8;
+            color: #2c5f2d;
+          "
+        >
+          <i class="bi bi-search"></i>
         </a>
 
-        <!-- دکمه منو موبایل -->
-        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <i class="bi bi-list fs-1" style="color: #2c5f2d;"></i>
-        </button>
+        <!-- سبد خرید -->
+        <a
+          href="#"
+          class="btn btn-light btn-sm rounded-circle shadow-sm position-relative"
+          style="
+            width: 38px;
+            height: 38px;
+            line-height: 38px;
+            background: #ffffff;
+            border: 1px solid #e0d6c8;
+            color: #2c5f2d;
+          "
+        >
+          <i class="bi bi-basket"></i>
 
-        <!-- منو -->
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mx-auto gap-2 gap-lg-3">
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold px-3" href="/" style="color: #4a4a4a;">
-                        <i class="bi bi-house-door me-1"></i> خانه
-                    </a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link fw-semibold dropdown-toggle px-3" href="#" data-bs-toggle="dropdown" style="color: #4a4a4a;">
-                        <i class="bi bi-cup-hot me-1"></i> محصولات
-                    </a>
-                    <ul class="dropdown-menu border-0 shadow-lg mt-2" style="background: #ffffff; border-radius: 16px;">
-                        <li><a class="dropdown-item py-2" href="#"><i class="bi bi-droplet me-2" style="color: #2c5f2d;"></i>چای سیاه</a></li>
-                        <li><a class="dropdown-item py-2" href="#"><i class="bi bi-flower1 me-2" style="color: #2c5f2d;"></i>چای سبز</a></li>
-                        <li><a class="dropdown-item py-2" href="#"><i class="bi bi-flower2 me-2" style="color: #2c5f2d;"></i>دمنوش</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item py-2" href="#"><i class="bi bi-grid-3x3-gap me-2" style="color: #2c5f2d;"></i>همه محصولات</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold px-3" href="#" style="color: #4a4a4a;">
-                        <i class="bi bi-tags me-1"></i> برندها
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold px-3" href="/about/" style="color: #4a4a4a;">
-                        <i class="bi bi-info-circle me-1"></i> درباره ما
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link fw-semibold px-3" href="/contact/" style="color: #4a4a4a;">
-                        <i class="bi bi-envelope me-1"></i> تماس با ما
-                    </a>
-                </li>
-            </ul>
+          <span
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+            style="background: #c17b4c; font-size: 10px"
+          >
+            0
+          </span>
+        </a>
 
-            <!-- آیکون‌های راست -->
-            <div class="d-flex align-items-center gap-2">
-                
-                <!-- جستجو -->
-                <a href="#" class="btn btn-light btn-sm rounded-circle shadow-sm" style="width: 38px; height: 38px; line-height: 38px; background: #ffffff; border: 1px solid #e0d6c8; color: #2c5f2d;">
-                    <i class="bi bi-search"></i>
-                </a>
-                
-                <!-- سبد خرید -->
-                <a href="/cart/" class="btn btn-light btn-sm rounded-circle shadow-sm position-relative" style="width: 38px; height: 38px; line-height: 38px; background: #ffffff; border: 1px solid #e0d6c8; color: #2c5f2d;">
-                    <i class="bi bi-basket"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background: #c17b4c; font-size: 10px;">0</span>
-                </a>
-                
-                <!-- کاربر -->
-                {% if user.is_authenticated %}
-                <div class="dropdown">
-                    <a href="#" class="btn btn-light btn-sm rounded-circle shadow-sm" data-bs-toggle="dropdown" style="width: 38px; height: 38px; line-height: 38px; background: #ffffff; border: 1px solid #e0d6c8; color: #2c5f2d;">
-                        <i class="bi bi-person-circle"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg mt-2" style="border-radius: 16px;">
-                        <li><a class="dropdown-item py-2" href="#"><i class="bi bi-person me-2" style="color: #2c5f2d;"></i>پروفایل</a></li>
-                        <li><a class="dropdown-item py-2" href="/wallet/"><i class="bi bi-wallet2 me-2" style="color: #2c5f2d;"></i>کیف پول</a></li>
-                        <li><a class="dropdown-item py-2" href="#"><i class="bi bi-bag me-2" style="color: #2c5f2d;"></i>سفارشات</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item py-2 text-danger" href="{% url 'account:logout' %}"><i class="bi bi-box-arrow-right me-2"></i>خروج</a></li>
-                    </ul>
-                </div>
-                {% else %}
-                <div class="dropdown">
-                    <a href="#" class="btn btn-light btn-sm rounded-circle shadow-sm" data-bs-toggle="dropdown" style="width: 38px; height: 38px; line-height: 38px; background: #ffffff; border: 1px solid #e0d6c8; color: #2c5f2d;">
-                        <i class="bi bi-person"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg mt-2" style="border-radius: 16px;">
-                        <li><a class="dropdown-item py-2" href="{% url 'account:login' %}"><i class="bi bi-box-arrow-in-right me-2" style="color: #2c5f2d;"></i>ورود</a></li>
-                        <li><a class="dropdown-item py-2" href="{% url 'account:signup' %}"><i class="bi bi-person-plus me-2" style="color: #2c5f2d;"></i>ثبت‌نام</a></li>
-                    </ul>
-                </div>
-                {% endif %}
-            </div>
+        <!-- کاربر -->
+        {% if user.is_authenticated %}
+
+        <div class="dropdown">
+          <a
+            href="#"
+            class="btn btn-light btn-sm rounded-circle shadow-sm"
+            data-bs-toggle="dropdown"
+            style="
+              width: 38px;
+              height: 38px;
+              line-height: 38px;
+              background: #ffffff;
+              border: 1px solid #e0d6c8;
+              color: #2c5f2d;
+            "
+          >
+            <i class="bi bi-person-circle"></i>
+          </a>
+
+          <ul
+            class="dropdown-menu dropdown-menu-end border-0 shadow-lg mt-2"
+            style="border-radius: 16px"
+          >
+            <li>
+              <a class="dropdown-item py-2" href="#">
+                <i class="bi bi-person me-2" style="color: #2c5f2d"></i>
+                پروفایل
+              </a>
+            </li>
+
+            <li>
+              <a class="dropdown-item py-2" href="#">
+                <i class="bi bi-bag me-2" style="color: #2c5f2d"></i>
+                سفارشات
+              </a>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider" />
+            </li>
+
+            <li>
+              <a
+                class="dropdown-item py-2 text-danger"
+                href="{% url 'accounts:logout' %}"
+              >
+                <i class="bi bi-box-arrow-right me-2"></i>
+                خروج
+              </a>
+            </li>
+          </ul>
         </div>
+
+        {% else %}
+
+        <div class="dropdown">
+          <a
+            href="#"
+            class="btn btn-light btn-sm rounded-circle shadow-sm"
+            data-bs-toggle="dropdown"
+            style="
+              width: 38px;
+              height: 38px;
+              line-height: 38px;
+              background: #ffffff;
+              border: 1px solid #e0d6c8;
+              color: #2c5f2d;
+            "
+          >
+            <i class="bi bi-person"></i>
+          </a>
+
+          <ul
+            class="dropdown-menu dropdown-menu-end border-0 shadow-lg mt-2"
+            style="border-radius: 16px"
+          >
+            <li>
+              <a class="dropdown-item py-2" href="#">
+                <i
+                  class="bi bi-box-arrow-in-right me-2"
+                  style="color: #2c5f2d"
+                ></i>
+
+                ورود
+              </a>
+            </li>
+
+            <li>
+              <a class="dropdown-item py-2" href="#">
+                <i class="bi bi-person-plus me-2" style="color: #2c5f2d"></i>
+
+                ثبت‌نام
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        {% endif %}
+      </div>
     </div>
+  </div>
 </nav>
 
-<!-- خط باریک مسی رنگ زیر هدر -->
-<div style="height: 2px; background: linear-gradient(90deg, #e8e0d5, #c17b4c, #e8e0d5);"></div>
+<!-- خط زیر هدر -->
+<div
+  style="
+    height: 2px;
+    background: linear-gradient(90deg, #e8e0d5, #c17b4c, #e8e0d5);
+  "
+></div>

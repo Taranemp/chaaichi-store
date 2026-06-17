@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+محصولات - Chaai Chi
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+    <div class="row">
+        
+        <!-- فیلتر سمت راست -->
+        <div class="col-lg-3 mb-4 mb-lg-0">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">فیلتر محصولات</h5>
+                    
+                    <form action="." method="get">
+                        <!-- جستجو -->
+                        <div class="mb-3">
+                            <label class="form-label">جستجو</label>
+                            <input type="text" name="q" class="form-control" placeholder="جستجو در محصولات..." value="{{ current_search }}">
+                        </div>
+                        
+                        <!-- دسته‌بندی -->
+                        <div class="mb-3">
+                            <label class="form-label">دسته‌بندی</label>
+                            <select name="category_id" class="form-select">
+                                <option value="">همه دسته‌بندی‌ها</option>
+                                {% for category in categories %}
+                                <option value="{{ category.id }}" {% if current_category_id == category.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ category.title }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- برند -->
+                        <div class="mb-3">
+                            <label class="form-label">برند</label>
+                            <select name="brand_id" class="form-select">
+                                <option value="">همه برندها</option>
+                                {% for brand in brands %}
+                                <option value="{{ brand.id }}" {% if current_brand_id == brand.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ brand.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <!-- قیمت -->
+                        <div class="mb-3">
+                            <label class="form-label">محدوده قیمت (تومان)</label>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <input type="number" name="min_price" class="form-control" placeholder="از" value="{{ current_min_price }}">
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" name="max_price" class="form-control" placeholder="تا" value="{{ current_max_price }}">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- مرتب‌سازی -->
+                        <div class="mb-3">
+                            <label class="form-label">مرتب‌سازی</label>
+                            <select name="order_by" class="form-select">
+                                <option value="">پیش‌فرض</option>
+                                <option value="-created_date" {% if current_order_by == "-created_date" %}selected{% endif %}>جدیدترین</option>
+                                <option value="created_date" {% if current_order_by == "created_date" %}selected{% endif %}>قدیمی‌ترین</option>
+                                <option value="-price" {% if current_order_by == "-price" %}selected{% endif %}>گران‌ترین</option>
+                                <option value="price" {% if current_order_by == "price" %}selected{% endif %}>ارزان‌ترین</option>
+                                <option value="title" {% if current_order_by == "title" %}selected{% endif %}>الفبا</option>
+                            </select>
+                        </div>
+                        
+                        <!-- دکمه‌ها -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">اعمال فیلتر</button>
+                            <a href="{% url 'shop:product_grid' %}" class="btn btn-outline-secondary">حذف فیلترها</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- لیست محصولات -->
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0">{{ total_items }} محصول</h4>
+                
+                <!-- انتخاب تعداد در صفحه -->
+                <select id="page-size-filter" class="form-select w-auto">
+                    <option value="12">۱۲ در صفحه</option>
+                    <option value="24">۲۴ در صفحه</option>
+                    <option value="48">۴۸ در صفحه</option>
+                </select>
+            </div>
+            
+            <div class="row">
+                {% for product in object_list %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}" style="height: 200px; object-fit: cover;">
+                        <div class="card-body text-center">
+                            <h6 class="card-title">{{ product.title }}</h6>
+                            <p class="card-text text-primary fw-bold">
+                                {% if product.is_discounted %}
+                                <span class="text-danger">{{ product.get_price|floatformat:0 }}</span>
+                                <span class="text-muted text-decoration-line-through small"> {{ product.price|floatformat:0 }}</span>
+                                {% else %}
+                                {{ product.price|floatformat:0 }}
+                                {% endif %}
+                                تومان
+                            </p>
+                            <a href="{% url 'shop:product_detail' product.slug %}" class="btn btn-outline-primary btn-sm">مشاهده محصول</a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-5">
+                    <p>هیچ محصولی یافت نشد.</p>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- صفحه‌بندی -->
+            {% if page_obj.has_other_pages %}
+<nav>
+  <ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ page_obj.previous_page_number }}">قبلی</a>
+    </li>
+    {% endif %}
+
+    {% for num in page_obj.paginator.page_range %}
+    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+      <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+    </li>
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ page_obj.next_page_number }}">بعدی</a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('page-size-filter').addEventListener('change', function() {
+        let url = new URL(window.location.href);
+        url.searchParams.set('page_size', this.value);
+        window.location.href = url.toString();
+    });
+</script>
+
+{% endblock %}
