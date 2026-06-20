@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.views.generic import CreateView
 from django.shortcuts import redirect
 from django.contrib import messages
+from django.urls import reverse
 from .forms import ContactForm
 from .models import Contact
 
@@ -48,4 +49,4 @@ class SendContactView(CreateView):
         return redirect(self.request.META.get('HTTP_REFERER', '/'))
 
     def get_success_url(self):
-        return self.request.META.get('HTTP_REFERER', '/')
+        return reverse('website:contact')

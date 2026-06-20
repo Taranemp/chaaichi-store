@@ -415,3 +415,63 @@ main {
 .nav-link:hover {
     color: #2c5f2d !important;  /* سبز چای */
 }
+
+.contact-hero{
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+}
+
+.contact-card{
+    border: 0;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 10px 35px rgba(0,0,0,.06);
+    transition: all .3s ease;
+}
+
+.contact-card:hover{
+    transform: translateY(-6px);
+    box-shadow: 0 20px 45px rgba(0,0,0,.10);
+}
+
+.contact-card .card-body{
+    padding: 3rem 2rem 2rem;
+}
+
+.contact-card .svg-icon svg{
+    width: 60px;
+    height: 60px;
+}
+
+.contact-card .card-title{
+    color: #1f2937;
+}
+
+.contact-card .card-text{
+    font-size: .95rem;
+    line-height: 1.8;
+}
+
+.contact-card .card-link{
+    font-weight: 600;
+    color: #0d6efd;
+}
+
+.contact-card .card-footer{
+    background: transparent;
+}
+
+@media (max-width: 768px){
+
+    .contact-hero{
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+
+    .contact-card .card-body{
+        padding: 2rem 1.5rem;
+    }
+}
