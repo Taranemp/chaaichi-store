@@ -26,12 +26,13 @@ class CartSession:
         return cart
 
     def add(self, product_id, quantity=1):
-        if quantity <= 0:
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            return
 
-            try:
-                product = Product.objects.get(id=product_id)
-            except Product.DoesNotExist:
-                return
+        if quantity <= 0:
+            return
 
         cart = self._get_or_create_cart()
         cart_item, created = CartItem.objects.get_or_create(
