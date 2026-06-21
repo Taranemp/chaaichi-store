@@ -130,7 +130,7 @@
 
         <!-- سبد خرید -->
         <a
-          href="#"
+          href="{% url 'cart:summary' %}"
           class="btn btn-light btn-sm rounded-circle shadow-sm position-relative"
           style="
             width: 38px;
@@ -144,10 +144,11 @@
           <i class="bi bi-basket"></i>
 
           <span
+            id="cart-count"
             class="position-absolute top-0 start-100 translate-middle badge rounded-pill"
             style="background: #c17b4c; font-size: 10px"
           >
-            0
+            {{ cart.get_total_quantity }}
           </span>
         </a>
 
@@ -196,7 +197,7 @@
             <li>
               <a
                 class="dropdown-item py-2 text-danger"
-                href="{% url 'accounts:logout' %}"
+                href="{% url 'account:logout' %}"
               >
                 <i class="bi bi-box-arrow-right me-2"></i>
                 خروج

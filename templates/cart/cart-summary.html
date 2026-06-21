@@ -1,0 +1,309 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+
+
+
+{% block content %}
+
+
+
+<div class="container py-5">
+
+    <h1 class="mb-4">سبد خرید</h1>
+
+
+
+    {% if cart_items %}
+
+        <div class="table-responsive">
+
+            <table class="table align-middle">
+
+                <thead class="table-light">
+
+                    <tr>
+
+                        <th>محصول</th>
+
+                        <th>قیمت</th>
+
+                        <th>تعداد</th>
+
+                        <th>جمع</th>
+
+                        <th></th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for item in cart_items %}
+
+                        <tr>
+
+                            <td>
+
+                                <div class="d-flex align-items-center gap-3">
+
+                                    {% if item.product.image %}
+
+                                        <img src="{{ item.product.image.url }}"
+
+                                             alt="{{ item.product.title }}"
+
+                                             width="60" height="60"
+
+                                             style="object-fit: cover; border-radius: 8px;">
+
+                                    {% endif %}
+
+                                    <div>
+
+                                        <a href="{{ item.product.get_absolute_url }}"
+
+                                           class="text-decoration-none fw-semibold">
+
+                                            {{ item.product.title }}
+
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <td>{{ item.product.get_price_with_comma }} تومان</td>
+
+                            <td>
+
+                                <input type="number"
+
+                                       class="form-control form-control-sm quantity-input"
+
+                                       style="width: 70px;"
+
+                                       value="{{ item.quantity }}"
+
+                                       min="1"
+
+                                       data-product-id="{{ item.product.id }}">
+
+                            </td>
+
+                            <td>{{ item.subtotal|floatformat:0 }} تومان</td>
+
+                            <td>
+
+                                <button class="btn btn-sm btn-outline-danger remove-item"
+
+                                        data-product-id="{{ item.product.id }}">
+
+                                    <i class="bi bi-trash"></i>
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+
+        <div class="row justify-content-end">
+
+            <div class="col-md-4">
+
+                <div class="card">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">خلاصه سبد خرید</h5>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between mb-2">
+
+                            <span>تعداد کالاها:</span>
+
+                            <span>{{ total_quantity }}</span>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-3">
+
+                            <span>مبلغ کل:</span>
+
+                            <span class="fw-bold">{{ total_price|floatformat:0 }} تومان</span>
+
+                        </div>
+
+                        <a href="#" class="btn btn-primary w-100">تکمیل سفارش</a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    {% else %}
+
+        <div class="text-center py-5">
+
+            <i class="bi bi-cart-x" style="font-size: 3rem; color: #ccc;"></i>
+
+            <p class="mt-3 text-muted">سبد خرید شما خالی است</p>
+
+            <a href="{% url 'shop:product_grid' %}" class="btn btn-primary">مشاهده محصولات</a>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+
+{% endblock content %}
+
+
+
+
+
+{% block extra_js %}
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+
+    function getCookie(name) {
+
+        let cookieValue = null;
+
+        if (document.cookie && document.cookie !== "") {
+
+            const cookies = document.cookie.split(";");
+
+            for (let i = 0; i < cookies.length; i++) {
+
+                const cookie = cookies[i].trim();
+
+                if (cookie.startsWith(name + "=")) {
+
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+
+                    break;
+
+                }
+
+            }
+
+        }
+
+        return cookieValue;
+
+    }
+
+
+
+    const csrftoken = getCookie("csrftoken");
+
+
+
+    function cartRequest(url, data, callback) {
+
+        fetch(url, {
+
+            method: "POST",
+
+            headers: {
+
+                "Content-Type": "application/x-www-form-urlencoded",
+
+                "X-CSRFToken": csrftoken,
+
+            },
+
+            body: new URLSearchParams(data),
+
+        })
+
+        .then(res => res.json())
+
+        .then(callback)
+
+        .catch(err => console.error(err));
+
+    }
+
+
+
+    document.querySelectorAll(".quantity-input").forEach(input => {
+
+        input.addEventListener("change", function () {
+
+            const productId = this.dataset.productId;
+
+            const quantity = this.value;
+
+            cartRequest("{% url 'cart:update' %}", {
+
+                product_id: productId,
+
+                quantity: quantity,
+
+            }, function (data) {
+
+                if (data.success) location.reload();
+
+            });
+
+        });
+
+    });
+
+
+
+    document.querySelectorAll(".remove-item").forEach(btn => {
+
+        btn.addEventListener("click", function () {
+
+            const productId = this.dataset.productId;
+
+            cartRequest("{% url 'cart:remove' %}", {
+
+                product_id: productId,
+
+            }, function (data) {
+
+                if (data.success) location.reload();
+
+            });
+
+        });
+
+    });
+
+
+
+});
+
+</script>
+
+{% endblock extra_js %}
