@@ -5,6 +5,11 @@ User = get_user_model()
 
 
 class CustomUserCreationForm(forms.ModelForm):
+    fullname = forms.CharField(
+        label="Full Name",
+        widget=forms.TextInput(attrs={"class": "form-control"}),
+        required=True
+    )
     password1 = forms.CharField(
         label="Password",
         widget=forms.PasswordInput(attrs={"class": "form-control"})
@@ -16,11 +21,10 @@ class CustomUserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ("fullname", "phone", "email")
+        fields = ("phone", "email")
         widgets = {
-            "fullname": forms.TextInput(attrs={"class": "form-control"}),
-            "phone": forms.TextInput(attrs={"class": "form-control"}),
-            "email": forms.EmailInput(attrs={"class": "form-control"}),
+            "phone": forms.TextInput(attrs={"class": "form-control", "dir": "ltr"}),
+            "email": forms.EmailInput(attrs={"class": "form-control", "dir": "ltr"}),
         }
 
     def clean(self):
@@ -36,9 +40,15 @@ class CustomUserCreationForm(forms.ModelForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         password = self.cleaned_data.get("password1")
+        fullname = self.cleaned_data.get("fullname")
 
         user.set_password(password)
 
         if commit:
             user.save()
+            # ذخیره fullname در پروفایل
+            if hasattr(user, 'profile'):
+                user.profile.first_name = fullname
+                user.profile.save()
+
         return user
