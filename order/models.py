@@ -11,7 +11,7 @@ class OrderStatusType(models.IntegerChoices):
 
 
 class UserAddress(models.Model):
-    user = models.ForeignKey('account.CustomUser', on_delete=models.CASCADE)
+    user = models.ForeignKey('account.User', on_delete=models.CASCADE)
     
     address = models.CharField(max_length=250)
     state = models.CharField(max_length=50)
@@ -26,7 +26,7 @@ class Coupon(models.Model):
     code = models.CharField(max_length=100)
     discount_percent = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     max_limit_usage = models.PositiveIntegerField(default=10)
-    used_by = models.ManyToManyField('account.CustomUser', related_name="coupon_users", blank=True)
+    used_by = models.ManyToManyField('account.User', related_name="coupon_users", blank=True)
     
     expiration_date = models.DateTimeField(null=True, blank=True)
     created_date = models.DateTimeField(auto_now_add=True)
@@ -37,7 +37,7 @@ class Coupon(models.Model):
 
 
 class Order(models.Model):
-    user = models.ForeignKey('account.CustomUser', on_delete=models.PROTECT)
+    user = models.ForeignKey('account.User', on_delete=models.PROTECT)
     
     # order address information
     address = models.CharField(max_length=250)

@@ -11,15 +11,18 @@ def create_super_user(stdout):
     email = "salar.khosravi@gmail.com"
 
     if not User.objects.filter(phone=phone).exists():
-        User.objects.create_superuser(
+        user = User.objects.create_superuser(
             phone=phone,
-            fullname=fullname,
+            password=password,
             email=email,
-            password=password
+            # fullname حذف شد
         )
+        # ذخیره fullname در پروفایل
+        if hasattr(user, 'profile'):
+            user.profile.first_name = fullname
+            user.profile.save()
         stdout.write(f'✅ Superuser "{phone}" created')
     else:
-        # اگر وجود داشت، رمز رو آپدیت کن
         user = User.objects.get(phone=phone)
         user.set_password(password)
         user.is_superuser = True
