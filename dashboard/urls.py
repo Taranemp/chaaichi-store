@@ -10,7 +10,7 @@ urlpatterns = [
     path("admin/",include('dashboard.admin.urls')),
     
     # include customer urls
-    path("customer/",include('dashboard.customer.urls')),
+    # path("customer/",include('dashboard.customer.urls')),
 ]
 
 

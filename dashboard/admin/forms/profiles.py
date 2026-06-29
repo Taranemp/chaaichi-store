@@ -6,8 +6,6 @@ from account.models import Profile
 
 
 class AdminPasswordChangeForm(auth_forms.PasswordChangeForm):
-    """فرم تغییر رمز عبور ادمین"""
-    
     error_messages = {
         "password_incorrect": _("پسورد قبلی شما اشتباه وارد شده است، لطفا تصحیح نمایید."),
         "password_mismatch": _("دو پسورد ورودی با همدیگر مطابقت ندارند"),
@@ -16,22 +14,20 @@ class AdminPasswordChangeForm(auth_forms.PasswordChangeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['old_password'].widget.attrs['class'] = 'form-control text-center'
-        self.fields['new_password1'].widget.attrs['class'] = 'form-control text-center'
-        self.fields['new_password2'].widget.attrs['class'] = 'form-control text-center'
         self.fields['old_password'].widget.attrs['placeholder'] = "پسورد قبلی خود را وارد نمایید"
+        self.fields['new_password1'].widget.attrs['class'] = 'form-control text-center'
         self.fields['new_password1'].widget.attrs['placeholder'] = "پسورد جدید خود را وارد نمایید"
+        self.fields['new_password2'].widget.attrs['class'] = 'form-control text-center'
         self.fields['new_password2'].widget.attrs['placeholder'] = "پسورد جدید را مجدد وارد نمایید"
 
 
 class AdminProfileEditForm(forms.ModelForm):
-    """فرم ویرایش پروفایل ادمین"""
-    
     class Meta:
         model = Profile
         fields = [
             "first_name",
             "last_name",
-            "phone_number",
+            # phone_number در Profile نیست، در User است
         ]
 
     def __init__(self, *args, **kwargs):
@@ -40,6 +36,3 @@ class AdminProfileEditForm(forms.ModelForm):
         self.fields['first_name'].widget.attrs['placeholder'] = 'نام خود را وارد نمایید'
         self.fields['last_name'].widget.attrs['class'] = 'form-control'
         self.fields['last_name'].widget.attrs['placeholder'] = 'نام خانوادگی را وارد نمایید'
-        self.fields['phone_number'].widget.attrs['class'] = 'form-control text-center'
-        self.fields['phone_number'].widget.attrs['placeholder'] = 'شماره همراه را وارد نمایید'
-        self.fields['phone_number'].widget.attrs['dir'] = 'ltr'

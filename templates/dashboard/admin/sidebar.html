@@ -1,0 +1,99 @@
+{% load static %}
+
+<div class="text-center mb-4">
+  <div
+    class="avatar-circle mx-auto mb-2"
+    style="
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #ddd;
+    "
+  >
+    <img
+      src="{{ request.user.profile.image.url|default:'/static/img/default-avatar.png' }}"
+      class="w-100 h-100 object-fit-cover"
+      alt="پروفایل"
+    />
+  </div>
+  <h6 class="mb-0">
+    {{ request.user.profile.get_fullname|default:request.user.phone }}
+  </h6>
+  <small class="text-muted">{{ request.user.phone }}</small>
+</div>
+
+<hr />
+
+<!-- حساب -->
+<span class="text-uppercase small fw-bold text-muted">حساب</span>
+<ul class="nav flex-column mt-2 mb-3">
+  <li class="nav-item">
+    <a
+      class="nav-link {% if request.resolver_match.url_name == 'home' %}active fw-bold text-primary{% endif %}"
+      href="{% url 'dashboard:admin:home' %}"
+    >
+      <i class="bi bi-grid-fill me-2"></i>داشبورد
+    </a>
+  </li>
+  <li class="nav-item">
+    <a
+      class="nav-link {% if request.resolver_match.url_name == 'profile-edit' %}active fw-bold text-primary{% endif %}"
+      href="{% url 'dashboard:admin:profile-edit' %}"
+    >
+      <i class="bi bi-person me-2"></i>پروفایل
+    </a>
+  </li>
+  <li class="nav-item">
+    <a
+      class="nav-link {% if request.resolver_match.url_name == 'security-edit' %}active fw-bold text-primary{% endif %}"
+      href="{% url 'dashboard:admin:security-edit' %}"
+    >
+      <i class="bi bi-shield-lock me-2"></i>امنیت
+    </a>
+  </li>
+</ul>
+
+<!-- فروشگاه -->
+<span class="text-uppercase small fw-bold text-muted">فروشگاه</span>
+<ul class="nav flex-column mt-2 mb-3">
+  <li class="nav-item">
+    <a
+      class="nav-link {% if request.resolver_match.url_name == 'product-list' %}active fw-bold text-primary{% endif %}"
+      href="{% url 'dashboard:admin:product-list' %}"
+    >
+      <i class="bi bi-box-seam me-2"></i>محصولات
+    </a>
+  </li>
+  <li class="nav-item">
+    <a
+      class="nav-link {% if request.resolver_match.url_name == 'order-list' %}active fw-bold text-primary{% endif %}"
+      href="{% url 'dashboard:admin:order-list' %}"
+    >
+      <i class="bi bi-receipt me-2"></i>سفارشات
+    </a>
+  </li>
+</ul>
+
+<!-- کاربران -->
+<span class="text-uppercase small fw-bold text-muted">کاربران</span>
+<ul class="nav flex-column mt-2">
+  <li class="nav-item">
+    <a
+      class="nav-link {% if request.resolver_match.url_name == 'user-list' %}active fw-bold text-primary{% endif %}"
+      href="{% url 'dashboard:admin:user-list' %}"
+    >
+      <i class="bi bi-people me-2"></i>لیست کاربران
+    </a>
+  </li>
+</ul>
+
+<!-- خروج -->
+<hr />
+<ul class="nav flex-column">
+  <li class="nav-item">
+    <a class="nav-link text-danger" href="{% url 'account:logout' %}">
+      <i class="bi bi-box-arrow-right me-2"></i>خروج
+    </a>
+  </li>
+</ul>

@@ -1,3 +1,4 @@
+# dashboard/admin/urls/profiles.py
 from django.urls import path
 from ..views.profiles import (
     AdminSecurityEditView,

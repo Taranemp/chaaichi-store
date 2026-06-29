@@ -1,3 +1,4 @@
+# dashboard/admin/views/users.py
 from django.views.generic import ListView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -6,8 +7,8 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 from django.core import exceptions
 
-from dashboard.permissions import HasAdminAccessPermission
-from account.models import UserType
+from dashboard.permissions import HasAdminAccessPermission  
+from account.models import UserType  
 from dashboard.admin.forms import UserForm
 
 User = get_user_model()
@@ -25,7 +26,6 @@ class AdminUserListView(LoginRequiredMixin, HasAdminAccessPermission, ListView):
         return self.request.GET.get('page_size', self.paginate_by)
 
     def get_queryset(self):
-        
         queryset = User.objects.filter(
             type=UserType.customer.value
         ).select_related('profile').order_by("-created_date")
