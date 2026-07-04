@@ -1,0 +1,142 @@
+{% extends 'dashboard/admin/base.html' %}
+{% load static %}
+
+{% block title %}ویرایش پروفایل{% endblock %}
+
+{% block extra_css %}
+<style>
+    .avatar-upload {
+        position: relative;
+        width: 110px;
+        height: 110px;
+        margin: 0 auto;
+    }
+    .avatar-upload img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--clr-forest-tint);
+    }
+    .avatar-upload-btn {
+        position: absolute;
+        bottom: 2px;
+        left: 2px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--clr-forest);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: 3px solid #fff;
+        font-size: .9rem;
+    }
+    .avatar-upload-btn:hover { background: var(--clr-forest-dark); }
+    .avatar-upload input[type="file"] { display: none; }
+
+    .form-label { font-size: .85rem; font-weight: 600; color: var(--clr-ink); }
+    .form-control:focus { border-color: var(--clr-gold); box-shadow: 0 0 0 .2rem rgba(192,138,62,.15); }
+    .invalid-feedback { display: block; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h4 class="fw-bold mb-1">ویرایش پروفایل</h4>
+    <span class="text-muted small">اطلاعات نمایشی حساب مدیریتی خودت رو به‌روز کن</span>
+</div>
+
+<div class="row g-3">
+
+    <!-- تصویر پروفایل -->
+    <div class="col-lg-4">
+        <div class="surface-card p-4 text-center h-100">
+            <form method="post"
+                  action="{% url 'dashboard:admin:profiles:profile-image-edit' %}"
+                  enctype="multipart/form-data"
+                  id="avatarForm">
+                {% csrf_token %}
+                <div class="avatar-upload">
+                    <img src="{{ request.user.profile.image.url|default:'/static/img/default-avatar.png' }}"
+                         id="avatarPreview" alt="پروفایل">
+                    <label class="avatar-upload-btn" for="avatarInput">
+                        <i class="bi bi-camera-fill"></i>
+                    </label>
+                    <input type="file" name="image" id="avatarInput" accept="image/*">
+                </div>
+                <h6 class="mt-3 mb-1 fw-semibold">
+                    {{ request.user.profile.get_fullname|default:request.user.phone }}
+                </h6>
+                <span class="text-muted small d-block mb-3">مدیر فروشگاه</span>
+                <span class="text-muted small d-block">برای تغییر تصویر، روی آیکون دوربین بزن</span>
+            </form>
+        </div>
+    </div>
+
+    <!-- اطلاعات پروفایل -->
+    <div class="col-lg-8">
+        <div class="surface-card p-4">
+            <h6 class="fw-bold mb-4">اطلاعات حساب</h6>
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger small">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ form.first_name.id_for_label }}">نام</label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                        <div class="invalid-feedback text-danger small">{{ form.first_name.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label" for="{{ form.last_name.id_for_label }}">نام خانوادگی</label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                        <div class="invalid-feedback text-danger small">{{ form.last_name.errors|striptags }}</div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">شماره تماس</label>
+                        <input type="text" class="form-control" value="{{ request.user.phone }}" disabled>
+                        <span class="text-muted" style="font-size:.72rem;">شماره تماس قابل ویرایش نیست</span>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4 pt-3 border-top" style="border-color: var(--clr-border) !important;">
+                    <button type="submit" class="btn px-4" style="background: var(--clr-forest); color:#fff; border-radius: 10px;">
+                        <i class="bi bi-check2 me-1"></i> ذخیره تغییرات
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const avatarInput = document.getElementById('avatarInput');
+    const avatarForm = document.getElementById('avatarForm');
+    const avatarPreview = document.getElementById('avatarPreview');
+
+    if (avatarInput) {
+        avatarInput.addEventListener('change', () => {
+            if (avatarInput.files && avatarInput.files[0]) {
+                avatarPreview.src = URL.createObjectURL(avatarInput.files[0]);
+                avatarForm.submit();
+            }
+        });
+    }
+</script>
+{% endblock %}

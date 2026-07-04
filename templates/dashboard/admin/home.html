@@ -5,102 +5,134 @@
 
 {% block content %}
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0">داشبورد مدیریت</h4>
-    <span class="text-muted small">{{ request.user.profile.get_fullname|default:request.user.phone }} عزیز، خوش آمدید!</span>
+<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <div>
+        <h4 class="mb-1 fw-bold">سلام {{ request.user.profile.get_fullname|default:request.user.phone }} 👋</h4>
+        <span class="text-muted small">خلاصه‌ی وضعیت فروشگاه چایچی امروز</span>
+    </div>
+    <a href="{% url 'dashboard:admin:orders:order-list' %}" class="btn btn-sm px-3" style="background: var(--clr-forest); color:#fff; border-radius: 10px;">
+        <i class="bi bi-receipt me-1"></i> مشاهده همه سفارشات
+    </a>
 </div>
 
 <!-- کارت‌های آماری -->
-<div class="row g-4 mb-4">
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #2c5f2d, #3d8b40);">
-            <div class="card-body text-white">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-white-50 mb-1">کل محصولات</h6>
-                        <h2 class="mb-0">{{ total_products|default:0 }}</h2>
-                    </div>
-                    <i class="bi bi-box-seam fs-1 text-white-50"></i>
-                </div>
+<div class="row g-3 mb-4">
+
+    <div class="col-6 col-lg-3">
+        <div class="surface-card p-3 h-100">
+            <div class="d-flex align-items-center justify-content-center rounded-3 mb-3"
+                 style="width:44px; height:44px; background: var(--clr-forest-tint); color: var(--clr-forest);">
+                <i class="bi bi-box-seam fs-5"></i>
             </div>
+            <h3 class="mb-0 fw-bold">{{ total_products|default:0 }}</h3>
+            <span class="text-muted small">کل محصولات</span>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #0d6efd, #4b8df7);">
-            <div class="card-body text-white">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-white-50 mb-1">سفارشات موفق</h6>
-                        <h2 class="mb-0">{{ success_orders|default:0 }}</h2>
-                    </div>
-                    <i class="bi bi-check-circle fs-1 text-white-50"></i>
-                </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="surface-card p-3 h-100">
+            <div class="d-flex align-items-center justify-content-center rounded-3 mb-3"
+                 style="width:44px; height:44px; background: var(--clr-gold-tint); color: var(--clr-gold);">
+                <i class="bi bi-check-circle fs-5"></i>
             </div>
+            <h3 class="mb-0 fw-bold">{{ success_orders|default:0 }}</h3>
+            <span class="text-muted small">سفارشات موفق</span>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #ffc107, #ffda4a);">
-            <div class="card-body text-dark">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-dark-50 mb-1">سفارشات در انتظار</h6>
-                        <h2 class="mb-0">{{ pending_orders|default:0 }}</h2>
-                    </div>
-                    <i class="bi bi-clock-history fs-1 text-dark-50"></i>
-                </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="surface-card p-3 h-100">
+            <div class="d-flex align-items-center justify-content-center rounded-3 mb-3"
+                 style="width:44px; height:44px; background: var(--clr-clay-tint); color: var(--clr-clay);">
+                <i class="bi bi-clock-history fs-5"></i>
             </div>
+            <h3 class="mb-0 fw-bold">{{ pending_orders|default:0 }}</h3>
+            <span class="text-muted small">سفارشات در انتظار</span>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #dc3545, #e9606e);">
-            <div class="card-body text-white">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-white-50 mb-1">تعداد کاربران</h6>
-                        <h2 class="mb-0">{{ total_users|default:0 }}</h2>
-                    </div>
-                    <i class="bi bi-people fs-1 text-white-50"></i>
-                </div>
+
+    <div class="col-6 col-lg-3">
+        <div class="surface-card p-3 h-100">
+            <div class="d-flex align-items-center justify-content-center rounded-3 mb-3"
+                 style="width:44px; height:44px; background: var(--clr-danger-tint); color: var(--clr-danger);">
+                <i class="bi bi-people fs-5"></i>
             </div>
+            <h3 class="mb-0 fw-bold">{{ total_users|default:0 }}</h3>
+            <span class="text-muted small">تعداد کاربران</span>
         </div>
     </div>
+
 </div>
 
 <!-- بخش پایین -->
-<div class="row g-4">
+<div class="row g-3">
+
     <div class="col-lg-8">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white border-0 pt-3">
-                <h6 class="mb-0">آخرین فعالیت‌ها</h6>
+        <div class="surface-card">
+            <div class="d-flex justify-content-between align-items-center p-3 border-bottom" style="border-color: var(--clr-border) !important;">
+                <h6 class="mb-0 fw-bold">آخرین سفارشات</h6>
+                <a href="{% url 'dashboard:admin:orders:order-list' %}" class="small" style="color: var(--clr-forest);">مشاهده همه <i class="bi bi-arrow-left small"></i></a>
             </div>
-            <div class="card-body">
-                <p class="text-muted text-center py-3">هنوز فعالیتی ثبت نشده است.</p>
+
+            {% if recent_orders %}
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead>
+                        <tr class="text-muted small">
+                            <th class="ps-3">شماره سفارش</th>
+                            <th>مشتری</th>
+                            <th>مبلغ</th>
+                            <th>وضعیت</th>
+                            <th class="pe-3">تاریخ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in recent_orders %}
+                        <tr>
+                            <td class="ps-3 fw-semibold">#{{ order.id }}</td>
+                            <td>{{ order.user.profile.get_fullname|default:order.user.phone }}</td>
+                            <td>{{ order.total_price|default:"—" }} تومان</td>
+                            <td>
+                                <span class="badge rounded-pill px-2 py-1"
+                                      style="background: var(--clr-forest-tint); color: var(--clr-forest); font-weight:500;">
+                                    {{ order.get_status_display }}
+                                </span>
+                            </td>
+                            <td class="pe-3 text-muted small">{{ order.created_at|date:"Y/m/d" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-inbox fs-1 text-muted d-block mb-2"></i>
+                <p class="text-muted mb-0 small">هنوز سفارشی ثبت نشده است.</p>
+            </div>
+            {% endif %}
         </div>
     </div>
+
     <div class="col-lg-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white border-0 pt-3">
-                <h6 class="mb-0">اطلاعات سریع</h6>
-            </div>
-            <div class="card-body">
-                <ul class="list-unstyled mb-0">
-                    <li class="d-flex justify-content-between py-2 border-bottom">
-                        <span class="text-muted">نام مدیر</span>
-                        <span>{{ request.user.profile.get_fullname|default:request.user.phone }}</span>
-                    </li>
-                    <li class="d-flex justify-content-between py-2 border-bottom">
-                        <span class="text-muted">شماره تماس</span>
-                        <span>{{ request.user.phone }}</span>
-                    </li>
-                    <li class="d-flex justify-content-between py-2">
-                        <span class="text-muted">نقش</span>
-                        <span class="badge bg-success">مدیر</span>
-                    </li>
-                </ul>
-            </div>
+        <div class="surface-card p-3">
+            <h6 class="mb-3 fw-bold">اطلاعات حساب</h6>
+            <ul class="list-unstyled mb-0">
+                <li class="d-flex justify-content-between py-2 border-bottom" style="border-color: var(--clr-border) !important;">
+                    <span class="text-muted small">نام مدیر</span>
+                    <span class="small fw-semibold">{{ request.user.profile.get_fullname|default:request.user.phone }}</span>
+                </li>
+                <li class="d-flex justify-content-between py-2 border-bottom" style="border-color: var(--clr-border) !important;">
+                    <span class="text-muted small">شماره تماس</span>
+                    <span class="small fw-semibold">{{ request.user.phone }}</span>
+                </li>
+                <li class="d-flex justify-content-between align-items-center py-2">
+                    <span class="text-muted small">نقش</span>
+                    <span class="badge rounded-pill" style="background: var(--clr-gold-tint); color:#8A5F26;">مدیر</span>
+                </li>
+            </ul>
         </div>
     </div>
+
 </div>
 
 {% endblock %}

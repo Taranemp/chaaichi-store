@@ -1,0 +1,170 @@
+{% extends 'dashboard/admin/base.html' %}
+{% load static %}
+
+{% block title %}لیست محصولات{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="fw-bold mb-1">لیست محصولات</h4>
+        <span class="text-muted small">مدیریت محصولات فروشگاه</span>
+    </div>
+    <a href="{% url 'dashboard:admin:product-create' %}" class="btn" style="background: var(--clr-forest); color:#fff; border-radius:10px;">
+        <i class="bi bi-plus-lg"></i> محصول جدید
+    </a>
+</div>
+
+<!-- فیلتر و جستجو -->
+<div class="surface-card p-3 mb-4">
+    <form method="get" class="row g-2 align-items-end">
+        <div class="col-md-3">
+            <label class="form-label small">جستجو</label>
+            <input type="text" name="q" class="form-control form-control-sm" placeholder="عنوان، توضیحات..." value="{{ current_search }}">
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small">دسته‌بندی</label>
+            <select name="category_id" class="form-select form-select-sm">
+                <option value="">همه</option>
+                {% for cat in categories %}
+                <option value="{{ cat.id }}" {% if current_category_id == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small">برند</label>
+            <select name="brand_id" class="form-select form-select-sm">
+                <option value="">همه</option>
+                {% for brand in brands %}
+                <option value="{{ brand.id }}" {% if current_brand_id == brand.id|stringformat:"s" %}selected{% endif %}>{{ brand.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small">وضعیت</label>
+            <select name="status" class="form-select form-select-sm">
+                <option value="">همه</option>
+                {% for value, label in status_types %}
+                <option value="{{ value }}" {% if current_status == value|stringformat:"s" %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small">مرتب‌سازی</label>
+            <select name="order_by" class="form-select form-select-sm">
+                <option value="-created_date" {% if current_order_by == '-created_date' %}selected{% endif %}>جدیدترین</option>
+                <option value="created_date" {% if current_order_by == 'created_date' %}selected{% endif %}>قدیمی‌ترین</option>
+                <option value="title" {% if current_order_by == 'title' %}selected{% endif %}>عنوان</option>
+                <option value="-price" {% if current_order_by == '-price' %}selected{% endif %}>بیشترین قیمت</option>
+                <option value="price" {% if current_order_by == 'price' %}selected{% endif %}>کمترین قیمت</option>
+            </select>
+        </div>
+        <div class="col-md-1 d-flex gap-2">
+            <button type="submit" class="btn btn-sm" style="background: var(--clr-forest); color:#fff; border-radius:8px; width:100%;">
+                <i class="bi bi-search"></i>
+            </button>
+            <a href="{% url 'dashboard:admin:product-list' %}" class="btn btn-sm btn-outline-secondary" style="border-radius:8px;">
+                <i class="bi bi-x"></i>
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- جدول محصولات -->
+<div class="surface-card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>تصویر</th>
+                    <th>عنوان</th>
+                    <th>برند</th>
+                    <th>قیمت (تومان)</th>
+                    <th>موجودی</th>
+                    <th>وضعیت</th>
+                    <th class="text-center">عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+                    <td>
+                        <img src="{{ product.image.url|default:'/static/admin/img/default-product.png' }}" 
+                             class="rounded" width="40" height="40" style="object-fit:cover;">
+                    </td>
+                    <td>{{ product.title }}</td>
+                    <td>{{ product.brand.name|default:"---" }}</td>
+                    <td>
+                        {% if product.is_discounted %}
+                        <span class="text-muted text-decoration-line-through">{{ product.price|floatformat:0 }}</span>
+                        <span class="text-primary fw-bold">{{ product.get_price|floatformat:0 }}</span>
+                        {% else %}
+                        <span>{{ product.price|floatformat:0 }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ product.stock }}</td>
+                    <td>
+                        {% if product.is_published %}
+                        <span class="badge bg-success">منتشر شده</span>
+                        {% else %}
+                        <span class="badge bg-secondary">پیش‌نویس</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-1">
+                            <a href="{% url 'dashboard:admin:product-edit' product.pk %}" 
+                               class="btn btn-sm btn-outline-primary" style="border-radius:8px;">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'dashboard:admin:product-delete' product.pk %}" 
+                               class="btn btn-sm btn-outline-danger" style="border-radius:8px;">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center py-4 text-muted">
+                        <i class="bi bi-box-seam fs-3 d-block mb-2"></i>
+                        محصولی یافت نشد.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- صفحه‌بندی -->
+    {% if page_obj.has_other_pages %}
+    <div class="p-3 border-top">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mb-0">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -1,4 +1,3 @@
-# dashboard/admin/views/profiles.py
 from django.views.generic import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import views as auth_views
@@ -21,7 +20,7 @@ class AdminSecurityEditView(
     """تغییر رمز عبور ادمین"""
     template_name = "dashboard/admin/profile/security-edit.html"
     form_class = AdminPasswordChangeForm
-    success_url = reverse_lazy("dashboard:admin:security-edit")
+    success_url = reverse_lazy("dashboard:admin:profiles:security-edit")
     success_message = "رمز عبور با موفقیت تغییر کرد"
 
 
@@ -34,7 +33,7 @@ class AdminProfileEditView(
     """ویرایش پروفایل ادمین"""
     template_name = "dashboard/admin/profile/profile-edit.html"
     form_class = AdminProfileEditForm
-    success_url = reverse_lazy("dashboard:admin:profile-edit")
+    success_url = reverse_lazy("dashboard:admin:profiles:profile-edit")
     success_message = "پروفایل با موفقیت ویرایش شد"
 
     def get_object(self, queryset=None):
@@ -52,7 +51,7 @@ class AdminProfileImageEditView(
     http_method_names = ["post"]
     model = Profile
     fields = ["image"]
-    success_url = reverse_lazy("dashboard:admin:profile-edit")
+    success_url = reverse_lazy("dashboard:admin:profiles:profile-edit")
     success_message = "تصویر پروفایل با موفقیت به‌روزرسانی شد"
 
     def get_object(self, queryset=None):

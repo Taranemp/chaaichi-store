@@ -1,0 +1,38 @@
+{% extends 'dashboard/admin/base.html' %}
+{% load static %}
+
+{% block title %}حذف محصول{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h4 class="fw-bold mb-1 text-danger">حذف محصول</h4>
+    <span class="text-muted small">آیا از حذف این محصول اطمینان دارید؟</span>
+</div>
+
+<div class="surface-card p-4 text-center">
+    <div class="mb-4">
+        <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size:4rem;"></i>
+    </div>
+    <h5 class="fw-bold">{{ object.title }}</h5>
+    <p class="text-muted small">برند: {{ object.brand.name|default:"---" }}</p>
+    <p class="text-muted small">قیمت: {{ object.price|floatformat:0 }} تومان</p>
+
+    <div class="alert alert-danger small">
+        <i class="bi bi-info-circle"></i> این عملیات غیرقابل بازگشت است.
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'dashboard:admin:product-list' %}" class="btn btn-secondary" style="border-radius:8px;">
+                <i class="bi bi-arrow-right"></i> بازگشت
+            </a>
+            <button type="submit" class="btn btn-danger" style="border-radius:8px;">
+                <i class="bi bi-trash"></i> تأیید حذف
+            </button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

@@ -46,11 +46,20 @@
       </p>
       {% endif %}
 
-      <!-- دسته‌بندی‌ها -->
-      <p class="text-muted mb-3"><i class="bi bi-folder"></i> دسته‌بندی:</p>
+      <!-- دسته‌بندی‌ها (فیلد چندبه‌چند - باید حلقه بزنیم) -->
+      {% if object.category.all %}
+      <p class="text-muted mb-3">
+        <i class="bi bi-folder"></i> دسته‌بندی:
+        {% for cat in object.category.all %}
+        <span class="badge rounded-pill" style="background:#e7efeb; color:#2c5f2d;">{{ cat.title }}</span>
+        {% endfor %}
+      </p>
+      {% endif %}
 
       <!-- توضیحات کوتاه -->
-      <p class="text-secondary mb-4"></p>
+      {% if object.brief_description %}
+      <p class="text-secondary mb-4">{{ object.brief_description }}</p>
+      {% endif %}
 
       <!-- قیمت -->
       <div class="mb-4">
@@ -255,7 +264,7 @@
           alert('خطا در ارتباط با سرور');
       });
   }
-    
+
 
     function getCookie(name) {
       let cookieValue = null;

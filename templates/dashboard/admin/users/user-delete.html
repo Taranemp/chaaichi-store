@@ -1,0 +1,38 @@
+{% extends 'dashboard/admin/base.html' %}
+{% load static %}
+
+{% block title %}حذف کاربر{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h4 class="fw-bold mb-1 text-danger">حذف کاربر</h4>
+    <span class="text-muted small">آیا از حذف این کاربر اطمینان دارید؟</span>
+</div>
+
+<div class="surface-card p-4 text-center">
+    <div class="mb-4">
+        <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size:4rem;"></i>
+    </div>
+    <h5 class="fw-bold">کاربر: {{ object.profile.get_fullname|default:object.phone }}</h5>
+    <p class="text-muted small">شماره تلفن: {{ object.phone }}</p>
+    <p class="text-muted small">ایمیل: {{ object.email|default:"---" }}</p>
+
+    <div class="alert alert-danger small">
+        <i class="bi bi-info-circle"></i> این عملیات غیرقابل بازگشت است.
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'dashboard:admin:users:user-list' %}" class="btn btn-secondary" style="border-radius:8px;">
+                <i class="bi bi-arrow-right"></i> بازگشت
+            </a>
+            <button type="submit" class="btn btn-danger" style="border-radius:8px;">
+                <i class="bi bi-trash"></i> تأیید حذف
+            </button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

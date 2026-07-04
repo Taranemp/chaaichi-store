@@ -1,0 +1,121 @@
+{% extends 'dashboard/admin/base.html' %}
+{% load static %}
+
+{% block title %}فاکتور سفارش #{{ order.id }}{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="fw-bold mb-1">فاکتور سفارش #{{ order.id }}</h4>
+        <span class="text-muted small">فاکتور رسمی سفارش</span>
+    </div>
+    <div>
+        <button onclick="window.print()" class="btn btn-primary" style="border-radius:8px;">
+            <i class="bi bi-printer"></i> چاپ فاکتور
+        </button>
+        <a href="{% url 'dashboard:admin:orders:order-detail' order.pk %}" class="btn btn-secondary" style="border-radius:8px;">
+            <i class="bi bi-arrow-right"></i> بازگشت
+        </a>
+    </div>
+</div>
+
+<div class="surface-card p-4" id="invoice">
+    <!-- هدر فاکتور -->
+    <div class="text-center mb-4">
+        <h2 class="fw-bold" style="color: var(--clr-forest);">Chaai Chi</h2>
+        <p class="text-muted small">فروشگاه تخصصی چای</p>
+        <hr>
+        <h5 class="fw-bold">فاکتور سفارش #{{ order.id }}</h5>
+        <p class="text-muted small">تاریخ: {{ order.created_date|date:"Y/m/d H:i" }}</p>
+    </div>
+
+    <!-- اطلاعات سفارش -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h6 class="fw-bold">اطلاعات مشتری</h6>
+            <p class="mb-1">{{ order.user.profile.get_fullname|default:order.user.phone }}</p>
+            <p class="mb-1" dir="ltr">{{ order.user.phone }}</p>
+            <p class="mb-0">{{ order.user.email|default:"---" }}</p>
+        </div>
+        <div class="col-md-6">
+            <h6 class="fw-bold">اطلاعات سفارش</h6>
+            <p class="mb-1">وضعیت: 
+                {% if order.status == 1 %}
+                <span class="badge bg-warning">در انتظار</span>
+                {% elif order.status == 2 %}
+                <span class="badge bg-success">موفق</span>
+                {% elif order.status == 3 %}
+                <span class="badge bg-danger">ناموفق</span>
+                {% endif %}
+            </p>
+            <p class="mb-0">آدرس: {{ order.get_full_address }}</p>
+        </div>
+    </div>
+
+    <!-- جدول محصولات -->
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>محصول</th>
+                    <th>تعداد</th>
+                    <th>قیمت واحد</th>
+                    <th>جمع</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order_items %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.product.title }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.price|floatformat:0 }} تومان</td>
+                    <td>{{ item.price|floatformat:0|add:item.quantity }} تومان</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted">آیتمی وجود ندارد</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="fw-bold">
+                    <td colspan="4" class="text-end">جمع کل:</td>
+                    <td>{{ order.total_price|floatformat:0 }} تومان</td>
+                </tr>
+                {% if order.coupon %}
+                <tr>
+                    <td colspan="4" class="text-end">تخفیف ({{ order.coupon.discount_percent }}%):</td>
+                    <td>-</td>
+                </tr>
+                {% endif %}
+            </tfoot>
+        </table>
+    </div>
+
+    <!-- امضا -->
+    <div class="text-center mt-4">
+        <hr>
+        <p class="text-muted small">با تشکر از اعتماد شما</p>
+        <p class="text-muted small">Chaai Chi - فروشگاه تخصصی چای</p>
+    </div>
+</div>
+
+<style>
+    @media print {
+        .btn, .btn-secondary, .btn-primary {
+            display: none !important;
+        }
+        .surface-card {
+            border: none !important;
+            box-shadow: none !important;
+        }
+        #invoice {
+            padding: 0 !important;
+        }
+    }
+</style>
+
+{% endblock %}

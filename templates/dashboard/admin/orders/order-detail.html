@@ -1,0 +1,158 @@
+{% extends 'dashboard/admin/base.html' %}
+{% load static %}
+
+{% block title %}جزئیات سفارش #{{ order.id }}{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="fw-bold mb-1">جزئیات سفارش #{{ order.id }}</h4>
+        <span class="text-muted small">مشاهده و مدیریت سفارش</span>
+    </div>
+    <div>
+        <a href="{% url 'dashboard:admin:orders:order-invoice' order.pk %}" class="btn btn-outline-secondary" style="border-radius:8px;">
+            <i class="bi bi-printer"></i> فاکتور
+        </a>
+        <a href="{% url 'dashboard:admin:orders:order-detail' order.pk %}" class="btn btn-secondary" style="border-radius:8px;">
+            <i class="bi bi-arrow-right"></i> بازگشت
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- اطلاعات اصلی -->
+    <div class="col-lg-8">
+        <div class="surface-card p-4">
+            <h6 class="fw-bold mb-3">اطلاعات سفارش</h6>
+            
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>کاربر:</strong></p>
+                    <p>{{ order.user.profile.get_fullname|default:order.user.phone }}</p>
+                    <p class="text-muted small" dir="ltr">{{ order.user.phone }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>وضعیت:</strong></p>
+                    <p>
+                        {% if order.status == 1 %}
+                        <span class="badge bg-warning">در انتظار</span>
+                        {% elif order.status == 2 %}
+                        <span class="badge bg-success">موفق</span>
+                        {% elif order.status == 3 %}
+                        <span class="badge bg-danger">ناموفق</span>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>تاریخ ثبت:</strong></p>
+                    <p>{{ order.created_date|date:"Y/m/d H:i" }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1"><strong>قیمت کل:</strong></p>
+                    <p class="fw-bold">{{ order.total_price|floatformat:0 }} تومان</p>
+                </div>
+                <div class="col-12">
+                    <p class="mb-1"><strong>آدرس:</strong></p>
+                    <p>{{ order.get_full_address }}</p>
+                </div>
+                {% if order.coupon %}
+                <div class="col-12">
+                    <p class="mb-1"><strong>کد تخفیف:</strong></p>
+                    <p>{{ order.coupon.code }} ({{ order.coupon.discount_percent }}%)</p>
+                </div>
+                {% endif %}
+                {% if order.transaction %}
+                <div class="col-12">
+                    <p class="mb-1"><strong>تراکنش:</strong></p>
+                    <p>مبلغ: {{ order.transaction.amount|floatformat:0 }} تومان</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <hr>
+
+            <!-- تغییر وضعیت -->
+            <form method="post" action="{% url 'dashboard:admin:orders:order-update-status' order.pk %}">
+                {% csrf_token %}
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label small">تغییر وضعیت</label>
+                        <select name="status" class="form-select form-select-sm">
+                            {% for value, label in status_types %}
+                            <option value="{{ value }}" {% if order.status == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-sm" style="background: var(--clr-forest); color:#fff; border-radius:8px; width:100%;">
+                            <i class="bi bi-check2"></i> تغییر
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- اطلاعات کاربر -->
+    <div class="col-lg-4">
+        <div class="surface-card p-4">
+            <h6 class="fw-bold mb-3">اطلاعات کاربر</h6>
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <img src="{{ order.user.profile.image.url|default:'/static/admin/img/default-avatar.png' }}" 
+                     class="rounded-circle" width="50" height="50" style="object-fit:cover;">
+                <div>
+                    <p class="fw-semibold mb-0">{{ order.user.profile.get_fullname|default:order.user.phone }}</p>
+                    <p class="text-muted small mb-0" dir="ltr">{{ order.user.phone }}</p>
+                </div>
+            </div>
+            <p class="mb-1"><strong>ایمیل:</strong> {{ order.user.email|default:"---" }}</p>
+            <a href="{% url 'dashboard:admin:user-edit' order.user.pk %}" class="btn btn-sm btn-outline-primary mt-2" style="border-radius:8px;">
+                <i class="bi bi-person"></i> مشاهده کاربر
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- لیست آیتم‌های سفارش -->
+<div class="surface-card p-4 mt-4">
+    <h6 class="fw-bold mb-3">آیتم‌های سفارش</h6>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>محصول</th>
+                    <th>تعداد</th>
+                    <th>قیمت واحد</th>
+                    <th>جمع</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in order_items %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.product.title }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.price|floatformat:0 }} تومان</td>
+                    <td>{{ item.price|floatformat:0|add:item.quantity }} تومان</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center text-muted">آیتمی وجود ندارد</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="fw-bold">
+                    <td colspan="4" class="text-end">جمع کل:</td>
+                    <td>{{ order.total_price|floatformat:0 }} تومان</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

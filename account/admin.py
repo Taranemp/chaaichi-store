@@ -7,8 +7,6 @@ from django.utils.translation import gettext_lazy as _
 from .models import User, Profile, UserType
 
 
-
-
 class UserCreationForm(forms.ModelForm):
     """فرم ایجاد کاربر جدید در ادمین"""
     password1 = forms.CharField(
@@ -22,7 +20,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ("phone", "email")
+        fields = ("phone", "email", "type")
 
     def clean_password2(self):
         p1 = self.cleaned_data.get("password1")
@@ -52,7 +50,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ("phone", "email", "password", "is_active", "is_staff", "is_superuser", "is_verified", "type")
+        fields = ("phone", "email", "type", "is_active", "is_staff", "is_superuser")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -61,19 +59,9 @@ class UserChangeForm(forms.ModelForm):
                 self.fields[field].widget.attrs['class'] = 'form-control'
 
 
-# ========== پنل ادمین ==========
-
-class ProfileInline(admin.StackedInline):
-    """نمایش پروفایل در صفحه کاربر"""
-    model = Profile
-    can_delete = False
-    verbose_name_plural = _("Profile")
-    fields = ("first_name", "last_name", "phone_number", "image")
-
-
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    """پنل مدیریت کاربران"""
+    """پنل مدیریت کاربران (ساده)"""
     
     form = UserChangeForm
     add_form = UserCreationForm
@@ -83,122 +71,56 @@ class UserAdmin(BaseUserAdmin):
         "phone",
         "email",
         "get_fullname",
-        "is_active",
-        "is_verified",
-        "is_staff",
-        "is_superuser",
         "type",
-        "created_date"
-    )
-    
-    list_filter = (
         "is_active",
         "is_staff",
         "is_superuser",
-        "is_verified",
-        "type",
-        "created_date"
     )
     
+    list_filter = ("type", "is_active", "is_staff", "is_superuser")
     search_fields = ("phone", "email", "profile__first_name", "profile__last_name")
-    ordering = ("-created_date",)
+    ordering = ("-id",)
     
     fieldsets = (
         (None, {
             "fields": ("phone", "email", "password")
         }),
-        (_("Profile"), {
-            "fields": ("get_fullname",)
+        ("User Type", {
+            "fields": ("type",)
         }),
-        (_("Permissions"), {
-            "fields": (
-                "is_active",
-                "is_verified",
-                "is_staff",
-                "is_superuser",
-                "type",
-                "groups",
-                "user_permissions"
-            )
-        }),
-        (_("Important dates"), {
-            "fields": ("last_login", "created_date", "updated_date")
+        ("Permissions", {
+            "fields": ("is_active", "is_staff", "is_superuser")
         }),
     )
     
     add_fieldsets = (
         (None, {
             "classes": ("wide",),
-            "fields": ("phone", "email", "password1", "password2"),
+            "fields": ("phone", "email", "type", "password1", "password2"),
         }),
     )
     
-    filter_horizontal = ("groups", "user_permissions")
-    
-    # ========== متدهای سفارشی ==========
+    # حذف گروه‌ها و دسترسی‌ها
+    filter_horizontal = ()
     
     def get_fullname(self, obj):
-        """نمایش نام کامل کاربر"""
         return obj.get_fullname()
     get_fullname.short_description = _("Full Name")
     get_fullname.admin_order_field = "profile__first_name"
-    
-    def get_phone_number(self, obj):
-        """نمایش شماره تلفن پروفایل"""
-        if hasattr(obj, 'profile') and obj.profile.phone_number:
-            return obj.profile.phone_number
-        return "-"
-    get_phone_number.short_description = _("Profile Phone")
-    
-    # ========== اکشن‌ها ==========
-    
-    @admin.action(description=_("Activate selected users"))
-    def activate_users(self, request, queryset):
-        """فعال کردن کاربران انتخاب شده"""
-        updated = queryset.update(is_active=True)
-        self.message_user(request, f"{updated} users activated.")
-    
-    @admin.action(description=_("Deactivate selected users"))
-    def deactivate_users(self, request, queryset):
-        """غیرفعال کردن کاربران انتخاب شده"""
-        updated = queryset.update(is_active=False)
-        self.message_user(request, f"{updated} users deactivated.")
-    
-    @admin.action(description=_("Verify selected users"))
-    def verify_users(self, request, queryset):
-        """تأیید کاربران انتخاب شده"""
-        updated = queryset.update(is_verified=True)
-        self.message_user(request, f"{updated} users verified.")
-    
-    actions = ["activate_users", "deactivate_users", "verify_users"]
-    
-    # ========== اضافه کردن Inline ==========
-    
-    inlines = [ProfileInline]
 
-
-# ========== ثبت مدل Profile در ادمین ==========
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
-    """پنل مدیریت پروفایل‌ها"""
+    """پنل مدیریت پروفایل‌ها (ساده)"""
     list_display = (
-    "id",
-    "user",
-    "first_name",
-    "last_name",
-    "get_fullname",
-    "created_date"
-)
-    list_filter = ("created_date", "updated_date")
-    search_fields = ("user__phone", "first_name", "last_name", "phone_number")
-    readonly_fields = ("created_date", "updated_date")
-    
-    fieldsets = (
-        (None, {
-            "fields": ("user", "first_name", "last_name", "phone_number", "image")
-        }),
-        (_("Timestamps"), {
-            "fields": ("created_date", "updated_date")
-        }),
+        "id",
+        "user",
+        "first_name",
+        "last_name",
+        "get_fullname",
     )
+    search_fields = ("user__phone", "first_name", "last_name")
+    
+    def get_fullname(self, obj):
+        return obj.get_fullname()
+    get_fullname.short_description = _("Full Name")
