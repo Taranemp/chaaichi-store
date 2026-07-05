@@ -9,7 +9,7 @@ app_name = 'core'
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('account.urls')),
-    path('', include('blog.urls')),
+    path('blog/', include('blog.urls')),
     path('', include('website.urls')),
     path('shop/', include('shop.urls')),
     path('payment/', include('payment.urls')),

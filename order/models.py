@@ -23,17 +23,57 @@ class UserAddress(models.Model):
 
 
 class Coupon(models.Model):
-    code = models.CharField(max_length=100)
-    discount_percent = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
+    code = models.CharField(max_length=100, unique=True)
+    discount_percent = models.IntegerField(
+        default=0,
+        validators=[MinValueValidator(0), MaxValueValidator(100)]
+    )
     max_limit_usage = models.PositiveIntegerField(default=10)
     used_by = models.ManyToManyField('account.User', related_name="coupon_users", blank=True)
-    
     expiration_date = models.DateTimeField(null=True, blank=True)
+    
+    is_active = models.BooleanField(default=True, verbose_name="فعال")
+    description = models.TextField(blank=True, verbose_name="توضیحات")
+    min_purchase_amount = models.DecimalField(
+        max_digits=12, 
+        decimal_places=0, 
+        default=0,
+        verbose_name="حداقل مبلغ خرید"
+    )
+    
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.code
+        return f"{self.code} - {self.discount_percent}%"
+
+    def is_valid(self, user=None, total_amount=0):
+        from django.utils import timezone
+        
+        if self.expiration_date and self.expiration_date < timezone.now():
+            return False, "منقضی شده"
+        if not self.is_active:
+            return False, "غیرفعال"
+        if self.used_by.count() >= self.max_limit_usage:
+            return False, "تعداد استفاده تکمیل شده"
+        if user and self.used_by.filter(id=user.id).exists():
+            return False, "قبلاً استفاده شده"
+        if total_amount < self.min_purchase_amount:
+            return False, f"حداقل مبلغ {self.min_purchase_amount} تومان"
+        return True, "معتبر"
+
+    def apply(self, user, total_amount):
+        is_valid, message = self.is_valid(user, total_amount)
+        if not is_valid:
+            return None, message
+        
+        discount_amount = total_amount * (self.discount_percent / 100)
+        final_price = total_amount - discount_amount
+        
+        if user:
+            self.used_by.add(user)
+        
+        return round(final_price), f"{self.discount_percent}% تخفیف"
 
 
 class Order(models.Model):

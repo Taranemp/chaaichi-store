@@ -1,0 +1,22 @@
+<section class="container my-5">
+    <h2>جدیدترین محصولات</h2>
+
+    <div class="row">
+        {% for product in products %}
+            <div class="col-md-3 mb-3">
+                <div class="card h-100">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}">
+                    {% endif %}
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.title }}</h5>
+                        <p class="card-text">{{ product.price }}</p>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>هنوز محصولی ثبت نشده است.</p>
+        {% endfor %}
+    </div>
+</section>

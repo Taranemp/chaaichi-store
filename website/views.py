@@ -10,17 +10,26 @@ from django.urls import reverse
 from .forms import ContactForm
 from .models import Contact
 
+from shop.models import Category
+
 
 # Create your views here.
 
 class IndexView(TemplateView):
-    template_name = "website/index.html" 
+    template_name = "website/index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # فقط چندتا دسته‌بندی برای نمایش تو صفحه‌ی اصلی؛ اگه بخوای همه رو نشون بدی، [:4] رو حذف کن
+        context["categories"] = Category.objects.all()[:4]
+        return context
+
 
 class ContactView(TemplateView):
-    template_name = "website/contact.html" 
-    
+    template_name = "website/contact.html"
+
 class AboutView(TemplateView):
-    template_name = "website/about.html" 
+    template_name = "website/about.html"
 
 
 

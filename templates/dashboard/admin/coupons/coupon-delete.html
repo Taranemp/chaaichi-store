@@ -1,0 +1,63 @@
+{% extends 'dashboard/admin/base.html' %}
+{% load static %}
+
+{% block title %}حذف کد تخفیف{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h4 class="fw-bold mb-1 text-danger">حذف کد تخفیف</h4>
+    <span class="text-muted small">آیا از حذف این کد تخفیف اطمینان دارید؟</span>
+</div>
+
+<div class="surface-card p-4 text-center">
+    <div class="mb-4">
+        <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size:4rem;"></i>
+    </div>
+    
+    <h5 class="fw-bold" style="color: var(--clr-forest);">{{ object.code }}</h5>
+    
+    <div class="row justify-content-center mt-3">
+        <div class="col-md-6">
+            <div class="d-flex justify-content-around">
+                <div>
+                    <span class="text-muted small d-block">درصد تخفیف</span>
+                    <span class="fw-bold">{{ object.discount_percent }}%</span>
+                </div>
+                <div>
+                    <span class="text-muted small d-block">تعداد استفاده</span>
+                    <span class="fw-bold">{{ object.used_by.count }}</span>
+                </div>
+                <div>
+                    <span class="text-muted small d-block">وضعیت</span>
+                    <span class="fw-bold">
+                        {% if object.is_active %}
+                        <span class="text-success">فعال</span>
+                        {% else %}
+                        <span class="text-danger">غیرفعال</span>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="alert alert-danger small mt-4">
+        <i class="bi bi-info-circle"></i> 
+        این عملیات غیرقابل بازگشت است. با حذف این کد، تمام اطلاعات مربوط به آن از بین خواهد رفت.
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{% url 'dashboard:admin:coupons:coupon-list' %}" class="btn btn-secondary" style="border-radius:8px;">
+                <i class="bi bi-arrow-right"></i> بازگشت
+            </a>
+            <button type="submit" class="btn btn-danger" style="border-radius:8px;">
+                <i class="bi bi-trash"></i> تأیید حذف
+            </button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

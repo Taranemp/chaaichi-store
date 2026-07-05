@@ -1,41 +1,232 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load shop_tags %}
 
 {% block content %}
-<!-- Hero Section -->
-<div class="container py-5">
-    <div class="row align-items-center">
-        <div class="col-lg-6">
-            <h1 class="display-4 fw-bold text-primary">چای اصل لاهیجان</h1>
-            <p class="lead">فروشگاه تخصصی انواع چای ایرانی و خارجی</p>
-            <a href="{% url 'shop:product-grid' %}" class="btn btn-primary btn-lg rounded-pill">مشاهده محصولات</a>
-        </div>
-        <div class="col-lg-6">
-            <img src="{% static 'img/hero-tea.jpg' %}" alt="Tea" class="img-fluid rounded shadow">
-        </div>
-    </div>
-</div>
 
-<!-- Features -->
-<div class="bg-light py-5">
-    <div class="container">
-        <div class="row text-center">
-            <div class="col-md-4">
-                <i class="bi bi-cup-hot fs-1 text-primary"></i>
-                <h4>چای تازه</h4>
-                <p>تهیه شده از بهترین باغات لاهیجان</p>
+<!-- ============ HERO ============ -->
+<div class="position-relative overflow-hidden" style="background: linear-gradient(135deg, #1f4d3d 0%, #2c5f2d 55%, #3d7a3f 100%);">
+
+    <!-- الگوی تزئینی برگ چای (SVG، بدون نیاز به فایل عکس) -->
+    <svg class="position-absolute top-0 start-0" width="420" height="420" viewBox="0 0 420 420" fill="none" style="opacity:.08; pointer-events:none;">
+        <path d="M210 20 C 320 60, 380 160, 340 260 C 300 360, 180 400, 90 340 C 40 300, 30 200, 90 130 C 130 80, 170 40, 210 20 Z" fill="#fff"/>
+    </svg>
+    <svg class="position-absolute bottom-0 end-0" width="320" height="320" viewBox="0 0 320 320" fill="none" style="opacity:.06; pointer-events:none;">
+        <circle cx="160" cy="160" r="160" fill="#fff"/>
+    </svg>
+
+    <div class="container position-relative py-6 py-lg-9">
+        <div class="row align-items-center">
+            <div class="col-lg-6 text-white mb-6 mb-lg-0">
+                <span class="badge rounded-pill px-3 py-2 mb-4" style="background: rgba(255,255,255,.12); color:#F5EBD8; font-weight:500;">
+                    <i class="bi bi-flower1 me-1"></i> برداشت تازه از باغ‌های شمال
+                </span>
+                <h1 class="display-4 fw-bold mb-4" style="line-height:1.35;">
+                    دنیای اصیل چای،<br>مستقیم به خانه‌ی شما
+                </h1>
+                <p class="fs-5 mb-5" style="color:#D9E5DE; max-width:520px;">
+                    از چای سیاه لاهیجان تا دمنوش‌های گیاهی معطر؛ چایچی محصولات دست‌چین‌شده و اصیل ایرانی رو با کیفیت تضمینی براتون می‌فرسته.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'shop:product_grid' %}" class="btn btn-lg rounded-pill px-5" style="background:#C08A3E; color:#1f2937; border:none; font-weight:600;">
+                        مشاهده محصولات
+                    </a>
+                    <a href="#" class="btn btn-lg btn-outline-light rounded-pill px-5">
+                        داستان چایچی
+                    </a>
+                </div>
             </div>
-            <div class="col-md-4">
-                <i class="bi bi-truck fs-1 text-primary"></i>
-                <h4>ارسال سریع</h4>
-                <p>ارسال به سراسر کشور</p>
+            <!-- End Col -->
+
+            <div class="col-lg-6">
+                <div class="mx-auto position-relative" style="max-width: 420px;">
+                    <div class="rounded-circle mx-auto d-flex align-items-center justify-content-center"
+                         style="width: 340px; height: 340px; background: rgba(255,255,255,.08); border: 2px solid rgba(255,255,255,.2);">
+                        <i class="bi bi-cup-hot-fill" style="font-size: 9rem; color:#F5EBD8;"></i>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4">
-                <i class="bi bi-shield-check fs-1 text-primary"></i>
-                <h4>ضمانت کیفیت</h4>
-                <p>تضمین اصالت کالا</p>
+            <!-- End Col -->
+        </div>
+    </div>
+</div>
+<!-- ============ END HERO ============ -->
+
+
+<!-- ============ TRUST STRIP ============ -->
+<div class="border-bottom bg-white">
+    <div class="container content-space-1 py-5">
+        <div class="row text-center g-4">
+            <div class="col-md-3 col-6">
+                <i class="bi bi-truck fs-2 text-tea mb-2 d-block"></i>
+                <h6 class="mb-1">ارسال سریع</h6>
+                <p class="small text-muted mb-0">به سراسر کشور</p>
+            </div>
+            <div class="col-md-3 col-6">
+                <i class="bi bi-patch-check fs-2 text-tea mb-2 d-block"></i>
+                <h6 class="mb-1">اصالت تضمینی</h6>
+                <p class="small text-muted mb-0">مستقیم از باغ‌های چای</p>
+            </div>
+            <div class="col-md-3 col-6">
+                <i class="bi bi-shield-lock fs-2 text-tea mb-2 d-block"></i>
+                <h6 class="mb-1">پرداخت امن</h6>
+                <p class="small text-muted mb-0">درگاه بانکی معتبر</p>
+            </div>
+            <div class="col-md-3 col-6">
+                <i class="bi bi-arrow-return-left fs-2 text-tea mb-2 d-block"></i>
+                <h6 class="mb-1">۷ روز ضمانت بازگشت</h6>
+                <p class="small text-muted mb-0">رضایت شما اولویت ماست</p>
             </div>
         </div>
     </div>
 </div>
+<!-- ============ END TRUST STRIP ============ -->
+
+
+<!-- ============ CATEGORIES ============ -->
+<div class="container content-space-2 content-space-lg-3">
+    <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-5 mb-md-8">
+        <span class="text-cap text-tea">دسته‌بندی محصولات</span>
+        <h2 class="mt-2">چای مورد علاقه‌تون رو پیدا کنید</h2>
+    </div>
+
+    <div class="row g-4">
+        {% for cat in categories %}
+        <div class="col-sm-6 col-lg-3">
+            <a href="{% url 'shop:product_grid' %}" class="card card-bordered shadow-none h-100 text-center p-4 text-decoration-none hover-tea">
+                <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
+                     style="width:72px; height:72px; background:#EAF3EC;">
+                    <i class="bi {% cycle 'bi-cup-hot' 'bi-leaf' 'bi-flower2' 'bi-cup-straw' %} fs-3 text-tea"></i>
+                </div>
+                <h5 class="mb-1 text-dark">{{ cat.title }}</h5>
+                <p class="small text-muted mb-0">مشاهده محصولات</p>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted">دسته‌بندی‌ای برای نمایش وجود ندارد.</div>
+        {% endfor %}
+    </div>
+</div>
+<!-- ============ END CATEGORIES ============ -->
+
+
+<!-- ============ PROMO BANNER ============ -->
+<div class="container mb-2">
+    <div class="row g-4">
+        <div class="col-md-7">
+            <div class="rounded-4 p-5 h-100 d-flex flex-column justify-content-center"
+                 style="background: linear-gradient(120deg, #16362A, #1F4D3D); min-height: 280px;">
+                <span class="text-white-50 small mb-2">پیشنهاد ویژه‌ی هفته</span>
+                <h2 class="text-white fw-bold mb-3">تا ۳۰٪ تخفیف روی چای‌های ممتاز</h2>
+
+                <!-- شمارش‌معکوس ساده، بدون وابستگی به کتابخونه‌ی خارجی -->
+                <div class="d-flex gap-3 mb-4" id="promoCountdown">
+                    <div class="text-center">
+                        <div class="rounded-3 px-3 py-2" style="background: rgba(255,255,255,.12); min-width:56px;">
+                            <span class="h4 text-white mb-0" id="cd-days">--</span>
+                        </div>
+                        <span class="small text-white-50 d-block mt-1">روز</span>
+                    </div>
+                    <div class="text-center">
+                        <div class="rounded-3 px-3 py-2" style="background: rgba(255,255,255,.12); min-width:56px;">
+                            <span class="h4 text-white mb-0" id="cd-hours">--</span>
+                        </div>
+                        <span class="small text-white-50 d-block mt-1">ساعت</span>
+                    </div>
+                    <div class="text-center">
+                        <div class="rounded-3 px-3 py-2" style="background: rgba(255,255,255,.12); min-width:56px;">
+                            <span class="h4 text-white mb-0" id="cd-minutes">--</span>
+                        </div>
+                        <span class="small text-white-50 d-block mt-1">دقیقه</span>
+                    </div>
+                </div>
+
+                <a href="#featured-products" class="btn rounded-pill px-5 align-self-start" style="background:#C08A3E; color:#1f2937; font-weight:600;">
+                    مشاهده تخفیف‌ها
+                </a>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="rounded-4 p-5 h-100 d-flex flex-column justify-content-center text-center"
+                 style="background: #F5EBD8; min-height: 280px;">
+                <i class="bi bi-gift fs-1 mb-3" style="color:#9C6A2A;"></i>
+                <h4 class="fw-bold mb-2">خرید بالای ۵۰۰ هزار تومان</h4>
+                <p class="text-muted mb-0">ارسال کاملاً رایگان به سراسر کشور</p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ============ END PROMO BANNER ============ -->
+
+
+<!-- ============ FEATURED PRODUCTS ============ -->
+<div id="featured-products" class="container content-space-2 content-space-lg-3">
+    <div class="w-md-75 w-lg-50 text-center mx-md-auto mb-5 mb-md-8">
+        <span class="text-cap text-tea">پرفروش‌ترین‌ها</span>
+        <h2 class="mt-2">محصولات منتخب چایچی</h2>
+    </div>
+
+    {% show_latest_products %}
+</div>
+<!-- ============ END FEATURED PRODUCTS ============ -->
+
+
+<!-- ============ NEWSLETTER ============ -->
+<div style="background: #F5EBD8;">
+    <div class="container content-space-2">
+        <div class="w-md-75 w-lg-50 text-center mx-md-auto">
+            <span class="text-cap" style="color:#9C6A2A;">عضویت در خبرنامه</span>
+            <h2 class="mb-3">از تخفیف‌ها و محصولات جدید باخبر شوید</h2>
+            <p class="text-muted mb-5">هر هفته یک پیشنهاد ویژه‌ی چای مستقیم به ایمیلتون</p>
+
+            <form method="post" action="#">
+                {% csrf_token %}
+                <div class="input-card input-card-pill input-card-sm border mb-3 bg-white">
+                    <div class="input-card-form">
+                        <input class="form-control border-0 me-1" type="text" placeholder="نام" name="first_name" hidden="">
+                        <label for="subscribeForm" class="form-label visually-hidden">ایمیل را وارد کنید</label>
+                        <input type="email" class="form-control form-control-lg border-0" name="email"
+                               placeholder="ایمیل خود را وارد نمایید" aria-label="ایمیل خود را وارد کنید">
+                    </div>
+                    <button type="submit" class="btn btn-lg rounded-pill" style="background:#2c5f2d; color:#fff;">عضویت</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- ============ END NEWSLETTER ============ -->
+
+<style>
+    .hover-tea { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; border: 1px solid #EAE3D6; }
+    .hover-tea:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(44,95,45,.12); border-color: #2c5f2d; }
+</style>
+
+<script>
+    (function () {
+        // شمارش‌معکوس ساده تا ۵ روز دیگه از بارگذاری صفحه (فقط نمایشیه؛ برای تاریخ ثابت، مقدار targetDate رو دستی تنظیم کن)
+        var target = new Date();
+        target.setDate(target.getDate() + 5);
+
+        function updateCountdown() {
+            var now = new Date();
+            var diff = Math.max(0, target - now);
+
+            var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            var minutes = Math.floor((diff / (1000 * 60)) % 60);
+
+            var elDays = document.getElementById('cd-days');
+            var elHours = document.getElementById('cd-hours');
+            var elMinutes = document.getElementById('cd-minutes');
+
+            if (elDays) elDays.textContent = days;
+            if (elHours) elHours.textContent = hours;
+            if (elMinutes) elMinutes.textContent = minutes;
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 60000);
+    })();
+</script>
+
 {% endblock %}

@@ -1,0 +1,231 @@
+{% extends 'dashboard/admin/base.html' %}
+{% load static %}
+
+{% block title %}لیست کدهای تخفیف{% endblock %}
+
+{% block content %}
+
+<!-- هدر -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="fw-bold mb-1">مدیریت کدهای تخفیف</h4>
+        <span class="text-muted small">مدیریت و نظارت بر کدهای تخفیف فروشگاه</span>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'dashboard:admin:coupons:coupon-create' %}" class="btn" style="background: var(--clr-forest); color:#fff; border-radius:10px;">
+            <i class="bi bi-plus-lg"></i> کد تخفیف جدید
+        </a>
+    </div>
+</div>
+
+<!-- آمار -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="surface-card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small">کل کدها</span>
+                    <h5 class="fw-bold mb-0">{{ total_items|default:0 }}</h5>
+                </div>
+                <i class="bi bi-ticket-perforated fs-3 text-muted opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="surface-card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small">فعال</span>
+                    <h5 class="fw-bold mb-0 text-success">{{ active_coupons|default:0 }}</h5>
+                </div>
+                <i class="bi bi-check-circle-fill fs-3 text-success opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="surface-card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small">منقضی شده</span>
+                    <h5 class="fw-bold mb-0 text-danger">{{ expired_coupons|default:0 }}</h5>
+                </div>
+                <i class="bi bi-clock-fill fs-3 text-danger opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="surface-card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small">بیشترین تخفیف</span>
+                    <h5 class="fw-bold mb-0 text-primary">
+                        {% if coupons %}
+                                            {{ coupons.0.discount_percent }}%                        {% else %}
+                            0%
+                        {% endif %}
+                    </h5>
+                </div>
+                <i class="bi bi-star-fill fs-3 text-primary opacity-50"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- جستجو و فیلتر -->
+<div class="surface-card p-3 mb-4">
+    <form method="get" class="row g-2 align-items-end">
+        <div class="col-md-5">
+            <label class="form-label small fw-semibold">جستجو</label>
+            <input type="text" name="q" class="form-control form-control-sm" 
+                   placeholder="کد تخفیف..." value="{{ current_search }}">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small fw-semibold">مرتب‌سازی</label>
+            <select name="order_by" class="form-select form-select-sm">
+                <option value="-created_date" {% if current_order_by == '-created_date' %}selected{% endif %}>جدیدترین</option>
+                <option value="created_date" {% if current_order_by == 'created_date' %}selected{% endif %}>قدیمی‌ترین</option>
+                <option value="code" {% if current_order_by == 'code' %}selected{% endif %}>کد</option>
+                <option value="-discount_percent" {% if current_order_by == '-discount_percent' %}selected{% endif %}>بیشترین تخفیف</option>
+                <option value="discount_percent" {% if current_order_by == 'discount_percent' %}selected{% endif %}>کمترین تخفیف</option>
+                <option value="-max_limit_usage" {% if current_order_by == '-max_limit_usage' %}selected{% endif %}>بیشترین استفاده</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small fw-semibold">تعداد در صفحه</label>
+            <select name="page_size" class="form-select form-select-sm">
+                <option value="10" {% if current_page_size == '10' %}selected{% endif %}>۱۰</option>
+                <option value="25" {% if current_page_size == '25' %}selected{% endif %}>۲۵</option>
+                <option value="50" {% if current_page_size == '50' %}selected{% endif %}>۵۰</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-sm" style="background: var(--clr-forest); color:#fff; border-radius:8px; flex:1;">
+                <i class="bi bi-search"></i> جستجو
+            </button>
+            <a href="{% url 'dashboard:admin:coupons:coupon-list' %}" class="btn btn-sm btn-outline-secondary" style="border-radius:8px;">
+                <i class="bi bi-x"></i>
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- جدول کدهای تخفیف -->
+<div class="surface-card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>کد تخفیف</th>
+                    <th>درصد تخفیف</th>
+                    <th>حداکثر استفاده</th>
+                    <th>تعداد استفاده</th>
+                    <th>حداقل مبلغ</th>
+                    <th>تاریخ انقضا</th>
+                    <th>وضعیت</th>
+                    <th class="text-center" style="width: 100px;">عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for coupon in coupons %}
+                <tr>
+                    <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+                    <td>
+                        <span class="fw-bold" style="color: var(--clr-forest);">{{ coupon.code }}</span>
+                        {% if coupon.description %}
+                        <br><small class="text-muted">{{ coupon.description|truncatechars:30 }}</small>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="badge" style="background: var(--clr-forest);">
+                            {{ coupon.discount_percent }}%
+                        </span>
+                    </td>
+                    <td>{{ coupon.max_limit_usage }}</td>
+                    <td>
+                        <span class="badge {% if coupon.used_by.count >= coupon.max_limit_usage %}bg-danger{% else %}bg-secondary{% endif %}">
+                            {{ coupon.used_by.count }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if coupon.min_purchase_amount > 0 %}
+                        {{ coupon.min_purchase_amount|floatformat:0 }} تومان
+                        {% else %}
+                        <span class="text-muted">---</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if coupon.expiration_date %}
+                        {{ coupon.expiration_date|date:"Y/m/d H:i" }}
+                        {% else %}
+                        <span class="text-muted">---</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if not coupon.is_active %}
+                        <span class="badge bg-secondary">غیرفعال</span>
+                        {% elif coupon.expiration_date and coupon.expiration_date < now %}
+                        <span class="badge bg-danger">منقضی شده</span>
+                        {% else %}
+                        <span class="badge bg-success">فعال</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-center">
+                        <div class="d-flex justify-content-center gap-1">
+                            <a href="{% url 'dashboard:admin:coupon-edit' coupon.pk %}" 
+                               class="btn btn-sm btn-outline-primary" style="border-radius:6px; width:30px; height:30px; padding:0; line-height:30px;">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'dashboard:admin:coupon-delete' coupon.pk %}" 
+                               class="btn btn-sm btn-outline-danger" style="border-radius:6px; width:30px; height:30px; padding:0; line-height:30px;">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9" class="text-center py-5 text-muted">
+                        <i class="bi bi-ticket-perforated fs-2 d-block mb-2 opacity-50"></i>
+                        <p class="mb-0">هیچ کد تخفیفی یافت نشد.</p>
+                        <a href="{% url 'dashboard:admin:coupons:coupon-create' %}" class="btn btn-sm btn-primary mt-2">
+                            <i class="bi bi-plus-lg"></i> اولین کد تخفیف را بسازید
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- صفحه‌بندی -->
+    {% if page_obj.has_other_pages %}
+    <div class="p-3 border-top">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mb-0">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}
