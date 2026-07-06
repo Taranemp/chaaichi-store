@@ -1,4 +1,3 @@
-# dashboard/admin/urls/__init__.py
 from django.urls import path, include
 
 app_name = "admin"

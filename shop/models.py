@@ -95,6 +95,16 @@ class Product(models.Model):
     
     created_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
+    avg_rating = models.DecimalField(
+        max_digits=3,
+        decimal_places=1,
+        default=0,
+        verbose_name="میانگین امتیاز"
+    )
+    reviews_count = models.PositiveIntegerField(
+        default=0,
+        verbose_name="تعداد نظرات"
+    )
     
     class Meta:
         ordering = ["-created_date"]
