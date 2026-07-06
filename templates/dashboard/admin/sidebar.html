@@ -44,11 +44,16 @@
             <span>سفارشات</span>
             {% if pending_orders_count %}<span class="sb-badge">{{ pending_orders_count }}</span>{% endif %}
         </a>
-        <!-- ========== کوپن‌ها ========== -->
         <a class="sb-link {% if request.resolver_match.url_name == 'coupon-list' or request.resolver_match.url_name == 'coupon-create' or request.resolver_match.url_name == 'coupon-edit' %}active{% endif %}"
            href="{% url 'dashboard:admin:coupons:coupon-list' %}">
             <i class="bi bi-ticket-perforated"></i>
             <span>کد تخفیف</span>
+        </a>
+        <!-- ========== نظرات ========== -->
+        <a class="sb-link {% if request.resolver_match.url_name == 'review-list' or request.resolver_match.url_name == 'review-edit' %}active{% endif %}"
+           href="{% url 'dashboard:admin:review-list' %}">
+            <i class="bi bi-chat-square-text"></i>
+            <span>نظرات</span>
         </a>
     </div>
 
