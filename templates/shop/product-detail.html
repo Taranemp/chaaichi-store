@@ -38,6 +38,26 @@
       <!-- عنوان -->
       <h1 class="h2 mb-2" style="color: #2c5f2d">{{ object.title }}</h1>
 
+      <!-- امتیاز و تعداد دیدگاه -->
+      <div class="d-flex align-items-center gap-2 mb-3">
+        <div class="text-warning">
+          {% for i in "12345" %}
+          {% if forloop.counter <= avg_rating_rounded %}
+          <i class="bi bi-star-fill"></i>
+          {% else %}
+          <i class="bi bi-star"></i>
+          {% endif %}
+          {% endfor %}
+        </div>
+        <span class="text-muted small">
+          {% if object.reviews_count %}
+          {{ object.avg_rating }} از ۵ ({{ object.reviews_count }} دیدگاه)
+          {% else %}
+          هنوز دیدگاهی ثبت نشده
+          {% endif %}
+        </span>
+      </div>
+
       <!-- برند -->
       {% if object.brand %}
       <p class="text-muted mb-2">
@@ -186,6 +206,76 @@
       <div class="mt-3">{{ object.description|linebreaks }}</div>
     </div>
   </div>
+
+  <!-- ============ دیدگاه‌های کاربران ============ -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <h4 class="border-bottom pb-2" style="color: #2c5f2d">
+        دیدگاه کاربران
+        <span class="text-muted fs-6">({{ object.reviews_count }})</span>
+      </h4>
+    </div>
+
+    <!-- لیست دیدگاه‌های تایید‌شده -->
+    <div class="col-lg-7 mt-4">
+      {% for review in reviews %}
+      <div class="border-bottom pb-3 mb-3">
+        <div class="d-flex justify-content-between align-items-start mb-1">
+          <div>
+            <span class="fw-bold">{{ review.user.profile.get_fullname|default:review.user.phone }}</span>
+            {% if review.is_purchased %}
+            <span class="badge rounded-pill ms-1" style="background:#e7efeb; color:#2c5f2d; font-size:.7rem;">
+              <i class="bi bi-patch-check"></i> خریدار تایید‌شده
+            </span>
+            {% endif %}
+          </div>
+          <span class="text-muted small">{{ review.created_date|date:"Y/m/d" }}</span>
+        </div>
+        <div class="text-warning mb-2" style="font-size:.85rem;">
+          {% for i in "12345" %}
+          {% if forloop.counter <= review.rate %}
+          <i class="bi bi-star-fill"></i>
+          {% else %}
+          <i class="bi bi-star"></i>
+          {% endif %}
+          {% endfor %}
+        </div>
+        <p class="mb-0 text-secondary">{{ review.comment }}</p>
+      </div>
+      {% empty %}
+      <p class="text-muted">هنوز دیدگاهی برای این محصول ثبت نشده. اولین نفری باشید که نظر می‌دهد!</p>
+      {% endfor %}
+    </div>
+
+    <!-- فرم ثبت دیدگاه جدید -->
+    <div class="col-lg-5 mt-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <h6 class="fw-bold mb-3">ثبت دیدگاه شما</h6>
+
+          {% if user.is_authenticated %}
+            {% if user_has_reviewed %}
+            <p class="text-muted small mb-0">
+              <i class="bi bi-check-circle text-success"></i>
+              شما قبلاً برای این محصول دیدگاه ثبت کرده‌اید.
+            </p>
+            {% else %}
+            <p class="text-muted small mb-3">نظرتون درباره‌ی این محصول به بقیه کمک می‌کنه.</p>
+            <a href="{% url 'review:submit' object.pk %}" class="btn btn-primary rounded-pill w-100">
+              <i class="bi bi-pencil-square"></i> ثبت دیدگاه
+            </a>
+            {% endif %}
+          {% else %}
+          <p class="text-muted small mb-2">برای ثبت دیدگاه ابتدا وارد حساب کاربری خود شوید.</p>
+          <a href="{% url 'account:login' %}?next={{ request.path }}" class="btn btn-outline-primary btn-sm rounded-pill">
+            <i class="bi bi-box-arrow-in-right"></i> ورود به حساب
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ============ END دیدگاه‌های کاربران ============ -->
 
   <!-- محصولات مرتبط -->
   {% if related_products %}

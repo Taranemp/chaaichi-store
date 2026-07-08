@@ -1,7 +1,8 @@
-
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
 from .models import Product, ProductStatusType, Category, Brand, Grade
+
+from review.models import Review, ReviewStatusType
 
 
 class ProductGridView(ListView):
@@ -113,11 +114,26 @@ class ProductDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         product = self.get_object()
-        
+
         # محصولات مرتبط (همان برند)
         context["related_products"] = Product.objects.filter(
             brand=product.brand,
             status=ProductStatusType.PUBLISH.value
         ).exclude(id=product.id)[:4]
-    
+
+        # دیدگاه‌های تایید‌شده
+        context["reviews"] = Review.objects.filter(
+            product=product,
+            status=ReviewStatusType.APPROVED.value
+        ).select_related("user", "user__profile")
+
+        # برای رسم ستاره‌ی میانگین امتیاز به‌صورت گرد‌شده
+        context["avg_rating_rounded"] = round(product.avg_rating)
+
+        # بررسی اینکه کاربر لاگین‌شده قبلاً برای این محصول دیدگاه ثبت کرده یا نه
+        context["user_has_reviewed"] = (
+            self.request.user.is_authenticated
+            and Review.objects.filter(user=self.request.user, product=product).exists()
+        )
+
         return context

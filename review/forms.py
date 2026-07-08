@@ -3,11 +3,24 @@ from .models import Review, ReviewStatusType
 
 
 class SubmitReviewForm(forms.ModelForm):
+    # چون فیلد rate تو مدل یه IntegerField ساده‌ست (بدون choices)،
+    # باید صریحاً choices رو اینجا تعریف کنیم وگرنه ویجت Select خالی می‌مونه
+    rate = forms.ChoiceField(
+        choices=[
+            (5, "★★★★★ عالی"),
+            (4, "★★★★ خوب"),
+            (3, "★★★ متوسط"),
+            (2, "★★ ضعیف"),
+            (1, "★ بسیار ضعیف"),
+        ],
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        label="امتیاز شما",
+    )
+
     class Meta:
         model = Review
         fields = ['rate', 'comment']
         widgets = {
-            'rate': forms.Select(attrs={'class': 'form-select'}),
             'comment': forms.Textarea(attrs={
                 'class': 'form-control',
                 'rows': 4,
@@ -27,22 +40,21 @@ class SubmitReviewForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         self.product = kwargs.pop('product', None)
         super().__init__(*args, **kwargs)
-        
-        self.fields['rate'].widget.attrs['class'] = 'form-select'
+
         self.fields['comment'].widget.attrs['class'] = 'form-control'
 
     def clean(self):
         cleaned_data = super().clean()
-        
+
         if self.user and self.product:
             if Review.objects.filter(user=self.user, product=self.product).exists():
                 raise forms.ValidationError("شما قبلاً برای این محصول نظر داده‌اید.")
-        
+
         return cleaned_data
 
     def save(self, commit=True):
         """ذخیره نظر با کاربر و محصول مشخص"""
-        review = super().save(commit=False) 
+        review = super().save(commit=False)
         review.user = self.user
         review.product = self.product
         review.status = ReviewStatusType.PENDING.value

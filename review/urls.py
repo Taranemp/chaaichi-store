@@ -1,8 +1,8 @@
-from django.urls import path,re_path
-from . import views
+from django.urls import path
+from .views import SubmitReviewView
 
 app_name = "review"
 
 urlpatterns = [
-    path("submit-review/",views.SubmitReviewView.as_view(),name="submit-review")
+    path("product/<int:product_id>/submit/", SubmitReviewView.as_view(), name="submit"),
 ]

@@ -36,12 +36,18 @@ class AdminReviewListView(LoginRequiredMixin, HasAdminAccessPermission, ListView
         context["status_types"] = ReviewStatusType.choices
         return context
     
-class AdminReviewEditView(LoginRequiredMixin, HasAdminAccessPermission,SuccessMessageMixin, UpdateView):
+
+class AdminReviewEditView(LoginRequiredMixin, HasAdminAccessPermission, SuccessMessageMixin, UpdateView):
     template_name = "dashboard/admin/reviews/review-edit.html"
-    queryset = Review.objects.all()
+    model = Review
     form_class = ReviewForm
     success_message = "تغییرات با موفقیت اعمال شد"
-    
-    def get_success_url(self) -> str:
-        return reverse_lazy("dashboard:admin:reviews:review-edit",kwargs={"pk":self.kwargs.get("pk")})
-    
+
+    def get_success_url(self):
+        return reverse_lazy("dashboard:admin:reviews:review-edit", kwargs={"pk": self.get_object().pk})
+
+    def form_valid(self, form):
+        # اگر status از POST آمده، آن را ذخیره کن
+        if 'status' in self.request.POST:
+            form.instance.status = self.request.POST.get('status')
+        return super().form_valid(form)

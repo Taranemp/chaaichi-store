@@ -7,7 +7,7 @@
 
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
     <div>
-        <h4 class="mb-1 fw-bold">سلام {{ request.user.profile.get_fullname|default:request.user.phone }} 👋</h4>
+        <h4 class="mb-1 fw-bold">سلام {{ request.user.profile.get_fullname|default:request.user.phone }} </h4>
         <span class="text-muted small">خلاصه‌ی وضعیت فروشگاه چایچی امروز</span>
     </div>
     <a href="{% url 'dashboard:admin:orders:order-list' %}" class="btn btn-sm px-3" style="background: var(--clr-forest); color:#fff; border-radius: 10px;">
