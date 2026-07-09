@@ -1,4 +1,3 @@
-# review/models.py
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.dispatch import receiver
@@ -34,7 +33,7 @@ class Review(models.Model):
 
     class Meta:
         ordering = ["-created_date"]
-        unique_together = [["user", "product"]]
+        # unique_together حذف شد: حالا هر کاربر می‌تونه برای یک محصول چندین دیدگاه ثبت کنه
 
     def __str__(self):
         return f"{self.user.phone} - {self.product.title} - {self.rate}★"
@@ -66,7 +65,7 @@ def _update_product_avg_rating(product):
         product=product,
         status=ReviewStatusType.APPROVED.value
     ).aggregate(Avg('rate'))['rate__avg']
-    
+
     product.avg_rating = round(avg_rating, 1) if avg_rating else 0
     product.reviews_count = Review.objects.filter(
         product=product,

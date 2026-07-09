@@ -51,7 +51,7 @@
         </a>
         <!-- ========== نظرات ========== -->
         <a class="sb-link {% if request.resolver_match.url_name == 'review-list' or request.resolver_match.url_name == 'review-edit' %}active{% endif %}"
-           href="{% url 'dashboard:admin:review-list' %}">
+           href="{% url 'dashboard:admin:reviews:review-list' %}">
             <i class="bi bi-chat-square-text"></i>
             <span>نظرات</span>
         </a>

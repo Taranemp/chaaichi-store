@@ -43,15 +43,6 @@ class SubmitReviewForm(forms.ModelForm):
 
         self.fields['comment'].widget.attrs['class'] = 'form-control'
 
-    def clean(self):
-        cleaned_data = super().clean()
-
-        if self.user and self.product:
-            if Review.objects.filter(user=self.user, product=self.product).exists():
-                raise forms.ValidationError("شما قبلاً برای این محصول نظر داده‌اید.")
-
-        return cleaned_data
-
     def save(self, commit=True):
         """ذخیره نظر با کاربر و محصول مشخص"""
         review = super().save(commit=False)

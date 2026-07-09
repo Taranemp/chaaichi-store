@@ -1,142 +1,195 @@
 {% extends 'dashboard/admin/base.html' %}
-{% load static %}
-
-{% block title %}ویرایش نظر{% endblock %}
-
+{% load static %} 
+{% block title%}ویرایش نظر{% endblock %} 
 {% block content %}
 
+
 <div class="mb-4">
-    <h4 class="fw-bold mb-1">ویرایش نظر</h4>
-    <span class="text-muted small">بررسی و مدیریت نظر کاربر</span>
+  <h4 class="fw-bold mb-1">ویرایش نظر</h4>
+  <span class="text-muted small">بررسی و مدیریت نظر کاربر</span>
 </div>
 
 <div class="row g-4">
-    <!-- Review Information -->
-    <div class="col-lg-8">
-        <div class="surface-card p-4">
-            <form method="post" novalidate>
-                {% csrf_token %}
+  <!-- Review Information -->
+  <div class="col-lg-8">
+    <div class="surface-card p-4">
+      <form method="post" novalidate>
+        {% csrf_token %} {% if form.non_field_errors %}
+        <div class="alert alert-danger small">{{ form.non_field_errors }}</div>
+        {% endif %}
 
-                {% if form.non_field_errors %}
-                <div class="alert alert-danger small">{{ form.non_field_errors }}</div>
-                {% endif %}
-
-                <!-- User & Product Info (Read-only) -->
-                <div class="row g-3 mb-4">
-                    <div class="col-md-6">
-                        <label class="form-label small fw-semibold">کاربر</label>
-                        <div class="d-flex align-items-center gap-2 p-2 rounded" style="background: var(--clr-bg);">
-                            <img src="{{ object.user.profile.image.url|default:'/static/img/default-avatar.png' }}"
-                                 class="rounded-circle" width="32" height="32" style="object-fit:cover;">
-                            <span>{{ object.user.profile.get_fullname|default:object.user.phone }}</span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label small fw-semibold">محصول</label>
-                        <div class="p-2 rounded" style="background: var(--clr-bg);">
-                            <span>{{ object.product.title }}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Form Fields -->
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold" for="{{ form.rate.id_for_label }}">امتیاز</label>
-                        {{ form.rate }}
-                        {% if form.rate.errors %}
-                        <div class="text-danger small mt-1">{{ form.rate.errors|striptags }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold" for="{{ form.status.id_for_label }}">وضعیت</label>
-                        {{ form.status }}
-                        {% if form.status.errors %}
-                        <div class="text-danger small mt-1">{{ form.status.errors|striptags }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label fw-semibold" for="{{ form.comment.id_for_label }}">متن نظر</label>
-                        {{ form.comment }}
-                        {% if form.comment.errors %}
-                        <div class="text-danger small mt-1">{{ form.comment.errors|striptags }}</div>
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Buttons -->
-                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
-                    <a href="{% url 'dashboard:admin:review-list' %}" class="btn btn-secondary" style="border-radius:8px;">
-                        <i class="bi bi-arrow-right"></i> بازگشت
-                    </a>
-                    <button type="submit" class="btn" style="background: var(--clr-forest); color:#fff; border-radius:8px;">
-                        <i class="bi bi-check2"></i> ذخیره تغییرات
-                    </button>
-                </div>
-            </form>
+        <!-- User & Product Info (Read-only) -->
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold">کاربر</label>
+            <div
+              class="d-flex align-items-center gap-2 p-2 rounded"
+              style="background: var(--clr-bg)"
+            >
+              <img
+                src="{{ object.user.profile.image.url|default:'/static/img/default-avatar.png' }}"
+                class="rounded-circle"
+                width="32"
+                height="32"
+                style="object-fit: cover"
+              />
+              <span>{{object.user.profile.get_fullname|default:object.user.phone}}</span>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold">محصول</label>
+            <div class="p-2 rounded" style="background: var(--clr-bg)">
+              <span>{{ object.product.title }}</span>
+            </div>
+          </div>
         </div>
-    </div>
 
-    <!-- Sidebar Info -->
-    <div class="col-lg-4">
-        <div class="surface-card p-4">
-            <h6 class="fw-bold mb-3">اطلاعات نظر</h6>
-
-            <div class="mb-3">
-                <span class="text-muted small d-block">تاریخ ثبت</span>
-                <span>{{ object.created_date|date:"Y/m/d H:i" }}</span>
+        <!-- Form Fields -->
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label
+              class="form-label fw-semibold"
+              for="{{ form.rate.id_for_label }}"
+              >امتیاز</label
+            >
+            {{ form.rate }} {% if form.rate.errors %}
+            <div class="text-danger small mt-1">
+              {{ form.rate.errors|striptags }}
             </div>
-
-            <div class="mb-3">
-                <span class="text-muted small d-block">آخرین ویرایش</span>
-                <span>{{ object.updated_date|date:"Y/m/d H:i" }}</span>
+            {% endif %}
+          </div>
+          <div class="col-md-6">
+            <label
+              class="form-label fw-semibold"
+              for="{{ form.status.id_for_label }}"
+              >وضعیت</label
+            >
+            {{ form.status }} {% if form.status.errors %}
+            <div class="text-danger small mt-1">
+              {{ form.status.errors|striptags }}
             </div>
-
-            <div class="mb-3">
-                <span class="text-muted small d-block">وضعیت فعلی</span>
-                <span>
-                    {% if object.status == 1 %}
-                    <span class="badge bg-warning">در انتظار تایید</span>
-                    {% elif object.status == 2 %}
-                    <span class="badge bg-success">تایید شده</span>
-                    {% elif object.status == 3 %}
-                    <span class="badge bg-danger">رد شده</span>
-                    {% endif %}
-                </span>
+            {% endif %}
+          </div>
+          <div class="col-12">
+            <label
+              class="form-label fw-semibold"
+              for="{{ form.comment.id_for_label }}"
+              >متن نظر</label
+            >
+            {{ form.comment }} {% if form.comment.errors %}
+            <div class="text-danger small mt-1">
+              {{ form.comment.errors|striptags }}
             </div>
-
-            <div class="mb-3">
-                <span class="text-muted small d-block">امتیاز</span>
-                <div class="d-flex align-items-center gap-1">
-                    <span class="fw-bold fs-5">{{ object.rate }}</span>
-                    <span class="text-warning">
-                        {% for i in "12345"|slice:object.rate %}
-                        <i class="bi bi-star-fill"></i>
-                        {% endfor %}
-                    </span>
-                </div>
-            </div>
-
-            <hr>
-
-            <div class="d-grid gap-2">
-                <form method="post" action="{% url 'dashboard:admin:review-edit' object.pk %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="status" value="2">
-                    <button type="submit" class="btn btn-success w-100" style="border-radius:8px;">
-                        <i class="bi bi-check2-circle"></i> تایید نظر
-                    </button>
-                </form>
-                <form method="post" action="{% url 'dashboard:admin:review-edit' object.pk %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="status" value="3">
-                    <button type="submit" class="btn btn-danger w-100" style="border-radius:8px;">
-                        <i class="bi bi-x-circle"></i> رد نظر
-                    </button>
-                </form>
-            </div>
+            {% endif %}
+          </div>
         </div>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+          <a
+            href="{% url 'dashboard:admin:reviews:review-list' %}"
+            class="btn btn-secondary"
+            style="border-radius: 8px"
+          >
+            <i class="bi bi-arrow-right"></i> بازگشت
+          </a>
+          <button
+            type="submit"
+            class="btn"
+            style="
+              background: var(--clr-forest);
+              color: #fff;
+              border-radius: 8px;
+            "
+          >
+            <i class="bi bi-check2"></i> ذخیره تغییرات
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
+
+  <!-- Sidebar Info -->
+  <div class="col-lg-4">
+    <div class="surface-card p-4">
+      <h6 class="fw-bold mb-3">اطلاعات نظر</h6>
+
+      <div class="mb-3">
+        <span class="text-muted small d-block">تاریخ ثبت</span>
+        <span>{{ object.created_date|date:"Y/m/d H:i" }}</span>
+      </div>
+
+      <div class="mb-3">
+        <span class="text-muted small d-block">آخرین ویرایش</span>
+        <span>{{ object.updated_date|date:"Y/m/d H:i" }}</span>
+      </div>
+
+      <div class="mb-3">
+        <span class="text-muted small d-block">وضعیت فعلی</span>
+        <span>
+          {% if object.status == 1 %}
+          <span class="badge bg-warning">در انتظار تایید</span>
+          {% elif object.status == 2 %}
+          <span class="badge bg-success">تایید شده</span>
+          {% elif object.status == 3 %}
+          <span class="badge bg-danger">رد شده</span>
+          {% endif %}
+        </span>
+      </div>
+
+      <div class="mb-3">
+        <span class="text-muted small d-block">امتیاز</span>
+        <div class="d-flex align-items-center gap-1">
+          <span class="fw-bold fs-5">{{ object.rate }}</span>
+          <span class="text-warning">
+            {% for i in "12345"|slice:object.rate %}
+            <i class="bi bi-star-fill"></i>
+            {% endfor %}
+          </span>
+        </div>
+      </div>
+
+      <hr />
+
+      <!-- توجه: چون ReviewForm فیلدهای rate و comment رو هم الزامی می‌دونه，
+                 این دو فرم کوچیک باید مقادیر فعلی‌شون رو هم به‌صورت مخفی بفرستن；
+                 وگرنه کل فرم نامعتبر می‌شه و status هیچ‌وقت ذخیره نمی‌شه -->
+      <div class="d-grid gap-2">
+        <form
+          method="post"
+          action="{% url 'dashboard:admin:reviews:review-edit' object.pk %}"
+        >
+          {% csrf_token %}
+          <input type="hidden" name="rate" value="{{ object.rate }}" />
+          <input type="hidden" name="comment" value="{{ object.comment }}" />
+          <input type="hidden" name="status" value="2" />
+          <button
+            type="submit"
+            class="btn btn-success w-100"
+            style="border-radius: 8px"
+          >
+            <i class="bi bi-check2-circle"></i> تایید نظر
+          </button>
+        </form>
+        <form
+          method="post"
+          action="{% url 'dashboard:admin:reviews:review-edit' object.pk %}"
+        >
+          {% csrf_token %}
+          <input type="hidden" name="rate" value="{{ object.rate }}" />
+          <input type="hidden" name="comment" value="{{ object.comment }}" />
+          <input type="hidden" name="status" value="3" />
+          <button
+            type="submit"
+            class="btn btn-danger w-100"
+            style="border-radius: 8px"
+          >
+            <i class="bi bi-x-circle"></i> رد نظر
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 
 {% endblock %}

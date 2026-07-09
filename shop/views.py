@@ -1,5 +1,5 @@
 from django.views.generic import ListView, DetailView
-from django.db.models import Q
+from django.db.models import Q, Avg
 from .models import Product, ProductStatusType, Category, Brand, Grade
 
 from review.models import Review, ReviewStatusType
@@ -121,19 +121,28 @@ class ProductDetailView(DetailView):
             status=ProductStatusType.PUBLISH.value
         ).exclude(id=product.id)[:4]
 
-        # دیدگاه‌های تایید‌شده
-        context["reviews"] = Review.objects.filter(
+        # دیدگاه‌های تایید‌شده (با قابلیت مرتب‌سازی)
+        reviews_qs = Review.objects.filter(
             product=product,
             status=ReviewStatusType.APPROVED.value
         ).select_related("user", "user__profile")
 
-        # برای رسم ستاره‌ی میانگین امتیاز به‌صورت گرد‌شده
-        context["avg_rating_rounded"] = round(product.avg_rating)
+        review_order = self.request.GET.get("review_order", "newest")
+        review_order_map = {
+            "newest": "-created_date",
+            "oldest": "created_date",
+            "rating_high": "-rate",
+            "rating_low": "rate",
+        }
+        reviews_qs = reviews_qs.order_by(review_order_map.get(review_order, "-created_date"))
+        context["reviews"] = reviews_qs
+        context["current_review_order"] = review_order
 
-        # بررسی اینکه کاربر لاگین‌شده قبلاً برای این محصول دیدگاه ثبت کرده یا نه
-        context["user_has_reviewed"] = (
-            self.request.user.is_authenticated
-            and Review.objects.filter(user=self.request.user, product=product).exists()
-        )
+        # به‌جای تکیه به فیلدهای کش‌شده‌ی avg_rating/reviews_count روی محصول (که ممکنه به‌خاطر
+        # bulk action تو پنل جنگو آپدیت نشده باشن)، همیشه مستقیم از روی دیدگاه‌های تایید‌شده حساب می‌کنیم
+        review_stats = reviews_qs.aggregate(avg=Avg("rate"))
+        context["live_avg_rating"] = round(review_stats["avg"], 1) if review_stats["avg"] else 0
+        context["live_reviews_count"] = reviews_qs.count()
+        context["avg_rating_rounded"] = round(review_stats["avg"]) if review_stats["avg"] else 0
 
         return context

@@ -96,7 +96,7 @@
             <button type="submit" class="btn btn-sm" style="background: var(--clr-forest); color:#fff; border-radius:8px; flex:1;">
                 <i class="bi bi-search"></i> جستجو
             </button>
-            <a href="{% url 'dashboard:admin:review-list' %}" class="btn btn-sm btn-outline-secondary" style="border-radius:8px;">
+            <a href="{% url 'dashboard:admin:reviews:review-list' %}" class="btn btn-sm btn-outline-secondary" style="border-radius:8px;">
                 <i class="bi bi-x"></i>
             </a>
         </div>
@@ -161,7 +161,7 @@
                         <span class="small text-muted">{{ review.created_date|date:"Y/m/d" }}</span>
                     </td>
                     <td class="text-center">
-                        <a href="{% url 'dashboard:admin:review-edit' review.pk %}"
+                        <a href="{% url 'dashboard:admin:reviews:review-edit' review.pk %}"
                            class="btn btn-sm btn-outline-primary" style="border-radius:6px; width:30px; height:30px; padding:0; line-height:30px;">
                             <i class="bi bi-pencil"></i>
                         </a>
