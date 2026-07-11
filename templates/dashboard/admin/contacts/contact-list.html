@@ -1,0 +1,152 @@
+{% extends 'dashboard/admin/base.html' %}
+{% load static %}
+
+{% block title %}لیست پیام‌های تماس{% endblock %}
+
+{% block content %}
+
+<!-- Header -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="fw-bold mb-1">پیام‌های تماس</h4>
+        <span class="text-muted small">مدیریت پیام‌های ارسالی از صفحه تماس با ما</span>
+    </div>
+    <div>
+        <span class="badge bg-primary">{{ total_items }} پیام</span>
+        {% if unseen_count > 0 %}
+        <span class="badge bg-danger ms-1">{{ unseen_count }} دیده نشده</span>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Search and Filter -->
+<div class="surface-card p-3 mb-4">
+    <form method="get" class="row g-2 align-items-end">
+        <div class="col-md-4">
+            <label class="form-label small fw-semibold">جستجو</label>
+            <input type="text" name="q" class="form-control form-control-sm"
+                   placeholder="نام، ایمیل، موضوع..." value="{{ current_search }}">
+        </div>
+        <div class="col-md-3">
+            <label class="form-label small fw-semibold">وضعیت</label>
+            <select name="status" class="form-select form-select-sm">
+                <option value="">همه</option>
+                <option value="unseen" {% if current_status == 'unseen' %}selected{% endif %}>دیده نشده</option>
+                <option value="seen" {% if current_status == 'seen' %}selected{% endif %}>دیده شده</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label small fw-semibold">مرتب‌سازی</label>
+            <select name="order_by" class="form-select form-select-sm">
+                <option value="-created_date" {% if current_order_by == '-created_date' %}selected{% endif %}>جدیدترین</option>
+                <option value="created_date" {% if current_order_by == 'created_date' %}selected{% endif %}>قدیمی‌ترین</option>
+                <option value="full_name" {% if current_order_by == 'full_name' %}selected{% endif %}>نام</option>
+                <option value="subject" {% if current_order_by == 'subject' %}selected{% endif %}>موضوع</option>
+            </select>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+            <button type="submit" class="btn btn-sm" style="background: var(--clr-forest); color:#fff; border-radius:8px; flex:1;">
+                <i class="bi bi-search"></i> جستجو
+            </button>
+            <a href="{% url 'dashboard:admin:contacts:contact-list' %}" class="btn btn-sm btn-outline-secondary" style="border-radius:8px;">
+                <i class="bi bi-x"></i>
+            </a>
+        </div>
+    </form>
+</div>
+
+<!-- Contacts Table -->
+<div class="surface-card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>نام و نام خانوادگی</th>
+                    <th>ایمیل</th>
+                    <th>موضوع</th>
+                    <th>وضعیت</th>
+                    <th>تاریخ</th>
+                    <th class="text-center" style="width: 80px;">عملیات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for contact in contacts %}
+                <tr>
+                    <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+                    <td>
+                        <span class="fw-semibold">{{ contact.full_name }}</span>
+                        {% if contact.phone_number %}
+                        <br><span class="text-muted small" dir="ltr">{{ contact.phone_number }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if contact.email %}
+                        <span class="small" dir="ltr">{{ contact.email }}</span>
+                        {% else %}
+                        <span class="text-muted">---</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="small">{{ contact.subject|default:"بدون موضوع"|truncatechars:30 }}</span>
+                    </td>
+                    <td>
+                        {% if contact.is_seen %}
+                        <span class="badge bg-success">دیده شده</span>
+                        {% else %}
+                        <span class="badge bg-danger">دیده نشده</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <span class="small text-muted">{{ contact.created_date|date:"Y/m/d H:i" }}</span>
+                    </td>
+                    <td class="text-center">
+                        <a href="{% url 'dashboard:admin:contacts:contact-detail' contact.pk %}"
+                           class="btn btn-sm btn-outline-primary" style="border-radius:6px; width:30px; height:30px; padding:0; line-height:30px;">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center py-5 text-muted">
+                        <i class="bi bi-envelope fs-2 d-block mb-2 opacity-50"></i>
+                        <p class="mb-0">هیچ پیامی یافت نشد.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div class="p-3 border-top">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mb-0">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                    <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

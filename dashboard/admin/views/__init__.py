@@ -5,3 +5,4 @@ from .profiles import *
 from .generals import *
 from .coupons import *
 from .reviews import *
+from .contacts import *

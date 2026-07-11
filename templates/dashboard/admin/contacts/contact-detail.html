@@ -1,0 +1,112 @@
+{% extends 'dashboard/admin/base.html' %}
+{% load static %}
+
+{% block title %}جزئیات پیام{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h4 class="fw-bold mb-1">جزئیات پیام</h4>
+        <span class="text-muted small">مشاهده و مدیریت پیام</span>
+    </div>
+    <div>
+        <a href="{% url 'dashboard:admin:contacts:contact-list' %}" class="btn btn-secondary" style="border-radius:8px;">
+            <i class="bi bi-arrow-right"></i> بازگشت به لیست
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Main Content -->
+    <div class="col-lg-8">
+        <div class="surface-card p-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <h5 class="fw-bold mb-0">{{ contact.subject|default:"بدون موضوع" }}</h5>
+                <span>
+                    {% if contact.is_seen %}
+                    <span class="badge bg-success">دیده شده</span>
+                    {% else %}
+                    <span class="badge bg-danger">دیده نشده</span>
+                    {% endif %}
+                </span>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <span class="text-muted small d-block">نام و نام خانوادگی</span>
+                    <span class="fw-semibold">{{ contact.full_name }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text-muted small d-block">تاریخ ارسال</span>
+                    <span>{{ contact.created_date|date:"Y/m/d H:i" }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text-muted small d-block">ایمیل</span>
+                    {% if contact.email %}
+                    <span dir="ltr">{{ contact.email }}</span>
+                    {% else %}
+                    <span class="text-muted">---</span>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <span class="text-muted small d-block">شماره تماس</span>
+                    {% if contact.phone_number %}
+                    <span dir="ltr">{{ contact.phone_number }}</span>
+                    {% else %}
+                    <span class="text-muted">---</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="mb-3">
+                <span class="text-muted small d-block">متن پیام</span>
+                <div class="p-3 rounded" style="background: var(--clr-bg); white-space: pre-wrap; word-break: break-word;">
+                    {{ contact.content|linebreaks }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <div class="surface-card p-4">
+            <h6 class="fw-bold mb-3">اطلاعات</h6>
+
+            <div class="mb-3">
+                <span class="text-muted small d-block">وضعیت</span>
+                {% if contact.is_seen %}
+                <span class="badge bg-success">دیده شده</span>
+                <span class="text-muted small d-block mt-1">این پیام قبلاً مشاهده شده است</span>
+                {% else %}
+                <span class="badge bg-danger">دیده نشده</span>
+                <span class="text-muted small d-block mt-1">این پیام هنوز مشاهده نشده است</span>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <span class="text-muted small d-block">تاریخ ارسال</span>
+                <span>{{ contact.created_date|date:"Y/m/d H:i" }}</span>
+            </div>
+
+            <div class="mb-3">
+                <span class="text-muted small d-block">آخرین بروزرسانی</span>
+                <span>{{ contact.updated_date|date:"Y/m/d H:i" }}</span>
+            </div>
+
+            <hr>
+
+            <div class="d-grid gap-2">
+                {% if contact.email %}
+                <a href="mailto:{{ contact.email }}" class="btn btn-primary" style="border-radius:8px;">
+                    <i class="bi bi-reply"></i> پاسخ با ایمیل
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

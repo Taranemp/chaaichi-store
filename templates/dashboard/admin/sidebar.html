@@ -64,6 +64,15 @@
             <i class="bi bi-people"></i>
             <span>لیست کاربران</span>
         </a>
+        <!-- ========== پیام‌های تماس ========== -->
+        <a class="sb-link {% if request.resolver_match.url_name == 'contact-list' or request.resolver_match.url_name == 'contact-detail' %}active{% endif %}"
+           href="{% url 'dashboard:admin:contacts:contact-list' %}">
+            <i class="bi bi-envelope"></i>
+            <span> تماس با ما</span>
+            {% if unseen_contacts_count %}
+            <span class="sb-badge">{{ unseen_contacts_count }}</span>
+            {% endif %}
+        </a>
     </div>
 
     <div class="sb-group">
