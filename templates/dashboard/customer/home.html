@@ -1,43 +1,143 @@
-{% extends 'base.html' %}
+{% extends 'dashboard/customer/base.html' %}
 {% load static %}
 
+{% block title %}داشبورد کاربری{% endblock %}
+
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="card border-0 shadow-sm" style="border-radius: 16px;">
-            <div class="card-body p-4 p-md-5">
-                <h4 class="fw-bold mb-2">
-                    سلام {{ request.user.profile.get_fullname|default:request.user.phone }} 👋
-                </h4>
-                <p class="text-muted mb-4">به پنل کاربری چایچی خوش آمدید.</p>
 
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <div class="border rounded-3 p-3 h-100">
-                            <div class="text-muted small mb-1">شماره تماس</div>
-                            <div class="fw-semibold">{{ request.user.phone }}</div>
-                        </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="mb-0">داشبورد کاربری</h4>
+    <span class="text-muted small">{{ request.user.profile.get_fullname|default:request.user.phone }} عزیز، خوش آمدید!</span>
+</div>
+
+<!-- کارت‌های آماری -->
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #2c5f2d, #3d8b40);">
+            <div class="card-body text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white-50 mb-1">کل سفارشات</h6>
+                        <h2 class="mb-0">{{ total_orders|default:0 }}</h2>
                     </div>
-                    <div class="col-md-6">
-                        <div class="border rounded-3 p-3 h-100">
-                            <div class="text-muted small mb-1">ایمیل</div>
-                            <div class="fw-semibold">{{ request.user.email|default:"ثبت نشده" }}</div>
-                        </div>
-                    </div>
+                    <i class="bi bi-box-seam fs-1 text-white-50"></i>
                 </div>
-
-                <div class="d-flex flex-wrap gap-2 mt-4">
-                    <a href="{% url 'shop:product_grid' %}" class="btn btn-success">
-                        <i class="bi bi-shop me-1"></i>
-                        مشاهده فروشگاه
-                    </a>
-                    <a href="{% url 'cart:summary' %}" class="btn btn-outline-secondary">
-                        <i class="bi bi-cart me-1"></i>
-                        سبد خرید
-                    </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #0d6efd, #4b8df7);">
+            <div class="card-body text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white-50 mb-1">سفارشات موفق</h6>
+                        <h2 class="mb-0">{{ success_orders|default:0 }}</h2>
+                    </div>
+                    <i class="bi bi-check-circle fs-1 text-white-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #ffc107, #ffda4a);">
+            <div class="card-body text-dark">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-dark-50 mb-1">سفارشات در انتظار</h6>
+                        <h2 class="mb-0">{{ pending_orders|default:0 }}</h2>
+                    </div>
+                    <i class="bi bi-clock-history fs-1 text-dark-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #6f42c1, #8b5cf6);">
+            <div class="card-body text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-white-50 mb-1">کیف پول</h6>
+                        <h2 class="mb-0">{{ wallet_balance|default:0|floatformat:0 }}</h2>
+                    </div>
+                    <i class="bi bi-wallet2 fs-1 text-white-50"></i>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- بخش پایین -->
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 pt-3">
+                <h6 class="mb-0">آخرین سفارشات</h6>
+            </div>
+            <div class="card-body">
+                {% if last_orders %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>تاریخ</th>
+                                <th>مبلغ</th>
+                                <th>وضعیت</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in last_orders %}
+                            <tr>
+                                <td>#{{ order.id }}</td>
+                                <td>{{ order.created_date|date:"Y/m/d" }}</td>
+                                <td>{{ order.total_price|floatformat:0 }} تومان</td>
+                                <td>
+                                    {% if order.status == 1 %}
+                                    <span class="badge bg-warning">در انتظار</span>
+                                    {% elif order.status == 2 %}
+                                    <span class="badge bg-success">موفق</span>
+                                    {% elif order.status == 3 %}
+                                    <span class="badge bg-danger">ناموفق</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3">هنوز سفارشی ثبت نکرده‌اید.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-0 pt-3">
+                <h6 class="mb-0">اطلاعات کاربری</h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="d-flex justify-content-between py-2 border-bottom">
+                        <span class="text-muted">نام</span>
+                        <span>{{ request.user.profile.get_fullname|default:request.user.phone }}</span>
+                    </li>
+                    <li class="d-flex justify-content-between py-2 border-bottom">
+                        <span class="text-muted">شماره تماس</span>
+                        <span dir="ltr">{{ request.user.phone }}</span>
+                    </li>
+                    <li class="d-flex justify-content-between py-2 border-bottom">
+                        <span class="text-muted">ایمیل</span>
+                        <span>{{ request.user.email|default:"---" }}</span>
+                    </li>
+                    <li class="d-flex justify-content-between py-2">
+                        <span class="text-muted">کیف پول</span>
+                        <span class="fw-bold">{{ wallet_balance|default:0|floatformat:0 }} تومان</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

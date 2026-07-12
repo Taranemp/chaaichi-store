@@ -1,0 +1,71 @@
+{% extends 'dashboard/customer/base.html' %}
+{% load static %}
+
+{% block title %}تغییر رمز عبور{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h4 class="fw-bold mb-1">تغییر رمز عبور</h4>
+    <span class="text-muted small">برای حفظ امنیت حساب، رمز عبور قوی انتخاب کنید</span>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-6">
+        <div class="surface-card p-4">
+
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                <div class="alert alert-danger small">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <div class="mb-3">
+                    <label class="form-label" for="{{ form.old_password.id_for_label }}">رمز عبور فعلی</label>
+                    {{ form.old_password }}
+                    {% if form.old_password.errors %}
+                    <div class="text-danger small">{{ form.old_password.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="{{ form.new_password1.id_for_label }}">رمز عبور جدید</label>
+                    {{ form.new_password1 }}
+                    {% if form.new_password1.errors %}
+                    <div class="text-danger small">{{ form.new_password1.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="{{ form.new_password2.id_for_label }}">تکرار رمز عبور جدید</label>
+                    {{ form.new_password2 }}
+                    {% if form.new_password2.errors %}
+                    <div class="text-danger small">{{ form.new_password2.errors|striptags }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+                    <button type="submit" class="btn" style="background: var(--clr-forest); color:#fff; border-radius:8px;">
+                        <i class="bi bi-shield-check"></i> تغییر رمز عبور
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="surface-card p-4" style="background: var(--clr-forest-tint); border: none;">
+            <h6 class="fw-bold mb-3" style="color: var(--clr-forest);">
+                <i class="bi bi-info-circle me-1"></i> نکات امنیتی
+            </h6>
+            <ul class="mb-0 small" style="color: var(--clr-ink-soft); line-height: 2;">
+                <li>حداقل ۸ کاراکتر و ترکیبی از حروف و اعداد استفاده کنید</li>
+                <li>از رمز عبور مشابه سایر حساب‌ها استفاده نکنید</li>
+                <li>رمز عبور را با کسی به اشتراک نگذارید</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
