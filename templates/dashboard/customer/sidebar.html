@@ -30,12 +30,12 @@
             <span>داشبورد</span>
         </a>
         <a class="sb-link {% if request.resolver_match.url_name == 'profile-edit' %}active{% endif %}"
-           href="{% url 'dashboard:customer:profile-edit' %}">
+           href="{% url 'dashboard:customer:profiles:profile-edit' %}">
             <i class="bi bi-person"></i>
             <span>پروفایل</span>
         </a>
         <a class="sb-link {% if request.resolver_match.url_name == 'security-edit' %}active{% endif %}"
-           href="{% url 'dashboard:customer:security-edit' %}">
+           href="{% url 'dashboard:customer:profiles:security-edit' %}">
             <i class="bi bi-shield-lock"></i>
             <span>امنیت</span>
         </a>
@@ -43,22 +43,13 @@
 
     <div class="sb-group">
         <span class="sb-group-label">خرید</span>
+        
         <a class="sb-link {% if request.resolver_match.url_name == 'order-list' %}active{% endif %}"
-           href="{% url 'dashboard:customer:order-list' %}">
+           href="#">
             <i class="bi bi-bag"></i>
             <span>سفارشات من</span>
         </a>
-        <a class="sb-link {% if request.resolver_match.url_name == 'wishlist-list' %}active{% endif %}"
-           href="{% url 'dashboard:customer:wishlist-list' %}">
-            <i class="bi bi-heart"></i>
-            <span>لیست علاقه‌مندی</span>
-        </a>
-        <a class="sb-link {% if request.resolver_match.url_name == 'address-list' %}active{% endif %}"
-           href="{% url 'dashboard:customer:address-list' %}">
-            <i class="bi bi-geo-alt"></i>
-            <span>آدرس‌ها</span>
-        </a>
-        <a class="sb-link" href="{% url 'payment:wallet' %}">
+        <a class="sb-link" href="#">
             <i class="bi bi-wallet2"></i>
             <span>کیف پول</span>
             {% if request.user.wallet.balance %}

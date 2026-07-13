@@ -5,16 +5,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}داشبورد کاربری{% endblock %} | چایچی</title>
+    <title>{% block title %}پنل کاربری{% endblock %} | چایچی</title>
 
-    <!-- Bootstrap 5 + Icons (CDN) -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
 
-    <!-- استایل اختصاصی -->
-    <link rel="stylesheet" href="{% static 'admin/css/panel.css' %}">
+    <style>
+        :root {
+            /* ===== Chaaichi design tokens ===== */
+            --clr-bg: #FAF6EF;
+            --clr-surface: #FFFFFF;
+            --clr-ink: #2B2620;
+            --clr-ink-soft: #837A6D;
+            --clr-border: #EAE3D6;
 
+            --clr-forest: #1F4D3D;
+            --clr-forest-dark: #163A2E;
+            --clr-forest-tint: #E7EFEB;
+
+            --clr-gold: #C08A3E;
+            --clr-gold-tint: #F5EBD8;
+
+            --clr-clay: #B5651D;
+            --clr-clay-tint: #F6E9DD;
+
+            --clr-danger: #B3392C;
+            --clr-danger-tint: #F7E5E2;
+
+            --radius: 14px;
+            --shadow-sm: 0 1px 2px rgba(43, 38, 32, .05), 0 1px 6px rgba(43, 38, 32, .04);
+            --shadow-md: 0 6px 20px rgba(31, 77, 61, .08);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            background: var(--clr-bg);
+            color: var(--clr-ink);
+            font-family: 'Vazirmatn', Tahoma, sans-serif;
+            margin: 0;
+        }
+
+        a { text-decoration: none; }
+
+        /* ===== Shell layout ===== */
+        .app-shell {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* ===== Sidebar ===== */
+        .sidebar {
+            width: 264px;
+            flex-shrink: 0;
+            background: var(--clr-forest);
+            color: #EFE8DA;
+            display: flex;
+            flex-direction: column;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sb-brand {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            padding: 1.5rem 1.25rem 1.25rem;
+        }
+
+        .sb-brand-mark {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(155deg, var(--clr-gold), #9C6A2A);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: var(--clr-forest-dark);
+            flex-shrink: 0;
+        }
+
+        .sb-brand-text { display: flex; flex-direction: column; line-height: 1.3; }
+        .sb-brand-name { font-weight: 700; font-size: 1.05rem; color: #fff; }
+        .sb-brand-sub { font-size: .72rem; color: #C7B896; }
+
+        .sb-profile {
+            display: flex;
+            align-items: center;
+            gap: .65rem;
+            margin: 0 1.25rem 1rem;
+            padding: .75rem;
+            background: rgba(255,255,255,.06);
+            border-radius: var(--radius);
+        }
+
+        .sb-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: #dedede;
+            flex-shrink: 0;
+            border: 2px solid rgba(192,138,62,.6);
+        }
+        .sb-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+        .sb-profile-info { display: flex; flex-direction: column; overflow: hidden; }
+        .sb-profile-name {
+            font-size: .85rem;
+            font-weight: 600;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .sb-profile-role { font-size: .7rem; color: #C7B896; }
+
+        .sb-nav { flex: 1; padding: .25rem .9rem; }
+
+        .sb-group { margin-bottom: 1.1rem; }
+        .sb-group-label {
+            display: block;
+            font-size: .68rem;
+            color: #8CA79A;
+            padding: 0 .6rem;
+            margin-bottom: .35rem;
+        }
+
+        .sb-link {
+            display: flex;
+            align-items: center;
+            gap: .65rem;
+            color: #D9D0BE;
+            padding: .55rem .6rem;
+            border-radius: 10px;
+            font-size: .875rem;
+            margin-bottom: 2px;
+            border-inline-end: 3px solid transparent;
+            transition: background .18s ease, color .18s ease;
+            position: relative;
+        }
+        .sb-link i { font-size: 1rem; width: 20px; text-align: center; color: #9FB6AA; transition: color .18s ease; }
+        .sb-link span { flex: 1; }
+
+        .sb-link:hover {
+            background: rgba(255,255,255,.06);
+            color: #fff;
+        }
+
+        .sb-link.active {
+            background: rgba(192,138,62,.16);
+            color: #fff;
+            border-inline-end-color: var(--clr-gold);
+        }
+        .sb-link.active i { color: var(--clr-gold); }
+
+        .sb-badge {
+            background: var(--clr-clay);
+            color: #fff;
+            font-size: .68rem;
+            padding: .1rem .45rem;
+            border-radius: 20px;
+            flex: 0 0 auto;
+        }
+
+        .sb-footer { padding: .9rem 1.25rem 1.25rem; border-top: 1px solid rgba(255,255,255,.08); }
+        .sb-link-danger { color: #E5A79A; }
+        .sb-link-danger i { color: #E5A79A; }
+        .sb-link-danger:hover { background: rgba(179,57,44,.18); color: #fff; }
+
+        /* ===== Main column ===== */
+        .app-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            background: var(--clr-surface);
+            border-bottom: 1px solid var(--clr-border);
+            padding: .85rem 1.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .topbar-search {
+            flex: 1;
+            max-width: 360px;
+            position: relative;
+        }
+        .topbar-search i {
+            position: absolute;
+            top: 50%;
+            right: .9rem;
+            transform: translateY(-50%);
+            color: var(--clr-ink-soft);
+            font-size: .9rem;
+        }
+        .topbar-search input {
+            width: 100%;
+            background: var(--clr-bg);
+            border: 1px solid var(--clr-border);
+            border-radius: 10px;
+            padding: .55rem 2.25rem .55rem .9rem;
+            font-size: .85rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color .15s ease;
+        }
+        .topbar-search input:focus { border-color: var(--clr-gold); }
+
+        .topbar-actions { margin-inline-start: auto; display: flex; align-items: center; gap: .5rem; }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--clr-ink);
+            background: var(--clr-bg);
+            border: 1px solid var(--clr-border);
+            position: relative;
+            font-size: 1rem;
+        }
+        .icon-btn:hover { background: var(--clr-forest-tint); }
+        .icon-btn .dot {
+            position: absolute;
+            top: 7px;
+            left: 7px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--clr-clay);
+            border: 2px solid var(--clr-surface);
+        }
+
+        .site-link {
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+            font-size: .82rem;
+            color: var(--clr-ink-soft);
+            padding: .55rem .9rem;
+            border-radius: 10px;
+        }
+        .site-link:hover { background: var(--clr-forest-tint); color: var(--clr-forest); }
+
+        .app-content { padding: 1.75rem; flex: 1; }
+
+        /* ===== Shared component helpers ===== */
+        .surface-card {
+            background: var(--clr-surface);
+            border: 1px solid var(--clr-border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+        }
+
+        @media (max-width: 991px) {
+            .sidebar { position: fixed; inset-inline-start: 0; z-index: 20; transform: translateX(100%); transition: transform .25s ease; }
+            .sidebar.open { transform: translateX(0); }
+            .topbar-search { display: none; }
+        }
+    </style>
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -35,7 +294,7 @@
 
                 <div class="topbar-search">
                     <i class="bi bi-search"></i>
-                    <input type="search" placeholder="جستجو در فروشگاه…">
+                    <input type="search" placeholder="جستجوی محصولات…">
                 </div>
 
                 <div class="topbar-actions">
@@ -70,7 +329,7 @@
         </div>
     </div>
 
-    <script src="{% static 'admin/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script>
         const sidebarToggle = document.getElementById('sidebarToggle');
         const sidebar = document.getElementById('sidebar');

@@ -1,110 +1,128 @@
-{% extends 'dashboard/customer/base.html' %}
-{% load static %}
-
-{% block title %}ویرایش پروفایل{% endblock %}
-
-{% block content %}
+{% extends 'dashboard/customer/base.html' %} {% load static %} {% block title
+%}ویرایش پروفایل{% endblock %} {% block content %}
 
 <div class="mb-4">
-    <h4 class="fw-bold mb-1">ویرایش پروفایل</h4>
-    <span class="text-muted small">اطلاعات حساب کاربری خود را به‌روز کنید</span>
+  <h4 class="fw-bold mb-1">ویرایش پروفایل</h4>
+  <span class="text-muted small">اطلاعات حساب کاربری خود را به‌روز کنید</span>
 </div>
 
 <div class="row g-3">
+  <!-- تصویر پروفایل -->
+  <div class="col-lg-4">
+    <div class="surface-card p-4 text-center h-100">
+      <form
+        method="post"
+        action="{% url 'dashboard:customer:profiles:profile-image-edit' %}"
+        enctype="multipart/form-data"
+        id="avatarForm"
+      >
+        {% csrf_token %}
+        <div class="avatar-upload">
+          <img
+            src="{{ request.user.profile.image.url|default:'/media/profiles/default.png' }}"
+            alt="پروفایل"
+          />
 
-    <!-- تصویر پروفایل -->
-    <div class="col-lg-4">
-        <div class="surface-card p-4 text-center h-100">
-            <form method="post"
-                  action="{% url 'dashboard:customer:profile-image-edit' %}"
-                  enctype="multipart/form-data"
-                  id="avatarForm">
-                {% csrf_token %}
-                <div class="avatar-upload">
-                    {% if request.user.profile.image %}
-                    <img src="{{ request.user.profile.image.url }}" id="avatarPreview" alt="پروفایل">
-                    {% else %}
-                    <img src="{% static 'img/default-avatar.png' %}" id="avatarPreview" alt="پروفایل">
-                    {% endif %}
-                    <label class="avatar-upload-btn" for="avatarInput">
-                        <i class="bi bi-camera-fill"></i>
-                    </label>
-                    <input type="file" name="image" id="avatarInput" accept="image/*">
-                </div>
-                <h6 class="mt-3 mb-1 fw-semibold">
-                    {{ request.user.profile.get_fullname|default:request.user.phone }}
-                </h6>
-                <span class="text-muted small d-block mb-3">کاربر عادی</span>
-                <span class="text-muted small d-block">برای تغییر تصویر، روی آیکون دوربین بزن</span>
-            </form>
+          <label class="avatar-upload-btn" for="avatarInput">
+            <i class="bi bi-camera-fill"></i>
+          </label>
+          <input type="file" name="image" id="avatarInput" accept="image/*" />
         </div>
+        <h6 class="mt-3 mb-1 fw-semibold">
+          {{ request.user.profile.get_fullname|default:request.user.phone }}
+        </h6>
+        <span class="text-muted small d-block mb-3">کاربر عادی</span>
+        <span class="text-muted small d-block"
+          >برای تغییر تصویر، روی آیکون دوربین بزن</span
+        >
+      </form>
     </div>
+  </div>
 
-    <!-- اطلاعات پروفایل -->
-    <div class="col-lg-8">
-        <div class="surface-card p-4">
-            <h6 class="fw-bold mb-4">اطلاعات حساب</h6>
+  <!-- اطلاعات پروفایل -->
+  <div class="col-lg-8">
+    <div class="surface-card p-4">
+      <h6 class="fw-bold mb-4">اطلاعات حساب</h6>
 
-            <form method="post" novalidate>
-                {% csrf_token %}
+      <form method="post" novalidate>
+        {% csrf_token %} {% if form.non_field_errors %}
+        <div class="alert alert-danger small">{{ form.non_field_errors }}</div>
+        {% endif %}
 
-                {% if form.non_field_errors %}
-                <div class="alert alert-danger small">{{ form.non_field_errors }}</div>
-                {% endif %}
-
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label" for="{{ form.first_name.id_for_label }}">نام</label>
-                        {{ form.first_name }}
-                        {% if form.first_name.errors %}
-                        <div class="text-danger small">{{ form.first_name.errors|striptags }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label" for="{{ form.last_name.id_for_label }}">نام خانوادگی</label>
-                        {{ form.last_name }}
-                        {% if form.last_name.errors %}
-                        <div class="text-danger small">{{ form.last_name.errors|striptags }}</div>
-                        {% endif %}
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">شماره تماس</label>
-                        <input type="text" class="form-control" value="{{ request.user.phone }}" disabled>
-                        <span class="text-muted small">شماره تماس قابل ویرایش نیست</span>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">ایمیل</label>
-                        <input type="email" class="form-control" value="{{ request.user.email|default:'---' }}" disabled>
-                        <span class="text-muted small">ایمیل قابل ویرایش نیست</span>
-                    </div>
-                </div>
-
-                <div class="d-flex justify-content-end mt-4 pt-3 border-top">
-                    <button type="submit" class="btn" style="background: var(--clr-forest); color:#fff; border-radius:8px;">
-                        <i class="bi bi-check2"></i> ذخیره تغییرات
-                    </button>
-                </div>
-            </form>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label" for="{{ form.first_name.id_for_label }}"
+              >نام</label
+            >
+            {{ form.first_name }} {% if form.first_name.errors %}
+            <div class="text-danger small">
+              {{ form.first_name.errors|striptags }}
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="{{ form.last_name.id_for_label }}"
+              >نام خانوادگی</label
+            >
+            {{ form.last_name }} {% if form.last_name.errors %}
+            <div class="text-danger small">
+              {{ form.last_name.errors|striptags }}
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="{{ form.phone.id_for_label }}"
+              >شماره تماس</label
+            >
+            {{ form.phone }} {% if form.phone.errors %}
+            <div class="text-danger small">
+              {{ form.phone.errors|striptags }}
+            </div>
+            {% endif %}
+          </div>
+          <div class="col-md-6">
+            <label class="form-label" for="{{ form.email.id_for_label }}"
+              >ایمیل</label
+            >
+            {{ form.email }} {% if form.email.errors %}
+            <div class="text-danger small">
+              {{ form.email.errors|striptags }}
+            </div>
+            {% endif %}
+          </div>
         </div>
-    </div>
 
+        <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+          <button
+            type="submit"
+            class="btn"
+            style="
+              background: var(--clr-forest);
+              color: #fff;
+              border-radius: 8px;
+            "
+          >
+            <i class="bi bi-check2"></i> ذخیره تغییرات
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 
-{% endblock %}
-
-{% block extra_js %}
+{% endblock %} {% block extra_js %}
 <script>
-    const avatarInput = document.getElementById('avatarInput');
-    const avatarForm = document.getElementById('avatarForm');
-    const avatarPreview = document.getElementById('avatarPreview');
+  const avatarInput = document.getElementById("avatarInput");
+  const avatarForm = document.getElementById("avatarForm");
+  const avatarPreview = document.getElementById("avatarPreview");
 
-    if (avatarInput) {
-        avatarInput.addEventListener('change', () => {
-            if (avatarInput.files && avatarInput.files[0]) {
-                avatarPreview.src = URL.createObjectURL(avatarInput.files[0]);
-                avatarForm.submit();
-            }
-        });
-    }
+  if (avatarInput) {
+    avatarInput.addEventListener("change", () => {
+      if (avatarInput.files && avatarInput.files[0]) {
+        avatarPreview.src = URL.createObjectURL(avatarInput.files[0]);
+        avatarForm.submit();
+      }
+    });
+  }
 </script>
 {% endblock %}

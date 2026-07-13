@@ -1,3 +1,4 @@
+# dashboard/customer/views/profiles.py
 from django.views.generic import UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import views as auth_views
@@ -33,7 +34,7 @@ class CustomerProfileEditView(
     """ویرایش پروفایل مشتری"""
     template_name = "dashboard/customer/profile/profile-edit.html"
     form_class = CustomerProfileEditForm
-    success_url = reverse_lazy("dashboard:customer:profile-edit")
+    success_url = reverse_lazy("dashboard:customer:profiles:profile-edit")
     success_message = "پروفایل با موفقیت ویرایش شد"
 
     def get_object(self, queryset=None):
@@ -50,7 +51,7 @@ class CustomerProfileImageEditView(
     http_method_names = ["post"]
     model = Profile
     fields = ["image"]
-    success_url = reverse_lazy("dashboard:customer:profile-edit")
+    success_url = reverse_lazy("dashboard:customer:profiles:profile-edit")
     success_message = "تصویر پروفایل با موفقیت به‌روزرسانی شد"
 
     def get_object(self, queryset=None):

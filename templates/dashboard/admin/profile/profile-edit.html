@@ -61,7 +61,7 @@
                   id="avatarForm">
                 {% csrf_token %}
                 <div class="avatar-upload">
-                    <img src="{{ request.user.profile.image.url|default:'/static/img/default-avatar.png' }}"
+                    <img src="{{ request.user.profile.image.url|default:'/media/profiles/default.png' }}"
                          id="avatarPreview" alt="پروفایل">
                     <label class="avatar-upload-btn" for="avatarInput">
                         <i class="bi bi-camera-fill"></i>

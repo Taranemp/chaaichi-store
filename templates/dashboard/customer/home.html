@@ -6,78 +6,73 @@
 {% block content %}
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="mb-0">داشبورد کاربری</h4>
-    <span class="text-muted small">{{ request.user.profile.get_fullname|default:request.user.phone }} عزیز، خوش آمدید!</span>
+    <div>
+        <h4 class="fw-bold mb-1">داشبورد کاربری</h4>
+        <span class="text-muted small">به پنل کاربری خود خوش آمدید</span>
+    </div>
+    <span class="badge bg-primary">{{ request.user.profile.get_fullname|default:request.user.phone }}</span>
 </div>
 
 <!-- کارت‌های آماری -->
-<div class="row g-4 mb-4">
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #2c5f2d, #3d8b40);">
-            <div class="card-body text-white">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-white-50 mb-1">کل سفارشات</h6>
-                        <h2 class="mb-0">{{ total_orders|default:0 }}</h2>
-                    </div>
-                    <i class="bi bi-box-seam fs-1 text-white-50"></i>
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+        <div class="surface-card p-3 text-center">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small">کل سفارشات</span>
+                    <h5 class="fw-bold mb-0">{{ total_orders|default:0 }}</h5>
                 </div>
+                <i class="bi bi-box-seam fs-3 text-muted opacity-50"></i>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #0d6efd, #4b8df7);">
-            <div class="card-body text-white">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-white-50 mb-1">سفارشات موفق</h6>
-                        <h2 class="mb-0">{{ success_orders|default:0 }}</h2>
-                    </div>
-                    <i class="bi bi-check-circle fs-1 text-white-50"></i>
+    <div class="col-md-3 col-6">
+        <div class="surface-card p-3 text-center">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small">سفارشات موفق</span>
+                    <h5 class="fw-bold mb-0 text-success">{{ success_orders|default:0 }}</h5>
                 </div>
+                <i class="bi bi-check-circle fs-3 text-success opacity-50"></i>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #ffc107, #ffda4a);">
-            <div class="card-body text-dark">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-dark-50 mb-1">سفارشات در انتظار</h6>
-                        <h2 class="mb-0">{{ pending_orders|default:0 }}</h2>
-                    </div>
-                    <i class="bi bi-clock-history fs-1 text-dark-50"></i>
+    <div class="col-md-3 col-6">
+        <div class="surface-card p-3 text-center">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small">در انتظار</span>
+                    <h5 class="fw-bold mb-0 text-warning">{{ pending_orders|default:0 }}</h5>
                 </div>
+                <i class="bi bi-clock-history fs-3 text-warning opacity-50"></i>
             </div>
         </div>
     </div>
-    <div class="col-md-3">
-        <div class="card border-0 shadow-sm h-100" style="background: linear-gradient(135deg, #6f42c1, #8b5cf6);">
-            <div class="card-body text-white">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-white-50 mb-1">کیف پول</h6>
-                        <h2 class="mb-0">{{ wallet_balance|default:0|floatformat:0 }}</h2>
-                    </div>
-                    <i class="bi bi-wallet2 fs-1 text-white-50"></i>
+    <div class="col-md-3 col-6">
+        <div class="surface-card p-3 text-center">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <span class="text-muted small">کیف پول</span>
+                    <h5 class="fw-bold mb-0 text-primary">{{ wallet_balance|default:0|floatformat:0 }}</h5>
                 </div>
+                <i class="bi bi-wallet2 fs-3 text-primary opacity-50"></i>
             </div>
         </div>
     </div>
 </div>
 
-<!-- بخش پایین -->
 <div class="row g-4">
+    <!-- لیست سفارشات -->
     <div class="col-lg-8">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white border-0 pt-3">
-                <h6 class="mb-0">آخرین سفارشات</h6>
+        <div class="surface-card">
+            <div class="card-header bg-transparent border-0 pt-3">
+                <h6 class="fw-bold mb-0">آخرین سفارشات</h6>
             </div>
-            <div class="card-body">
+            <div class="card-body pt-0">
                 {% if last_orders %}
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
-                        <thead>
+                        <thead class="table-light">
                             <tr>
                                 <th>#</th>
                                 <th>تاریخ</th>
@@ -98,6 +93,8 @@
                                     <span class="badge bg-success">موفق</span>
                                     {% elif order.status == 3 %}
                                     <span class="badge bg-danger">ناموفق</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">{{ order.get_status.label }}</span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -106,35 +103,67 @@
                     </table>
                 </div>
                 {% else %}
-                <p class="text-muted text-center py-3">هنوز سفارشی ثبت نکرده‌اید.</p>
+                <div class="text-center py-4 text-muted">
+                    <i class="bi bi-box-seam fs-2 d-block mb-2 opacity-50"></i>
+                    <p class="mb-0">هنوز سفارشی ثبت نکرده‌اید.</p>
+                    <a href="{% url 'shop:product_grid' %}" class="btn btn-sm btn-primary mt-2">
+                        <i class="bi bi-shop"></i> خرید از فروشگاه
+                    </a>
+                </div>
                 {% endif %}
             </div>
         </div>
     </div>
+
+    <!-- اطلاعات کاربری (حرفه‌ای) -->
     <div class="col-lg-4">
-        <div class="card border-0 shadow-sm">
-            <div class="card-header bg-white border-0 pt-3">
-                <h6 class="mb-0">اطلاعات کاربری</h6>
+        <div class="surface-card">
+            <div class="card-header bg-transparent border-0 pt-3 d-flex align-items-center gap-2">
+                <i class="bi bi-person-circle fs-5" style="color: var(--clr-forest);"></i>
+                <h6 class="fw-bold mb-0">اطلاعات کاربری</h6>
             </div>
-            <div class="card-body">
+            <div class="card-body pt-0">
+                <!-- پروفایل کاربر -->
+                <div class="d-flex align-items-center gap-3 mb-3 p-3 rounded-3" style="background: var(--clr-forest-tint);">
+                    <img src="{{ request.user.profile.image.url|default:'/static/img/default-avatar.png' }}"
+                         class="rounded-circle" width="56" height="56" style="object-fit:cover; border: 3px solid var(--clr-gold);">
+                    <div>
+                        <p class="fw-bold mb-0" style="color: var(--clr-forest);">{{ request.user.profile.get_fullname|default:request.user.phone }}</p>
+                        <span class="text-muted small" dir="ltr">{{ request.user.phone }}</span>
+                        <br>
+                        <span class="badge" style="background: var(--clr-gold); color:#fff; font-size:.65rem;">کاربر عادی</span>
+                    </div>
+                </div>
+
+                <!-- اطلاعات -->
                 <ul class="list-unstyled mb-0">
-                    <li class="d-flex justify-content-between py-2 border-bottom">
-                        <span class="text-muted">نام</span>
-                        <span>{{ request.user.profile.get_fullname|default:request.user.phone }}</span>
+                    <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <span class="text-muted small"><i class="bi bi-person me-2"></i>نام</span>
+                        <span class="small fw-medium">{{ request.user.profile.get_fullname|default:"---" }}</span>
                     </li>
-                    <li class="d-flex justify-content-between py-2 border-bottom">
-                        <span class="text-muted">شماره تماس</span>
-                        <span dir="ltr">{{ request.user.phone }}</span>
+                    <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <span class="text-muted small"><i class="bi bi-phone me-2"></i>شماره تماس</span>
+                        <span class="small fw-medium" dir="ltr">{{ request.user.phone }}</span>
                     </li>
-                    <li class="d-flex justify-content-between py-2 border-bottom">
-                        <span class="text-muted">ایمیل</span>
-                        <span>{{ request.user.email|default:"---" }}</span>
+                    <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                        <span class="text-muted small"><i class="bi bi-envelope me-2"></i>ایمیل</span>
+                        <span class="small fw-medium">{{ request.user.email|default:"---" }}</span>
                     </li>
-                    <li class="d-flex justify-content-between py-2">
-                        <span class="text-muted">کیف پول</span>
-                        <span class="fw-bold">{{ wallet_balance|default:0|floatformat:0 }} تومان</span>
+                    <li class="d-flex justify-content-between align-items-center py-2">
+                        <span class="text-muted small"><i class="bi bi-wallet2 me-2"></i>کیف پول</span>
+                        <span class="small fw-bold" style="color: var(--clr-forest);">{{ wallet_balance|default:0|floatformat:0 }} تومان</span>
                     </li>
                 </ul>
+
+                <!-- دکمه‌ها -->
+                <div class="d-grid gap-2 mt-3">
+                    <a href="{% url 'dashboard:customer:profiles:profile-edit' %}" class="btn btn-sm" style="background: var(--clr-forest); color:#fff; border-radius:8px;">
+                        <i class="bi bi-pencil"></i> ویرایش پروفایل
+                    </a>
+                    <a href="#" class="btn btn-sm btn-outline-secondary" style="border-radius:8px;">
+                        <i class="bi bi-wallet2"></i> مدیریت کیف پول
+                    </a>
+                </div>
             </div>
         </div>
     </div>
