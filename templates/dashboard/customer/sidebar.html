@@ -1,68 +1,90 @@
 {% load static %}
 
 <div class="sb-brand">
-    <div class="sb-brand-mark">
-        <i class="bi bi-cup-hot-fill"></i>
-    </div>
-    <div class="sb-brand-text">
-        <span class="sb-brand-name">چایچی</span>
-        <span class="sb-brand-sub">پنل کاربری</span>
-    </div>
+  <div class="sb-brand-mark">
+    <i class="bi bi-cup-hot-fill"></i>
+  </div>
+  <div class="sb-brand-text">
+    <span class="sb-brand-name">چایچی</span>
+    <span class="sb-brand-sub">پنل کاربری</span>
+  </div>
 </div>
 
 <div class="sb-profile">
-    <div class="sb-avatar">
-        <img src="{{ request.user.profile.image.url|default:'/static/img/default-avatar.png' }}" alt="پروفایل">
-    </div>
-    <div class="sb-profile-info">
-        <span class="sb-profile-name">{{ request.user.profile.get_fullname|default:request.user.phone }}</span>
-        <span class="sb-profile-role">کاربر عادی</span>
-    </div>
+  <div class="sb-avatar">
+    <img
+      src="{{ request.user.profile.image.url|default:'/static/img/default-avatar.png' }}"
+      alt="پروفایل"
+    />
+  </div>
+  <div class="sb-profile-info">
+    <span class="sb-profile-name"
+      >{{ request.user.profile.get_fullname|default:request.user.phone }}</span
+    >
+    <span class="sb-profile-role">کاربر عادی</span>
+  </div>
 </div>
 
 <nav class="sb-nav">
+  <div class="sb-group">
+    <span class="sb-group-label">حساب من</span>
+    <a
+      class="sb-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
+      href="{% url 'dashboard:customer:home' %}"
+    >
+      <i class="bi bi-grid-fill"></i>
+      <span>داشبورد</span>
+    </a>
+    <a
+      class="sb-link {% if request.resolver_match.url_name == 'profile-edit' %}active{% endif %}"
+      href="{% url 'dashboard:customer:profiles:profile-edit' %}"
+    >
+      <i class="bi bi-person"></i>
+      <span>پروفایل</span>
+    </a>
+    <a
+      class="sb-link {% if request.resolver_match.url_name == 'security-edit' %}active{% endif %}"
+      href="{% url 'dashboard:customer:profiles:security-edit' %}"
+    >
+      <i class="bi bi-shield-lock"></i>
+      <span>امنیت</span>
+    </a>
+    <!-- در بخش خرید -->
+    <a
+      class="sb-link {% if request.resolver_match.url_name == 'address-list' or request.resolver_match.url_name == 'address-create' or request.resolver_match.url_name == 'address-edit' %}active{% endif %}"
+      href="{% url 'dashboard:customer:addresses:address-list' %}"
+    >
+      <i class="bi bi-geo-alt"></i>
+      <span>آدرس‌ها</span>
+    </a>
+  </div>
 
-    <div class="sb-group">
-        <span class="sb-group-label">حساب من</span>
-        <a class="sb-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
-           href="{% url 'dashboard:customer:home' %}">
-            <i class="bi bi-grid-fill"></i>
-            <span>داشبورد</span>
-        </a>
-        <a class="sb-link {% if request.resolver_match.url_name == 'profile-edit' %}active{% endif %}"
-           href="{% url 'dashboard:customer:profiles:profile-edit' %}">
-            <i class="bi bi-person"></i>
-            <span>پروفایل</span>
-        </a>
-        <a class="sb-link {% if request.resolver_match.url_name == 'security-edit' %}active{% endif %}"
-           href="{% url 'dashboard:customer:profiles:security-edit' %}">
-            <i class="bi bi-shield-lock"></i>
-            <span>امنیت</span>
-        </a>
-    </div>
+  <div class="sb-group">
+    <span class="sb-group-label">خرید</span>
 
-    <div class="sb-group">
-        <span class="sb-group-label">خرید</span>
-        
-        <a class="sb-link {% if request.resolver_match.url_name == 'order-list' %}active{% endif %}"
-           href="#">
-            <i class="bi bi-bag"></i>
-            <span>سفارشات من</span>
-        </a>
-        <a class="sb-link" href="#">
-            <i class="bi bi-wallet2"></i>
-            <span>کیف پول</span>
-            {% if request.user.wallet.balance %}
-            <span class="sb-badge">{{ request.user.wallet.balance|floatformat:0 }}</span>
-            {% endif %}
-        </a>
-    </div>
-
+    <!-- در بخش خرید -->
+    <a
+      class="sb-link {% if request.resolver_match.url_name == 'order-list' or request.resolver_match.url_name == 'order-detail' %}active{% endif %}"
+      href="{% url 'dashboard:customer:orders:order-list' %}"
+    >
+      <i class="bi bi-bag"></i>
+      <span>سفارشات من</span>
+    </a>
+    <a class="sb-link" href="#">
+      <i class="bi bi-wallet2"></i>
+      <span>کیف پول</span>
+      {% comment %} {% if request.user.wallet.balance %}
+      <span class="sb-badge"
+        >{{ request.user.wallet.balance|floatformat:0 }}</span
+      >
+      {% endif %} {% endcomment %}
+    </a>
+  </div>
 </nav>
 
 <div class="sb-footer">
-    <a class="sb-link sb-link-danger" href="{% url 'account:logout' %}">
-        <i class="bi bi-box-arrow-right"></i>
-        <span>خروج از حساب</span>
-    </a>
+  <a class="sb-link sb-link-danger" href="{% url 'account:logout' %}">
+    <i class="bi bi-box-arrow-right"></i>
+    <span>خروج از حساب</span>
+  </a>
 </div>

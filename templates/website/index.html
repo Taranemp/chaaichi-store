@@ -4,176 +4,160 @@
 
 {% block content %}
 
-<!-- ============ HERO ============ -->
-<div class="position-relative overflow-hidden" style="background: linear-gradient(135deg, #1f4d3d 0%, #2c5f2d 55%, #3d7a3f 100%);">
-
-    <svg class="position-absolute top-0 start-0" width="420" height="420" viewBox="0 0 420 420" fill="none" style="opacity:.08; pointer-events:none;">
-        <path d="M210 20 C 320 60, 380 160, 340 260 C 300 360, 180 400, 90 340 C 40 300, 30 200, 90 130 C 130 80, 170 40, 210 20 Z" fill="#fff"/>
-    </svg>
-
-    <div class="container position-relative py-6 py-lg-8">
-        <div class="row align-items-center">
-            <div class="col-lg-6 text-white mb-6 mb-lg-0">
-                <span class="badge rounded-pill px-3 py-2 mb-4" style="background: rgba(255,255,255,.12); color:#F5EBD8; font-weight:500;">
-                    <i class="bi bi-flower1 me-1"></i> برداشت تازه از باغ‌های شمال
-                </span>
-                <h1 class="display-4 fw-bold mb-4" style="line-height:1.35;">
-                   
-                </h1>
-                <p class="fs-5 mb-5" style="color:#D9E5DE; max-width:520px;">
-                </p>
-                <div class="d-flex flex-wrap gap-3">
-                    <a href="{% url 'shop:product_grid' %}" class="btn btn-lg rounded-pill px-5" style="background:#C08A3E; color:#1f2937; border:none; font-weight:600;">
-                        مشاهده محصولات
-                    </a>
-                    
-                </div>
+<!-- ============ CINEMATIC SINGLE HERO (VIDEO EDITION) ============ -->
+<section class="chaaichi-hero-container">
+    
+    <!-- ویدیوی پس‌زمینه لبه‌به‌لبه با پوستر جایگزین در صورت لود نشدن ویدیو -->
+    <video autoplay muted loop playsinline poster="{% static 'images/ElevenLabs_4.png' %}" class="hero-bg-video">
+        <source src="{% static 'videos/video.mp4' %}" type="video/mp4">
+        مرورگر شما از تگ ویدیو پشتیبانی نمی‌کند.
+    </video>
+    
+    <!-- لایوت متقاطع و مجله‌ای روی ویدیو -->
+    <div class="hero-editorial-grid">
+        <div class="hero-text-column">
+            <div class="hero-badge-container">
+                <span class="hero-custom-badge"> ترکیب جادویی و دست‌چین </span>
             </div>
-
-            <div class="col-lg-6">
-                <div class="mx-auto position-relative" style="max-width: 420px;">
-                    <div class="rounded-circle mx-auto d-flex align-items-center justify-content-center"
-                         style="width: 340px; height: 340px; background: rgba(255,255,255,.08); border: 2px solid rgba(255,255,255,.2);">
-                        <i class="bi bi-cup-hot-fill" style="font-size: 9rem; color:#F5EBD8;"></i>
-                    </div>
-                </div>
+            <h1 class="hero-custom-title">انفجاری از عطر و طعم واقعی</h1>
+            <p class="hero-custom-desc">ترکیبی بی‌نظیر از برگ‌های اصیل چای، گلبرگ‌های معطر و ادویه‌های خاص که در هر فنجان روایتی نو می‌آفرینند.</p>
+            <div class="hero-action-container">
+                <a href="{% url 'shop:product_grid' %}" class="hero-custom-btn">مشاهده محصولات</a>
             </div>
         </div>
+        <!-- ستون چپ خالی جهت عدم پوشش سوژه ویدیو -->
+        <div class="hero-visual-column"></div>
     </div>
-</div>
-<!-- ============ END HERO ============ -->
+
+</section>
+<!-- ============ END CINEMATIC SINGLE HERO ============ -->
 
 
-<!-- ============ TRUST STRIP ============ -->
-<div class="bg-white border-bottom">
-    <div class="container">
+<!-- ایجاد کانتینر برای بقیه بخش‌های صفحه اصلی تا مجدد منظم شوند -->
+<div class="container py-5">
+
+    <!-- ============ TRUST STRIP ============ -->
+    <div class="bg-white border rounded-4 shadow-sm mb-6">
         <div class="row text-center g-4 py-5">
             <div class="col-md-3 col-6">
                 <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width:60px; height:60px; background:#EAF3EC;">
-                    <i class="bi bi-truck fs-4 text-tea"></i>
+                    <i class="bi bi-truck fs-4 text-success"></i>
                 </div>
                 <h6 class="mb-1">ارسال سریع</h6>
                 <p class="small text-muted mb-0">به سراسر کشور</p>
             </div>
             <div class="col-md-3 col-6">
                 <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width:60px; height:60px; background:#EAF3EC;">
-                    <i class="bi bi-patch-check fs-4 text-tea"></i>
+                    <i class="bi bi-patch-check fs-4 text-success"></i>
                 </div>
                 <h6 class="mb-1">اصالت تضمینی</h6>
                 <p class="small text-muted mb-0">مستقیم از باغ‌های چای</p>
             </div>
             <div class="col-md-3 col-6">
                 <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width:60px; height:60px; background:#EAF3EC;">
-                    <i class="bi bi-shield-lock fs-4 text-tea"></i>
+                    <i class="bi bi-shield-lock fs-4 text-success"></i>
                 </div>
                 <h6 class="mb-1">پرداخت امن</h6>
                 <p class="small text-muted mb-0">درگاه بانکی معتبر</p>
             </div>
             <div class="col-md-3 col-6">
                 <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width:60px; height:60px; background:#EAF3EC;">
-                    <i class="bi bi-arrow-return-left fs-4 text-tea"></i>
+                    <i class="bi bi-arrow-return-left fs-4 text-success"></i>
                 </div>
                 <h6 class="mb-1">۷ روز ضمانت بازگشت</h6>
                 <p class="small text-muted mb-0">رضایت شما اولویت ماست</p>
             </div>
         </div>
     </div>
-</div>
-<!-- ============ END TRUST STRIP ============ -->
+    <!-- ============ END TRUST STRIP ============ -->
 
 
-<!-- ============ CATEGORIES ============ -->
-<div class="container py-6 py-lg-7">
-    <div class="text-center mx-auto mb-5" style="max-width:560px;">
-        <span class="text-uppercase small fw-bold text-tea" style="letter-spacing:.05em;">دسته‌بندی محصولات</span>
-        <h2 class="mt-2 fw-bold">چای مورد علاقه‌تون رو پیدا کنید</h2>
-    </div>
-
-    <div class="row g-4">
-        {% for cat in categories %}
-        <div class="col-sm-6 col-lg-3">
-            <a href="{% url 'shop:product_grid' %}" class="card card-bordered shadow-none h-100 text-center p-4 text-decoration-none hover-tea">
-                <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center"
-                     style="width:72px; height:72px; background:#EAF3EC;">
-                    <i class="bi {% cycle 'bi-cup-hot' 'bi-leaf' 'bi-flower2' 'bi-cup-straw' %} fs-3 text-tea"></i>
-                </div>
-                <h5 class="mb-1 text-dark">{{ cat.title }}</h5>
-                <p class="small text-muted mb-0">مشاهده محصولات</p>
-            </a>
+    <!-- ============ CATEGORIES ============ -->
+    <div class="py-5">
+        <div class="text-center mx-auto mb-5" style="max-width:560px;">
+            <span class="text-uppercase small fw-bold text-success" style="letter-spacing:.05em;">دسته‌بندی محصولات</span>
+            <h2 class="mt-2 fw-bold">چای مورد علاقه‌تون رو پیدا کنید</h2>
         </div>
-        {% empty %}
-        <div class="col-12 text-center text-muted">دسته‌بندی‌ای برای نمایش وجود ندارد.</div>
-        {% endfor %}
-    </div>
-</div>
-<!-- ============ END CATEGORIES ============ -->
 
-
-<!-- ============ PROMO BANNER ============ -->
-<div class="container pb-6 pb-lg-7">
-    <div class="row g-4">
-        <div class="col-md-7">
-            <div class="rounded-4 p-4 p-lg-5 h-100 d-flex flex-column justify-content-center"
-                 style="background: linear-gradient(120deg, #16362A, #1F4D3D); min-height: 300px;">
-                <span class="text-white-50 small mb-2">پیشنهاد ویژه‌ی هفته</span>
-                <h2 class="text-white fw-bold mb-4">تا ۳۰٪ تخفیف روی چای‌های ممتاز</h2>
-
-                <div class="d-flex gap-3 mb-4" id="promoCountdown">
-                    <div class="text-center">
-                        <div class="rounded-3 px-3 py-2" style="background: rgba(255,255,255,.12); min-width:56px;">
-                            <span class="h4 text-white mb-0 d-block" id="cd-days">--</span>
-                        </div>
-                        <span class="small text-white-50 d-block mt-1">روز</span>
+        <div class="row g-4">
+            {% for cat in categories %}
+            <div class="col-sm-6 col-lg-3">
+                <a href="{% url 'shop:product_grid' %}" class="card card-bordered shadow-none h-100 text-center p-4 text-decoration-none hover-tea">
+                    <div class="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center" style="width:72px; height:72px; background:#EAF3EC;">
+                        <i class="bi {% cycle 'bi-cup-hot' 'bi-leaf' 'bi-flower2' 'bi-cup-straw' %} fs-3 text-success"></i>
                     </div>
-                    <div class="text-center">
-                        <div class="rounded-3 px-3 py-2" style="background: rgba(255,255,255,.12); min-width:56px;">
-                            <span class="h4 text-white mb-0 d-block" id="cd-hours">--</span>
-                        </div>
-                        <span class="small text-white-50 d-block mt-1">ساعت</span>
-                    </div>
-                    <div class="text-center">
-                        <div class="rounded-3 px-3 py-2" style="background: rgba(255,255,255,.12); min-width:56px;">
-                            <span class="h4 text-white mb-0 d-block" id="cd-minutes">--</span>
-                        </div>
-                        <span class="small text-white-50 d-block mt-1">دقیقه</span>
-                    </div>
-                </div>
-
-                <a href="#featured-products" class="btn rounded-pill px-5 align-self-start" style="background:#C08A3E; color:#1f2937; font-weight:600;">
-                    مشاهده تخفیف‌ها
+                    <h5 class="mb-1 text-dark">{{ cat.title }}</h5>
+                    <p class="small text-muted mb-0">مشاهده محصولات</p>
                 </a>
             </div>
+            {% empty %}
+            <div class="col-12 text-center text-muted">دسته‌بندی‌ای برای نمایش وجود ندارد.</div>
+            {% endfor %}
         </div>
-        <div class="col-md-5">
-            <div class="rounded-4 p-4 p-lg-5 h-100 d-flex flex-column align-items-center justify-content-center text-center"
-                 style="background: #F5EBD8; min-height: 300px;">
-                <i class="bi bi-gift fs-1 mb-3" style="color:#9C6A2A;"></i>
-                <h4 class="fw-bold mb-2">خرید بالای ۵۰۰ هزار تومان</h4>
-                <p class="text-muted mb-0">ارسال کاملاً رایگان به سراسر کشور</p>
+    </div>
+    <!-- ============ END CATEGORIES ============ -->
+
+
+    <!-- ============ PROMO BANNER ============ -->
+    <div class="py-5">
+        <div class="row g-4">
+            <div class="col-md-7">
+                <div class="rounded-4 p-4 p-lg-5 h-100 d-flex flex-column justify-content-center" style="background: linear-gradient(120deg, #16362A, #1F4D3D); min-height: 300px;">
+                    <span class="text-white-50 small mb-2">پیشنهاد ویژه‌ی هفته</span>
+                    <h2 class="text-white fw-bold mb-4">تا ۳۰٪ تخفیف روی چای‌های ممتاز</h2>
+
+                    <div class="d-flex gap-3 mb-4" id="promoCountdown">
+                        <div class="text-center">
+                            <div class="rounded-3 px-3 py-2" style="background: rgba(255,255,255,.12); min-width:56px;">
+                                <span class="h4 text-white mb-0 d-block" id="cd-days">--</span>
+                            </div>
+                            <span class="small text-white-50 d-block mt-1">روز</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="rounded-3 px-3 py-2" style="background: rgba(255,255,255,.12); min-width:56px;">
+                                <span class="h4 text-white mb-0 d-block" id="cd-hours">--</span>
+                            </div>
+                            <span class="small text-white-50 d-block mt-1">ساعت</span>
+                        </div>
+                        <div class="text-center">
+                            <div class="rounded-3 px-3 py-2" style="background: rgba(255,255,255,.12); min-width:56px;">
+                                <span class="h4 text-white mb-0 d-block" id="cd-minutes">--</span>
+                            </div>
+                            <span class="small text-white-50 d-block mt-1">دقیقه</span>
+                        </div>
+                    </div>
+
+                    <a href="#featured-products" class="btn rounded-pill px-5 align-self-start" style="background:#C08A3E; color:#1f2937; font-weight:600;">
+                        مشاهده تخفیف‌ها
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="rounded-4 p-4 p-lg-5 h-100 d-flex flex-column align-items-center justify-content-center text-center" style="background: #F5EBD8; min-height: 300px;">
+                    <i class="bi bi-gift fs-1 mb-3" style="color:#9C6A2A;"></i>
+                    <h4 class="fw-bold mb-2">خرید بالای ۵۰۰ هزار تومان</h4>
+                    <p class="text-muted mb-0">ارسال کاملاً رایگان به سراسر کشور</p>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!-- ============ END PROMO BANNER ============ -->
+    <!-- ============ END PROMO BANNER ============ -->
 
 
-<!-- ============ FEATURED PRODUCTS ============ -->
-<div id="featured-products" style="background:#FAF6EF;">
-    <div class="container py-6 py-lg-7">
+    <!-- ============ FEATURED PRODUCTS ============ -->
+    <div id="featured-products" class="rounded-4 p-4 p-lg-5 my-5" style="background:#FAF6EF;">
         <div class="text-center mx-auto mb-5" style="max-width:560px;">
-            <span class="text-uppercase small fw-bold text-tea" style="letter-spacing:.05em;">پرفروش‌ترین‌ها</span>
+            <span class="text-uppercase small fw-bold text-success" style="letter-spacing:.05em;">پرفروش‌ترین‌ها</span>
             <h2 class="mt-2 fw-bold">محصولات منتخب چایچی</h2>
         </div>
         {% show_latest_products %}
     </div>
-</div>
-<!-- ============ END FEATURED PRODUCTS ============ -->
+    <!-- ============ END FEATURED PRODUCTS ============ -->
 
 
-<!-- ============ NEWSLETTER ============ -->
-<div style="background: #F5EBD8;">
-    <div class="container py-6 py-lg-7">
-        <div class="text-center mx-auto" style="max-width:560px;">
+    <!-- ============ NEWSLETTER ============ -->
+    <div class="rounded-4 p-5 text-center my-5" style="background: #F5EBD8;">
+        <div class="mx-auto" style="max-width:560px;">
             <span class="text-uppercase small fw-bold" style="letter-spacing:.05em; color:#9C6A2A;">عضویت در خبرنامه</span>
             <h2 class="mb-3 mt-2 fw-bold">از تخفیف‌ها و محصولات جدید باخبر شوید</h2>
             <p class="text-muted mb-5">هر هفته یک پیشنهاد ویژه‌ی چای مستقیم به ایمیلتون</p>
@@ -182,21 +166,154 @@
                 {% csrf_token %}
                 <div class="d-flex flex-column flex-sm-row gap-2 bg-white p-2 rounded-pill shadow-sm">
                     <input type="text" name="first_name" hidden>
-                    <input type="email" class="form-control border-0 flex-grow-1 ps-4" name="email"
-                           placeholder="ایمیل خود را وارد نمایید" aria-label="ایمیل خود را وارد کنید" style="box-shadow:none;">
+                    <input type="email" class="form-control border-0 flex-grow-1 ps-4" name="email" placeholder="ایمیل خود را وارد نمایید" aria-label="ایمیل خود را وارد کنید" style="box-shadow:none;">
                     <button type="submit" class="btn rounded-pill px-4" style="background:#2c5f2d; color:#fff; white-space:nowrap;">عضویت</button>
                 </div>
             </form>
         </div>
     </div>
-</div>
-<!-- ============ END NEWSLETTER ============ -->
+    <!-- ============ END NEWSLETTER ============ -->
 
+</div> <!-- بستن کانتینر کل محتوای میانی صفحه اصلی -->
+
+<!-- استایل اختصاصی لایوت سینمایی هیرو ویدیو -->
 <style>
-    .hover-tea { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; border: 1px solid #EAE3D6; }
-    .hover-tea:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(44,95,45,.12); border-color: #2c5f2d; }
+.chaaichi-hero-container {
+    position: relative;
+    background-color: #000000;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100vh;
+    min-height: 600px;
+    overflow: hidden;
+    direction: rtl !important;
+    margin-bottom: 2rem;
+}
+
+.hero-bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+/* لایه گرادیان تاریک برای تضمین خوانایی متن */
+.chaaichi-hero-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to left, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.6) 45%, rgba(0, 0, 0, 0) 100%);
+    z-index: 2;
+}
+
+.hero-editorial-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    z-index: 3;
+    padding: 0 8%;
+}
+
+.hero-text-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: right !important;
+}
+
+.hero-visual-column {
+    pointer-events: none;
+}
+
+.hero-badge-container {
+    margin-bottom: 24px;
+}
+
+.hero-custom-badge {
+    display: inline-block;
+    padding: 6px 18px;
+    font-size: 0.85rem;
+    color: #F5EBD8;
+    background: rgba(192, 138, 62, 0.15);
+    border: 1px solid rgba(192, 138, 62, 0.35);
+    border-radius: 50px;
+    font-weight: 500;
+}
+
+.hero-custom-title {
+    font-size: 3.2rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 24px;
+    line-height: 1.35;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.hero-custom-desc {
+    font-size: 1.15rem;
+    color: #dedede;
+    line-height: 1.85;
+    margin-bottom: 40px;
+    max-width: 520px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.hero-custom-btn {
+    display: inline-block;
+    background-color: #C08A3E;
+    color: #1f2937;
+    padding: 14px 44px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.05rem;
+    box-shadow: 0 8px 24px rgba(192, 138, 62, 0.25);
+    transition: all 0.3s ease;
+}
+
+.hero-custom-btn:hover {
+    background-color: #a37230;
+    color: #1f2937;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(192, 138, 62, 0.4);
+}
+
+.hover-tea { transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease; border: 1px solid #EAE3D6; }
+.hover-tea:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(44,95,45,.12); border-color: #2c5f2d; }
+
+@media (max-width: 991.98px) {
+    .hero-editorial-grid {
+        grid-template-columns: 1fr;
+        padding: 0 5%;
+    }
+    .hero-text-column {
+        align-items: center;
+        text-align: center !important;
+    }
+    .hero-custom-title {
+        font-size: 2.2rem;
+    }
+    .hero-custom-desc {
+        font-size: 1rem;
+    }
+    .chaaichi-hero-container::after {
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 30%, rgba(0, 0, 0, 0.5) 100%);
+    }
+}
 </style>
 
+<!-- اسکریپت تایمر پیش‌فرض شما -->
 <script>
     (function () {
         var target = new Date();
