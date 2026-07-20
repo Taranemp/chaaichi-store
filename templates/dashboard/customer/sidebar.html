@@ -70,6 +70,19 @@
       <i class="bi bi-bag"></i>
       <span>سفارشات من</span>
     </a>
+
+    
+    <a
+      class="sb-link {% if request.resolver_match.url_name == 'wishlist-list' %}active{% endif %}"
+      href="{% url 'dashboard:customer:wishlists:wishlist-list' %}"
+    >
+      <i class="bi bi-heart"></i>
+      <span>لیست علاقه‌مندی</span>
+      {% if total_items %}
+      <span class="sb-badge">{{ total_items }}</span>
+      {% endif %} 
+    </a>ّ
+
     <a class="sb-link" href="#">
       <i class="bi bi-wallet2"></i>
       <span>کیف پول</span>

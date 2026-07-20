@@ -5,7 +5,8 @@ from .models import (
     Grade, 
     PackageType, 
     Product, 
-    ProductImage
+    ProductImage,
+    WishlistProductModel
 )
 
 
@@ -98,3 +99,11 @@ class ProductImageAdmin(admin.ModelAdmin):
     list_display = ("id", "product", "file", "created_date")
     list_filter = ["created_date"]
     search_fields = ["product__title"]
+    
+    
+    
+@admin.register(WishlistProductModel)
+class WishlistProductAdmin(admin.ModelAdmin):
+    list_display = ("id", "user", "product", "created_date")
+    list_filter = ("created_date",)
+    search_fields = ("user__phone", "product__title")

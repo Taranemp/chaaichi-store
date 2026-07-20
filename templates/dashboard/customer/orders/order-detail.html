@@ -4,121 +4,171 @@
 {% block title %}جزئیات سفارش #{{ order.id }}{% endblock %}
 
 {% block content %}
-<div class="row g-4 text-secondary pb-5" style="direction: rtl;">
-    
-    <!-- ستون سمت راست: کل جزئیات اصلی سفارش و مرسوله‌ها -->
-    <div class="col-lg-8 order-lg-1 order-2">
-        <div class="bg-white border rounded-4 p-4 shadow-sm mb-4">
-            
-            <!-- هدر اصلی جزئیات سفارش -->
-            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+
+<div class="row g-4">
+
+    <!-- ستون اصلی: جزئیات سفارش و مرسوله -->
+    <div class="col-lg-8 order-2 order-lg-1">
+        <div class="surface-card p-4 mb-4">
+
+            <!-- هدر -->
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom" style="border-color: var(--clr-border) !important;">
                 <div class="d-flex align-items-center gap-2">
-                    <a href="{% url 'dashboard:customer:orders:order-list' %}" class="text-dark"><i class="bi bi-arrow-right fs-4"></i></a>
-                    <h5 class="fw-bold text-dark m-0">جزئیات سفارش</h5>
+                    <a href="{% url 'dashboard:customer:orders:order-list' %}" style="color: var(--clr-ink);">
+                        <i class="bi bi-arrow-right fs-4"></i>
+                    </a>
+                    <h5 class="fw-bold m-0">جزئیات سفارش</h5>
                 </div>
-                <a href="#" class="text-decoration-none text-info small fw-semibold">
+                <a href="#" class="text-decoration-none small fw-semibold" style="color: var(--clr-forest);">
                     <i class="bi bi-file-earmark-text me-1"></i> مشاهده فاکتور
                 </a>
             </div>
 
-            <!-- خلاصه وضعیت اطلاعاتی سفارش -->
-            <div class="row g-3 mb-4 text-muted small border-bottom pb-4">
-                <div class="col-md-4">کد پیگیری سفارش: <span class="text-dark fw-bold">{{ order.id }}</span></div>
-                <div class="col-md-4">تاریخ ثبت سفارش: <span class="text-dark fw-bold">{{ order.created_date|date:"Y/m/d" }}</span></div>
+            <!-- خلاصه سفارش -->
+            <div class="row g-3 mb-4 small border-bottom pb-4" style="border-color: var(--clr-border) !important;">
                 <div class="col-md-4">
-                    وضعیت: 
+                    <span class="text-muted">کد پیگیری سفارش:</span>
+                    <span class="fw-bold">#{{ order.id }}</span>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-muted">تاریخ ثبت سفارش:</span>
+                    <span class="fw-bold">{{ order.created_date|date:"Y/m/d" }}</span>
+                </div>
+                <div class="col-md-4">
+                    <span class="text-muted">وضعیت:</span>
                     {% if order.status == 1 %}
-                    <span class="text-warning fw-bold">در انتظار</span>
+                    <span class="badge rounded-pill px-2 py-1" style="background: var(--clr-clay-tint); color: var(--clr-clay); font-weight:500;">در انتظار</span>
                     {% elif order.status == 2 %}
-                    <span class="text-success fw-bold">موفق (خروج از انبار)</span>
+                    <span class="badge rounded-pill px-2 py-1" style="background: var(--clr-forest-tint); color: var(--clr-forest); font-weight:500;">موفق (خروج از انبار)</span>
                     {% else %}
-                    <span class="text-danger fw-bold">ناموفق</span>
+                    <span class="badge rounded-pill px-2 py-1" style="background: var(--clr-danger-tint); color: var(--clr-danger); font-weight:500;">ناموفق</span>
                     {% endif %}
                 </div>
             </div>
 
-            <!-- اطلاعات تحویل‌گیرنده و آدرس -->
-            <div class="row g-3 mb-4 pb-4 border-bottom small text-muted">
-                <div class="col-md-6">تحویل گیرنده: <span class="text-dark fw-semibold">{{ order.user.profile.get_fullname|default:order.user.phone }}</span></div>
-                <div class="col-md-6">شماره موبایل: <span class="text-dark fw-semibold" dir="ltr">{{ order.user.phone }}</span></div>
+            <!-- تحویل‌گیرنده و آدرس -->
+            <div class="row g-3 mb-4 pb-4 border-bottom small" style="border-color: var(--clr-border) !important;">
+                <div class="col-md-6">
+                    <span class="text-muted">تحویل گیرنده:</span>
+                    <span class="fw-semibold">{{ order.user.profile.get_fullname|default:order.user.phone }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text-muted">شماره موبایل:</span>
+                    <span class="fw-semibold" dir="ltr">{{ order.user.phone }}</span>
+                </div>
                 <div class="col-12 mt-2">
-                    آدرس: <span class="text-dark fw-semibold">{{ order.get_full_address }}</span>
+                    <span class="text-muted">آدرس:</span>
+                    <span class="fw-semibold">{{ order.get_full_address }}</span>
                 </div>
             </div>
 
-            <!-- وضعیت مالی و تراکنش‌ها -->
-            <div class="row g-3 small text-muted mb-4 pb-2">
-                <div class="col-md-4">مبلغ کل: <span class="text-dark fw-bold">{{ order.total_price|floatformat:0 }} تومان</span></div>
+            <!-- اطلاعات مالی -->
+            <div class="row g-3 small mb-4 pb-2">
+                <div class="col-md-4">
+                    <span class="text-muted">مبلغ کل:</span>
+                    <span class="fw-bold">{{ order.total_price|floatformat:0 }} تومان</span>
+                </div>
                 {% if order.coupon %}
-                <div class="col-md-4">سود شما از خرید: <span class="text-danger fw-bold">{{ order.coupon.code }} (%{{ order.coupon.discount_percent }})</span></div>
+                <div class="col-md-4">
+                    <span class="text-muted">کد تخفیف:</span>
+                    <span class="fw-bold" style="color: var(--clr-clay);">{{ order.coupon.code }} (٪{{ order.coupon.discount_percent }})</span>
+                </div>
                 {% endif %}
-                <div class="col-md-4">هزینه ارسال: <span class="text-dark fw-semibold">۳۶,۰۰۰ تومان</span></div>
-                
-                <div class="col-12 mt-3">
-                    <a class="text-decoration-none text-info fw-bold" data-bs-toggle="collapse" href="#transactionDetail" role="button">
-                        تاریخچه تراکنش‌ها <i class="bi bi-chevron-down small"></i>
+                <div class="col-md-4">
+                    <span class="text-muted">هزینه ارسال:</span>
+                    <span class="fw-semibold">۳۶,۰۰۰ تومان</span>
+                </div>
+
+                <div class="col-12 mt-2">
+                    <a class="text-decoration-none fw-bold small" style="color: var(--clr-forest);" data-bs-toggle="collapse" href="#transactionDetail" role="button">
+                        تاریخچه تراکنش‌ها <i class="bi bi-chevron-down" style="font-size:.7rem;"></i>
                     </a>
                     <div class="collapse mt-2" id="transactionDetail">
-                        <div class="p-3 bg-light rounded-3 text-dark">
+                        <div class="p-3 rounded-3" style="background: var(--clr-bg);">
                             {% if order.transaction %}
-                            <p class="mb-1 small">شناسه پرداخت: {{ order.transaction.id|default:"-" }}</p>
+                            <p class="mb-1 small">شناسه پرداخت: {{ order.transaction.id|default:"---" }}</p>
                             <p class="mb-0 small">وضعیت درگاه: {{ order.transaction.get_status_display }}</p>
                             {% else %}
-                            <p class="mb-0 small">اطلاعات تراکنشی ثبت نشده است.</p>
+                            <p class="mb-0 small text-muted">اطلاعات تراکنشی ثبت نشده است.</p>
                             {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- کارد باکس مرسوله و وضعیت فیزیکی ارسال (کپی رفتار ساختاری مرسوله‌های دیجی کالا) -->
-            <div class="border rounded-4 p-4 bg-light-subtle mt-4">
+            <!-- مرسوله و وضعیت ارسال -->
+            <div class="rounded-4 p-4 mt-4" style="background: var(--clr-bg); border: 1px solid var(--clr-border);">
                 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
                     <div class="d-flex align-items-center gap-2">
-                        <i class="bi bi-truck text-success fs-4"></i>
-                        <span class="fw-bold text-dark">مرسوله ۱ از ۱</span>
+                        <i class="bi bi-truck fs-4" style="color: var(--clr-forest);"></i>
+                        <span class="fw-bold">مرسوله ۱ از ۱</span>
                         <span class="text-muted small">· ارسال توسط چایچی</span>
                     </div>
-                    <span class="text-muted small">زمان تحویل: <span class="text-dark fw-semibold">ارسال سریع امروز</span></span>
+                    <span class="text-muted small">
+                        زمان تحویل: <span class="fw-semibold" style="color: var(--clr-ink);">ارسال سریع امروز</span>
+                    </span>
                 </div>
 
-                <!-- پراگرس بار وضعیت ارسال خط زمانی دیجی‌کالایی -->
+                <!-- مسیر پیشرفت ارسال -->
                 <div class="position-relative my-4 pt-2">
-                    <div class="progress" style="height: 6px; background-color: #e2e8f0;">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: {% if order.status == 2 %}100%{% else %}30%{% endif %};"></div>
+                    <div class="progress" style="height: 6px; background-color: var(--clr-border);">
+                        <div class="progress-bar" role="progressbar"
+                             style="width: {% if order.status == 2 %}100%{% else %}30%{% endif %}; background: var(--clr-forest);"></div>
                     </div>
-                    <div class="d-flex justify-content-between text-center extra-small mt-2 text-muted fw-semibold">
-                        <span class="text-success"><i class="bi bi-check-circle-fill d-block mb-1"></i>ثبت سفارش</span>
-                        <span class="{% if order.status == 2 %}text-success{% endif %}"><i class="bi bi-box-seam d-block mb-1"></i>خروج از انبار</span>
-                        <span><i class="bi bi-truck d-block mb-1"></i>تحویل مأمور ارسال</span>
+                    <div class="d-flex justify-content-between text-center mt-2 fw-semibold" style="font-size:.76rem;">
+                        <span style="color: var(--clr-forest);"><i class="bi bi-check-circle-fill d-block mb-1"></i>ثبت سفارش</span>
+                        <span style="color: {% if order.status == 2 %}var(--clr-forest){% else %}var(--clr-ink-soft){% endif %};">
+                            <i class="bi bi-box-seam d-block mb-1"></i>خروج از انبار
+                        </span>
+                        <span class="text-muted"><i class="bi bi-truck d-block mb-1"></i>تحویل مأمور ارسال</span>
                     </div>
                 </div>
 
-                <div class="row g-3 text-muted small bg-white border rounded-3 p-3 mb-4">
-                    <div class="col-md-6"><i class="bi bi-hash me-1"></i> کد پیگیری مرسوله: <span class="text-dark fw-semibold"></span></div>
-                    <div class="col-md-6"><i class="bi bi-shield-lock me-1"></i> کد تحویل مرسوله: <span class="text-dark fw-semibold"></span></div>
+                <div class="row g-3 small p-3 mb-4 rounded-3" style="background: var(--clr-surface); border: 1px solid var(--clr-border);">
+                    <div class="col-md-6">
+                        <i class="bi bi-hash me-1"></i> کد پیگیری مرسوله:
+                        <span class="fw-semibold">{{ order.tracking_code|default:"هنوز ثبت نشده" }}</span>
+                    </div>
+                    <div class="col-md-6">
+                        <i class="bi bi-shield-lock me-1"></i> کد تحویل مرسوله:
+                        <span class="fw-semibold">{{ order.delivery_code|default:"هنوز ثبت نشده" }}</span>
+                    </div>
                 </div>
 
-                <!-- لیست کارتی اقلام داخل این مرسوله مخصوص چای‌چی -->
-                <h6 class="fw-bold text-dark mb-3 small">کالاهای این مرسوله</h6>
+                <!-- اقلام مرسوله -->
+                <h6 class="fw-bold mb-3 small">کالاهای این مرسوله</h6>
                 <div class="d-flex flex-column gap-3">
                     {% for item in order_items %}
-                    <div class="d-flex gap-3 bg-white p-3 rounded-4 border">
-                        <div style="width: 90px; height: 90px;" class="flex-shrink-0 border rounded-3 p-1">
-                            <img src="{{ item.product.image.url|default:'/static/img/default-product.png' }}" class="w-100 h-100 object-fit-cover rounded-2" alt="">
+                    <div class="d-flex gap-3 p-3 rounded-4" style="background: var(--clr-surface); border: 1px solid var(--clr-border);">
+                        <div style="width: 90px; height: 90px;" class="flex-shrink-0 rounded-3 overflow-hidden" style="border:1px solid var(--clr-border);">
+                            {% if item.product.image %}
+                            <img src="{{ item.product.image.url }}" class="w-100 h-100" style="object-fit:cover;" alt="{{ item.product.title }}">
+                            {% else %}
+                            <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: var(--clr-forest-tint);">
+                                <i class="bi bi-cup-hot" style="color: var(--clr-forest);"></i>
+                            </div>
+                            {% endif %}
                         </div>
                         <div class="flex-grow-1 d-flex flex-column justify-content-between">
                             <div>
-                                <h6 class="fw-bold text-dark small mb-1">{{ item.product.title }}</h6>
-                                <p class="extra-small text-muted mb-0"><i class="bi bi-shield-check text-success me-1"></i> گارانتی اصالت و سلامت فیزیکی کالا</p>
-                                <p class="extra-small text-muted mb-0"><i class="bi bi-shop text-secondary me-1"></i> انبار مرکزی چای‌چی</p>
+                                <h6 class="fw-bold small mb-1">{{ item.product.title }}</h6>
+                                <p class="text-muted mb-0" style="font-size:.76rem;">
+                                    <i class="bi bi-shield-check me-1" style="color: var(--clr-forest);"></i> گارانتی اصالت و سلامت فیزیکی کالا
+                                </p>
+                                <p class="text-muted mb-0" style="font-size:.76rem;">
+                                    <i class="bi bi-shop me-1"></i> انبار مرکزی چایچی
+                                </p>
                             </div>
                             <div class="d-flex justify-content-between align-items-center flex-wrap mt-2">
-                                <span class="badge bg-light text-dark border px-2 py-1 small">تعداد: {{ item.quantity }}</span>
-                                <span class="text-dark fw-bold small">{{ item.price|floatformat:0 }} تومان</span>
+                                <span class="badge rounded-pill px-2 py-1 small" style="background: var(--clr-bg); color: var(--clr-ink-soft); border: 1px solid var(--clr-border);">
+                                    تعداد: {{ item.quantity }}
+                                </span>
+                                <span class="fw-bold small">{{ item.price|floatformat:0 }} تومان</span>
                             </div>
                         </div>
                     </div>
+                    {% empty %}
+                    <p class="text-muted small mb-0">آیتمی برای این سفارش ثبت نشده.</p>
                     {% endfor %}
                 </div>
 
@@ -127,33 +177,45 @@
         </div>
     </div>
 
-    
-    <div class="col-lg-4 order-lg-2 order-1">
-        <div class="bg-white border rounded-4 p-4 shadow-sm position-sticky" style="top: 24px;">
-            <div class="d-flex justify-content-between align-items-start mb-4">
-                <div>
-                    <h6 class="fw-bold text-dark mb-1">{{ request.user.profile.get_fullname|default:request.user.phone }}</h6>
-                    <span class="text-muted small" dir="ltr">{{ request.user.phone }}</span>
+    <!-- سایدبار: کاربر + کیف پول -->
+    <div class="col-lg-4 order-1 order-lg-2">
+        <div class="surface-card p-4 position-sticky" style="top: 24px;">
+
+            <div class="d-flex justify-content-between align-items-start mb-3 pb-3 border-bottom" style="border-color: var(--clr-border) !important;">
+                <div class="d-flex align-items-center gap-2">
+                    {% if request.user.profile.image %}
+                    <img src="{{ request.user.profile.image.url }}" class="rounded-circle" width="42" height="42" style="object-fit:cover;">
+                    {% else %}
+                    <img src="{% static 'admin/img/default-avatar.png' %}" class="rounded-circle" width="42" height="42" style="object-fit:cover;">
+                    {% endif %}
+                    <div>
+                        <h6 class="fw-bold mb-0">{{ request.user.profile.get_fullname|default:request.user.phone }}</h6>
+                        <span class="text-muted small" dir="ltr">{{ request.user.phone }}</span>
+                    </div>
                 </div>
-                <a href="#" class="text-muted"><i class="bi bi-pencil-square fs-5"></i></a>
+                <a href="{% url 'dashboard:customer:profiles:profile-edit' %}" style="color: var(--clr-ink-soft);">
+                    <i class="bi bi-pencil-square fs-5"></i>
+                </a>
             </div>
 
-            <div class="d-flex justify-content-between align-items-center py-3 border-bottom">
-                <div class="d-flex align-items-center gap-2 small fw-bold text-dark">
-                    <i class="bi bi-wallet2 text-secondary fs-5"></i> کیف پول
+            <div class="d-flex justify-content-between align-items-center py-2">
+                <div class="d-flex align-items-center gap-2 small fw-bold">
+                    <i class="bi bi-wallet2 fs-5" style="color: var(--clr-forest);"></i> کیف پول
                 </div>
-                <span class="text-dark small fw-bold"></span>
+                <span class="badge rounded-pill" style="background: var(--clr-gold-tint); color:#8A5F26;">
+                    {{ request.user.wallet.balance|default:0|floatformat:0 }} تومان
+                </span>
             </div>
 
-            
+            <div class="d-grid gap-2 mt-3">
+                <a href="{% url 'dashboard:customer:addresses:address-list' %}" class="btn btn-sm"
+                   style="border: 1px solid var(--clr-border); border-radius:8px; color: var(--clr-forest);">
+                    <i class="bi bi-geo-alt"></i> مدیریت آدرس‌ها
+                </a>
+            </div>
         </div>
     </div>
 
 </div>
 
-
-<style>
-    .bg-light-subtle { background-color: #fafbfc !important; }
-    .extra-small { font-size: 0.76rem; }
-</style>
 {% endblock %}
