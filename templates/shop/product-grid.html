@@ -102,7 +102,29 @@
                 {% for product in object_list %}
                 <div class="col-md-6 col-lg-4 mb-4">
                     <div class="card h-100 shadow-sm">
-                        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}" style="height: 200px; object-fit: cover;">
+                        <!-- تصویر + دکمه علاقه‌مندی -->
+                        <div class="position-relative">
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}" style="height: 200px; object-fit: cover;">
+                            
+                            <!-- دکمه علاقه‌مندی روی تصویر (فقط قلب) -->
+            {% if user.is_authenticated %}
+            <button type="button" 
+                    class="btn btn-link p-0 wishlist-btn position-absolute top-0 end-0 m-2 {% if product.id in wishlist_ids %}active{% endif %}"
+                    style="border: none; background: none; font-size: 1.5rem; line-height: 1; color: {% if product.id in wishlist_ids %}#dc3545{% else %}rgba(255,255,255,0.7){% endif %}; text-shadow: 0 0 4px rgba(0,0,0,0.3); z-index: 5; transition: all 0.3s ease;"
+                    onclick="toggleWishlist('{{ product.id }}', this)"
+                    data-bs-toggle="tooltip" data-bs-placement="top" title="افزودن به علاقه‌مندی">
+                <i class="bi {% if product.id in wishlist_ids %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+            </button>
+            {% else %}
+            <a href="{% url 'account:login' %}?next={{ request.path }}" 
+            class="btn btn-link p-0 position-absolute top-0 end-0 m-2"
+            style="border: none; background: none; font-size: 1.5rem; line-height: 1; color: rgba(255,255,255,0.7); text-shadow: 0 0 4px rgba(0,0,0,0.3); z-index: 5; text-decoration: none;"
+            title="برای افزودن به علاقه‌مندی وارد شوید">
+                <i class="bi bi-heart"></i>
+            </a>
+            {% endif %}
+                        </div>
+                        
                         <div class="card-body text-center">
                             <h6 class="card-title">{{ product.title }}</h6>
                             <p class="card-text text-primary fw-bold">
@@ -127,28 +149,28 @@
             
             <!-- صفحه‌بندی -->
             {% if page_obj.has_other_pages %}
-<nav>
-  <ul class="pagination justify-content-center">
-    {% if page_obj.has_previous %}
-    <li class="page-item">
-      <a class="page-link" href="?page={{ page_obj.previous_page_number }}">قبلی</a>
-    </li>
-    {% endif %}
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">قبلی</a>
+                    </li>
+                    {% endif %}
 
-    {% for num in page_obj.paginator.page_range %}
-    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
-      <a class="page-link" href="?page={{ num }}">{{ num }}</a>
-    </li>
-    {% endfor %}
+                    {% for num in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endfor %}
 
-    {% if page_obj.has_next %}
-    <li class="page-item">
-      <a class="page-link" href="?page={{ page_obj.next_page_number }}">بعدی</a>
-    </li>
-    {% endif %}
-  </ul>
-</nav>
-{% endif %}
+                    {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">بعدی</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
         </div>
     </div>
 </div>
@@ -159,6 +181,54 @@
         url.searchParams.set('page_size', this.value);
         window.location.href = url.toString();
     });
+
+    // ============ تابع علاقه‌مندی ============
+    function toggleWishlist(productId, element) {
+        fetch('/shop/toggle-wishlist/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: 'product_id=' + productId
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const icon = element.querySelector('i');
+                if (data.is_wished) {
+                    element.classList.add('active');
+                    icon.className = 'bi bi-heart-fill text-danger';
+                    alert('محصول به لیست علاقه‌مندی اضافه شد');
+                } else {
+                    element.classList.remove('active');
+                    icon.className = 'bi bi-heart';
+                    alert('محصول از لیست علاقه‌مندی حذف شد');
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('خطا در ارتباط با سرور');
+        });
+    }
 </script>
+
+<style>
+    .wishlist-btn {
+        transition: all 0.3s ease;
+    }
+    .wishlist-btn:hover {
+        transform: scale(1.1);
+    }
+    .wishlist-btn.active {
+        background: #dc3545 !important;
+        border-color: #dc3545 !important;
+        color: white !important;
+    }
+    .wishlist-btn.active i {
+        color: white !important;
+    }
+</style>
 
 {% endblock %}

@@ -1,14 +1,13 @@
 from django.views.generic import ListView, DetailView
 from django.db.models import Q, Avg
-from .models import Product, ProductStatusType, Category, Brand, Grade
-
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from .models import Product, ProductStatusType, Category, Brand, Grade, WishlistProductModel
 from review.models import Review, ReviewStatusType
 
 
 class ProductGridView(ListView):
-    """
-    صفحه لیست محصولات
-    """
     template_name = "shop/product-grid.html"
     paginate_by = 5
     context_object_name = "object_list"
@@ -26,7 +25,6 @@ class ProductGridView(ListView):
             status=ProductStatusType.PUBLISH.value
         )
 
-        # Search
         if search_q := self.request.GET.get("q"):
             queryset = queryset.filter(
                 Q(title__icontains=search_q) |
@@ -34,33 +32,27 @@ class ProductGridView(ListView):
                 Q(brief_description__icontains=search_q)
             )
 
-        # Category filter
         if category_id := self.request.GET.get("category_id"):
             queryset = queryset.filter(category__id=category_id)
 
-        # Brand filter
         if brand_id := self.request.GET.get("brand_id"):
             queryset = queryset.filter(brand__id=brand_id)
 
-        # Grade filter
         if grade_id := self.request.GET.get("grade_id"):
             queryset = queryset.filter(grade__id=grade_id)
 
-        # Min price
         try:
             if min_price := self.request.GET.get("min_price"):
                 queryset = queryset.filter(price__gte=min_price)
         except ValueError:
             pass
 
-        # Max price
         try:
             if max_price := self.request.GET.get("max_price"):
                 queryset = queryset.filter(price__lte=max_price)
         except ValueError:
             pass
 
-        # Ordering
         allowed_orders = [
             "created_date",
             "-created_date",
@@ -79,24 +71,24 @@ class ProductGridView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         context["total_items"] = self.object_list.count()
-
-        # Filters
         context["categories"] = Category.objects.all()
         context["brands"] = Brand.objects.all()
         context["grades"] = Grade.objects.all()
 
-        # Placeholder for future wishlist system
-        context["wishlist_items"] = []
+        # لیست محصولات علاقه‌مندی کاربر
+        if self.request.user.is_authenticated:
+            wishlist_ids = WishlistProductModel.objects.filter(
+                user=self.request.user
+            ).values_list('product_id', flat=True)
+            context["wishlist_ids"] = list(wishlist_ids)
+        else:
+            context["wishlist_ids"] = []
 
         return context
 
 
 class ProductDetailView(DetailView):
-    """
-    صفحه جزئیات محصول
-    """
     template_name = "shop/product-detail.html"
     model = Product
     context_object_name = "object"
@@ -115,13 +107,20 @@ class ProductDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         product = self.get_object()
 
-        # محصولات مرتبط (همان برند)
+        # وضعیت علاقه‌مندی
+        if self.request.user.is_authenticated:
+            context["is_wished"] = WishlistProductModel.objects.filter(
+                user=self.request.user,
+                product=product
+            ).exists()
+        else:
+            context["is_wished"] = False
+
         context["related_products"] = Product.objects.filter(
             brand=product.brand,
             status=ProductStatusType.PUBLISH.value
         ).exclude(id=product.id)[:4]
 
-        # دیدگاه‌های تایید‌شده (با قابلیت مرتب‌سازی)
         reviews_qs = Review.objects.filter(
             product=product,
             status=ReviewStatusType.APPROVED.value
@@ -138,11 +137,48 @@ class ProductDetailView(DetailView):
         context["reviews"] = reviews_qs
         context["current_review_order"] = review_order
 
-        # به‌جای تکیه به فیلدهای کش‌شده‌ی avg_rating/reviews_count روی محصول (که ممکنه به‌خاطر
-        # bulk action تو پنل جنگو آپدیت نشده باشن)، همیشه مستقیم از روی دیدگاه‌های تایید‌شده حساب می‌کنیم
         review_stats = reviews_qs.aggregate(avg=Avg("rate"))
         context["live_avg_rating"] = round(review_stats["avg"], 1) if review_stats["avg"] else 0
         context["live_reviews_count"] = reviews_qs.count()
         context["avg_rating_rounded"] = round(review_stats["avg"]) if review_stats["avg"] else 0
 
         return context
+
+
+@login_required
+def toggle_wishlist(request):
+    """افزودن یا حذف محصول از لیست علاقه‌مندی (AJAX)"""
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid request"}, status=400)
+
+    product_id = request.POST.get("product_id")
+    if not product_id:
+        return JsonResponse({"error": "Product ID is required"}, status=400)
+
+    product = get_object_or_404(Product, id=product_id)
+
+    wishlist_item = WishlistProductModel.objects.filter(
+        user=request.user,
+        product=product
+    ).first()
+
+    if wishlist_item:
+        wishlist_item.delete()
+        is_wished = False
+        message = "محصول از لیست علاقه‌مندی حذف شد"
+    else:
+        WishlistProductModel.objects.create(
+            user=request.user,
+            product=product
+        )
+        is_wished = True
+        message = "محصول به لیست علاقه‌مندی اضافه شد"
+
+    total_wishlist = WishlistProductModel.objects.filter(user=request.user).count()
+
+    return JsonResponse({
+        "success": True,
+        "is_wished": is_wished,
+        "message": message,
+        "total_wishlist": total_wishlist
+    })
