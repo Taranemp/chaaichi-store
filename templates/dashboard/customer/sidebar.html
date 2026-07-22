@@ -83,6 +83,16 @@
       {% endif %} 
     </a>ّ
 
+    
+<a class="sb-link {% if request.resolver_match.url_name == 'review-list' %}active{% endif %}"
+   href="{% url 'dashboard:customer:reviews:review-list' %}">
+    <i class="bi bi-chat-square-text"></i>
+    <span>نظرات من</span>
+    {% if pending_count %}
+    <span class="sb-badge">{{ pending_count }}</span>
+    {% endif %}
+</a>ّ
+
     <a class="sb-link" href="#">
       <i class="bi bi-wallet2"></i>
       <span>کیف پول</span>
