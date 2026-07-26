@@ -1,89 +1,413 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-    <div class="row p-0 m-0">
-        <div class="col-12 col-md-8 col-lg-7 col-xl-6 mx-auto px-2">
-            <div class="w-100 border rounded-4 mt-5 p-4 shadow">
-                <p class="h3 my-2 my-lg-4 pb-3">Login</p>
-                <form method="post">
-                    {% csrf_token %}
+<div class="auth-wrapper d-flex align-items-center justify-content-center py-4 py-sm-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
 
-
-                    <div class="mb-2">
-                        <div class="input-group">
-                            <span style="width: 100px" class="input-group-text" id="basic-username">
-                                {{ form.username.label }}
-                            </span>
-                            <input
-                                    class="form-control"
-                                    type="text"
-                                    name="{{ form.username.name }}"
-                                    value="{{ form.username.value|default:'' }}"
-                                    placeholder="0912"
-                                    aria-label="username"
-                                    aria-describedby="basic-username"
-                            >
+                <div class="auth-card">
+                    <div class="p-4 p-sm-5">
+                        <div class="text-center mb-4">
+                            <div class="auth-icon mx-auto mb-3 d-flex align-items-center justify-content-center">
+                                <i class="bi bi-person fs-3"></i>
+                            </div>
+                            <h4 class="fw-bold mb-1">ورود به حساب کاربری</h4>
+                            <p class="text-muted small mb-0">برای دسترسی به سفارشات خود وارد شوید</p>
                         </div>
+
+                        <!-- پاپ‌آپ شناور خطا (مشابه سبک آنیک‌کلاب) -->
+                        {% if form.errors or form.non_field_errors %}
+                        <div class="dig-popup-error shadow-lg" id="digErrorPopup">
+                            <button type="button" class="dig-popup-close" onclick="closeDigPopup()">&times;</button>
+                            <div class="dig-popup-body d-flex align-items-center">
+                                <div class="dig-popup-content flex-grow-1 text-end pe-2">
+                                    <div class="dig-popup-title fw-bold">توجه!</div>
+                                    <div class="dig-popup-message">
+                                        شماره موبایل یا رمز عبوری که وارد کردید صحیح نیست.
+                                    </div>
+                                </div>
+                                <div class="dig-popup-icon-wrap ms-3 flex-shrink-0">
+                                    <div class="dig-popup-icon">!</div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <form method="post" novalidate class="auth-form">
+                            {% csrf_token %}
+
+                            <!-- فیلد شماره موبایل (عمودی) -->
+                            <div class="mb-3">
+                                <label class="form-label small fw-semibold" for="{{ form.username.id_for_label }}">
+                                    شماره موبایل
+                                </label>
+                                {{ form.username }}
+                                {% if form.username.errors %}
+                                <div class="text-danger small mt-1">{{ form.username.errors|striptags }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- فیلد رمز عبور (عمودی) -->
+                            <div class="mb-2">
+                                <label class="form-label small fw-semibold" for="{{ form.password.id_for_label }}">
+                                    رمز عبور
+                                </label>
+                                {{ form.password }}
+                                {% if form.password.errors %}
+                                <div class="text-danger small mt-1">{{ form.password.errors|striptags }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- لینک فراموشی رمز عبور -->
+                            <div class="text-end mb-4">
+                                <a href="{% url 'account:password_reset' %}" class="auth-link-gold small text-decoration-none">
+                                    رمز عبور را فراموش کرده‌اید؟
+                                </a>
+                            </div>
+
+                            <!-- دکمه ورود -->
+                            <button type="submit" class="btn w-100 auth-btn">ورود به حساب</button>
+                        </form>
                     </div>
 
-
-                    <div class="mb-2">
-                        <div class="input-group">
-                            <span style="width: 100px" class="input-group-text" id="basic-password">
-                                {{ form.password.label }}
-                            </span>
-                            <input
-                                    class="form-control"
-                                    type="password"
-                                    name="{{ form.password.name }}"
-                                    value="{{ form.username.value|default:'' }}"
-                                    placeholder="***"
-                                    aria-label="password"
-                                    aria-describedby="basic-password"
-                            >
-                        </div>
+                    <div class="auth-footer text-center py-3">
+                        <span class="text-muted small">حساب کاربری ندارید؟</span>
+                        <a href="{% url 'account:signup' %}" class="fw-semibold text-decoration-none auth-link-green">
+                            ثبت‌نام کنید
+                        </a>
                     </div>
-
-                    <button class="btn btn-primary w-100">Log in</button>
-                </form>
-
-
-                {% if form.errors %}
-                    {% if form.errors|length > 1 %}
-                        <ul class="form-errors">
-                            {% for field, errors in form.errors.items %}
-                                {% for error in errors %}
-                                    <li>{{ field }}: {{ error }}</li>
-                                {% endfor %}
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <ul class="form-errors">
-                            {% for field, errors in form.errors.items %}
-                                {% for error in errors %}
-                                    <li>{{ error }}</li>
-                                {% endfor %}
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                {% endif %}
-
-
-                <div class="text-center">
-                    <a class="link-primary text-decoration-none py-2 py-lg-3 d-inline-block"
-                       href="{% url 'account:password_reset' %}">
-                        Forgot password ?
-                    </a>
                 </div>
+
             </div>
-            {% comment %} <div class="text-center mt-3">
-                <p class="text-muted">
-                    Don't have an account?
-                    <a class="text-decoration-none"
-                       href="{% url 'account:signup' %}">
-                        Sign up
-                    </a>
-                </p>
-            </div> {% endcomment %}
         </div>
     </div>
-{% endblock content %}
+</div>
+
+<script>
+    // اسکریپت بستن و خروج خودکار پاپ‌آپ خطا
+    function closeDigPopup() {
+        const popup = document.getElementById('digErrorPopup');
+        if (popup) {
+            popup.classList.add('dig-popup-hide');
+            setTimeout(() => popup.remove(), 400);
+        }
+    }
+
+    // محو شدن خودکار بعد از 6 ثانیه
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            closeDigPopup();
+        }, 6000);
+    });
+</script>
+
+<style>
+    /* =========================================== */
+    /* استایل پاپ‌آپ شناور خطا (Digits Style) */
+    /* =========================================== */
+    .dig-popup-error {
+        position: fixed;
+        top: 25px;
+        right: 25px;
+        z-index: 9999;
+        background-color: #e0f2f1;
+        border: 1px solid #b2dfdb;
+        border-radius: 12px;
+        padding: 16px 20px;
+        min-width: 300px;
+        max-width: 360px;
+        direction: rtl;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        animation: digSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    .dig-popup-close {
+        position: absolute;
+        top: 8px;
+        left: 12px;
+        background: transparent;
+        border: none;
+        font-size: 20px;
+        line-height: 1;
+        color: #e53935;
+        cursor: pointer;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+    }
+
+    .dig-popup-close:hover {
+        opacity: 1;
+    }
+
+    .dig-popup-title {
+        color: #004d40;
+        font-size: 0.95rem;
+        margin-bottom: 3px;
+    }
+
+    .dig-popup-message {
+        color: #250303;
+        font-size: 0.88rem;
+        font-weight: 700;
+        line-height: 1.5;
+    }
+
+    .dig-popup-icon-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .dig-popup-icon {
+        width: 36px;
+        height: 36px;
+        background-color: #f8bbd0;
+        color: #c2185b;
+        clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1rem;
+        padding-top: 6px;
+    }
+
+    /* انیمیشن‌ها */
+    @keyframes digSlideIn {
+        from {
+            opacity: 0;
+            transform: translateX(100px) scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+    }
+
+    .dig-popup-hide {
+        opacity: 0 !important;
+        transform: translateX(100px) scale(0.9) !important;
+        transition: all 0.4s ease;
+    }
+
+    /* تنظیم موقعیت پاپ‌آپ در نمایشگر موبایل */
+    @media (max-width: 576px) {
+        .dig-popup-error {
+            top: 15px;
+            right: 15px;
+            left: 15px;
+            max-width: calc(100% - 30px);
+        }
+    }
+
+    /* =========================================== */
+    /* استایل‌های اصلی */
+    /* =========================================== */
+    .auth-wrapper { 
+        min-height: 100vh; 
+        background: #fff; 
+    }
+
+    .auth-card {
+        background: #fff;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 45px rgba(22, 54, 42, .08);
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .auth-icon {
+        width: 56px; 
+        height: 56px;
+        border-radius: 50%;
+        background: #F5EBD8;
+        color: #16362A;
+        flex-shrink: 0;
+    }
+
+    /* =========================================== */
+    /* استایل ورودی‌ها - تضمین عمودی بودن */
+    /* =========================================== */
+    .auth-form .form-control,
+    .auth-form input:not([type=hidden]) {
+        display: block;
+        width: 100%;
+        border: 1px solid #E4E1DA;
+        border-radius: 10px;
+        padding: .7rem .9rem;
+        font-size: 16px !important;
+        height: auto;
+        box-sizing: border-box;
+    }
+    
+    .auth-form .form-control:focus,
+    .auth-form input:focus {
+        border-color: #C08A3E;
+        box-shadow: 0 0 0 .15rem rgba(192,138,62,.15);
+    }
+
+    /* =========================================== */
+    /* استایل لیبل‌ها */
+    /* =========================================== */
+    .auth-form .form-label {
+        display: block;
+        margin-bottom: 0.3rem;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    /* =========================================== */
+    /* استایل دکمه و لینک‌ها */
+    /* =========================================== */
+    .auth-btn {
+        min-height: 48px;
+        background: #16362A;
+        color: #fff;
+        border-radius: 10px;
+        padding: .75rem;
+        font-weight: 600;
+        transition: background .2s ease;
+        font-size: 1rem;
+        width: 100%;
+        display: block;
+    }
+    
+    .auth-btn:hover { 
+        background: #2c5f2d; 
+        color: #fff; 
+    }
+
+    .auth-link-gold, 
+    .auth-link-green {
+        padding: 6px 0;
+        display: inline-block;
+    }
+
+    .auth-link-gold { 
+        color: #A6602B; 
+    }
+    
+    .auth-link-gold:hover { 
+        color: #8A4E22; 
+    }
+    
+    .auth-link-green { 
+        color: #16362A; 
+    }
+    
+    .auth-link-green:hover { 
+        color: #2c5f2d; 
+    }
+
+    .auth-footer { 
+        background: #FAF6EF; 
+    }
+
+    /* =========================================== */
+    /* ریسپانسیو برای موبایل (≤576px) */
+    /* =========================================== */
+    @media (max-width: 576px) {
+        .auth-wrapper {
+            padding-top: 0.5rem !important;
+            padding-bottom: 0.5rem !important;
+        }
+        
+        .auth-card {
+            max-width: 100%;
+            border-radius: 16px;
+        }
+        
+        .auth-card .p-4 {
+            padding: 1.2rem !important;
+        }
+        
+        .auth-wrapper h4 {
+            font-size: 1.15rem;
+        }
+        
+        .auth-wrapper p {
+            font-size: 0.8rem;
+        }
+        
+        .auth-form .mb-3 {
+            margin-bottom: 0.7rem !important;
+        }
+        
+        .auth-icon {
+            width: 48px;
+            height: 48px;
+        }
+        
+        .auth-icon i {
+            font-size: 1.2rem !important;
+        }
+        
+        .auth-btn {
+            font-size: 0.9rem;
+            min-height: 44px;
+            padding: .6rem .75rem;
+        }
+        
+        .auth-footer .small {
+            font-size: 0.75rem !important;
+        }
+        
+        .auth-form .form-label {
+            font-size: 0.8rem;
+        }
+    }
+
+    /* =========================================== */
+    /* ریسپانسیو برای تبلت (577px - 768px) */
+    /* =========================================== */
+    @media (min-width: 577px) and (max-width: 768px) {
+        .auth-card .p-4 {
+            padding: 1.8rem !important;
+        }
+    }
+
+    /* =========================================== */
+    /* ریسپانسیو برای صفحه‌های بسیار کوچک (≤400px) */
+    /* =========================================== */
+    @media (max-width: 400px) {
+        .auth-card .p-4 {
+            padding: 0.8rem !important;
+        }
+        
+        .auth-wrapper h4 {
+            font-size: 1rem;
+        }
+        
+        .auth-btn {
+            font-size: 0.85rem;
+            min-height: 40px;
+        }
+        
+        .auth-form .form-control,
+        .auth-form input:not([type=hidden]) {
+            padding: .5rem .7rem;
+            font-size: 14px !important;
+        }
+    }
+
+    /* =========================================== */
+    /* ریسپانسیو برای مانیتورهای بزرگ (≥1200px) */
+    /* =========================================== */
+    @media (min-width: 1200px) {
+        .auth-card {
+            max-width: 480px;
+        }
+        
+        .auth-card .p-5 {
+            padding: 2.5rem !important;
+        }
+        
+        .auth-wrapper h4 {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
