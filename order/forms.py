@@ -1,12 +1,9 @@
-# order/forms.py
 from django import forms
 from django.utils import timezone
 from .models import Order, Coupon, UserAddress
+import json
 
 
-# ==========================================
-# لیست استان‌های ایران
-# ==========================================
 IRAN_STATES = [
     ("آذربایجان شرقی", "آذربایجان شرقی"),
     ("آذربایجان غربی", "آذربایجان غربی"),
@@ -81,7 +78,6 @@ class CheckoutForm(forms.Form):
     """
     فرم تسویه حساب (Checkout) با انتخاب آدرس یا وارد کردن آدرس جدید
     """
-    # انتخاب آدرس موجود
     use_existing_address = forms.BooleanField(
         required=False,
         initial=True,
@@ -94,31 +90,32 @@ class CheckoutForm(forms.Form):
         label="انتخاب آدرس"
     )
     
-    # آدرس جدید
     address = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'خیابان، پلاک، واحد...'}),
         label="آدرس"
     )
+    
     state = forms.ChoiceField(
         required=False,
         choices=[("", "انتخاب استان...")] + IRAN_STATES,
         widget=forms.Select(attrs={'class': 'form-select', 'id': 'state-select'}),
         label="استان"
     )
+    
     city = forms.ChoiceField(
         required=False,
         choices=[("", "ابتدا استان را انتخاب کنید...")],
         widget=forms.Select(attrs={'class': 'form-select', 'id': 'city-select'}),
         label="شهر"
     )
+    
     zip_code = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'کد پستی', 'dir': 'ltr'}),
         label="کد پستی"
     )
     
-    # کد تخفیف
     coupon_code = forms.CharField(
         required=False,
         widget=forms.TextInput(attrs={
@@ -134,7 +131,15 @@ class CheckoutForm(forms.Form):
         self.cart_total = kwargs.pop('cart_total', 0)
         super().__init__(*args, **kwargs)
         
-        # پر کردن انتخاب آدرس‌های موجود
+        # پر کردن city choices بر اساس داده POST
+        if self.data and self.data.get('state'):
+            state = self.data.get('state')
+            cities = CITIES_BY_STATE.get(state, [])
+            self.fields['city'].choices = [("", "انتخاب شهر...")] + [(city, city) for city in cities]
+            if self.data.get('city'):
+                self.fields['city'].initial = self.data.get('city')
+        
+        # پر کردن آدرس‌های موجود
         if self.user:
             addresses = UserAddress.objects.filter(user=self.user)
             if addresses.exists():
@@ -143,7 +148,6 @@ class CheckoutForm(forms.Form):
                     choices.append((addr.id, f"{addr.address} - {addr.city}"))
                 self.fields['address_id'].choices = choices
                 
-                # اگر آدرس پیش‌فرض وجود دارد، آن را انتخاب کن
                 default_address = addresses.filter(is_default=True).first()
                 if default_address:
                     self.fields['address_id'].initial = default_address.id
@@ -157,7 +161,6 @@ class CheckoutForm(forms.Form):
         use_existing = cleaned_data.get('use_existing_address')
         
         if use_existing:
-            # بررسی آدرس انتخاب شده
             address_id = cleaned_data.get('address_id')
             if not address_id:
                 raise forms.ValidationError("لطفاً یک آدرس انتخاب کنید.")
@@ -168,7 +171,6 @@ class CheckoutForm(forms.Form):
             except UserAddress.DoesNotExist:
                 raise forms.ValidationError("آدرس انتخاب شده نامعتبر است.")
         else:
-            # بررسی آدرس جدید
             address = cleaned_data.get('address')
             state = cleaned_data.get('state')
             city = cleaned_data.get('city')
@@ -192,7 +194,6 @@ class CheckoutForm(forms.Form):
         except Coupon.DoesNotExist:
             raise forms.ValidationError("کد تخفیف نامعتبر است.")
 
-        # اعتبارسنجی کد تخفیف
         if not coupon.is_active:
             raise forms.ValidationError("این کد تخفیف غیرفعال است.")
 
@@ -212,9 +213,6 @@ class CheckoutForm(forms.Form):
 
 
 class OrderCreateForm(forms.ModelForm):
-    """
-    فرم ایجاد سفارش (برای ذخیره در دیتابیس)
-    """
     class Meta:
         model = Order
         fields = [
@@ -235,28 +233,22 @@ class OrderCreateForm(forms.ModelForm):
         order = super().save(commit=False)
         order.user = self.user
         
-        # اگر آدرس انتخابی وجود داشته باشد، اطلاعات آن را کپی کن
         if self.selected_address:
             order.address = self.selected_address.address
             order.state = self.selected_address.state
             order.city = self.selected_address.city
             order.zip_code = self.selected_address.zip_code
         
-        # محاسبه قیمت کل از سبد خرید
         total_price = sum(item['product'].get_price() * item['quantity'] for item in self.cart_items)
         order.total_price = total_price
         
-        # اعمال تخفیف اگر کوپن وجود داشته باشد
         if order.coupon:
             discount_amount = total_price * (order.coupon.discount_percent / 100)
             order.total_price = round(total_price - discount_amount)
-            
-            # ثبت استفاده از کوپن
             order.coupon.used_by.add(self.user)
 
         if commit:
             order.save()
-            # ذخیره آیتم‌های سفارش
             for item in self.cart_items:
                 order.items.create(
                     product=item['product'],
@@ -267,9 +259,6 @@ class OrderCreateForm(forms.ModelForm):
 
 
 class CouponApplyForm(forms.Form):
-    """
-    فرم اعمال کد تخفیف در سبد خرید (AJAX)
-    """
     coupon_code = forms.CharField(
         required=True,
         max_length=100,
@@ -295,7 +284,6 @@ class CouponApplyForm(forms.Form):
         except Coupon.DoesNotExist:
             raise forms.ValidationError("کد تخفیف نامعتبر است.")
 
-        # اعتبارسنجی‌ها
         if not coupon.is_active:
             raise forms.ValidationError("این کد تخفیف غیرفعال است.")
 

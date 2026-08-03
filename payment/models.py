@@ -1,5 +1,8 @@
+# payment/models.py
 from django.db import models
 from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 class TransactionStatusType(models.IntegerChoices):
@@ -73,3 +76,18 @@ class Transaction(models.Model):
 
     def __str__(self):
         return f"{self.user.phone} - {self.amount:,} - {self.get_transaction_type_display()}"
+
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_user_wallet(sender, instance, created, **kwargs):
+    """بعد از ساخت کاربر جدید، کیف پول برایش بساز"""
+    if created:
+        Wallet.objects.create(user=instance, balance=5000000)
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def save_user_wallet(sender, instance, **kwargs):
+    """بعد از ذخیره کاربر، کیف پول را هم ذخیره کن"""
+    if hasattr(instance, 'wallet'):
+        instance.wallet.save()

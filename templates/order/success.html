@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}سفارش موفق{% endblock %}
+
+{% block content %}
+
+<div class="container py-5 text-center">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+                    </div>
+                    <h2 class="fw-bold mb-3">سفارش شما با موفقیت ثبت شد!</h2>
+                    <p class="text-muted mb-4">
+                        از خرید شما متشکریم. سفارش شما با موفقیت ثبت شد و در اسرع وقت پردازش خواهد شد.
+                    </p>
+                    
+                    {% if order %}
+                    <div class="bg-light p-4 rounded-3 mb-4 text-start">
+                        <h6 class="fw-bold">جزئیات سفارش #{{ order.id }}</h6>
+                        <hr>
+                        <p><strong>تاریخ:</strong> {{ order.created_date|date:"Y/m/d H:i" }}</p>
+                        <p><strong>مبلغ کل:</strong> {{ order.total_price|floatformat:0 }} تومان</p>
+                        <p><strong>وضعیت:</strong> 
+                            <span class="badge bg-warning">در انتظار پردازش</span>
+                        </p>
+                        <p><strong>آدرس:</strong> {{ order.get_full_address }}</p>
+                        
+                        <h6 class="fw-bold mt-3">محصولات</h6>
+                        <ul class="list-unstyled">
+                            {% for item in order_items %}
+                            <li class="d-flex justify-content-between border-bottom py-2">
+                                <span>{{ item.product.title }} × {{ item.quantity }}</span>
+                                <span>{{ item.price|floatformat:0 }} تومان</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex gap-3 justify-content-center">
+                        <a href="{% url 'shop:product_grid' %}" class="btn btn-outline-primary">
+                            <i class="bi bi-shop"></i> ادامه خرید
+                        </a>
+                        <a href="{% url 'dashboard:customer:order-list' %}" class="btn btn-primary">
+                            <i class="bi bi-list-ul"></i> مشاهده سفارشات
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

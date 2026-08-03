@@ -1,5 +1,7 @@
-{% extends 'dashboard/customer/base.html' %} {% load static %} {% block title
-%}ویرایش پروفایل{% endblock %} {% block content %}
+{% extends 'dashboard/customer/base.html' %}
+{% load static %}
+{% block title %}ویرایش پروفایل{% endblock %}
+{% block content %}
 
 <div class="mb-4">
   <h4 class="fw-bold mb-1">ویرایش پروفایل</h4>
@@ -18,10 +20,11 @@
       >
         {% csrf_token %}
         <div class="avatar-upload">
-          <img
-            src="{{ request.user.profile.image.url|default:'/media/profiles/default.png' }}"
-            alt="پروفایل"
-          />
+          {% if request.user.profile.image %}
+          <img src="{{ request.user.profile.image.url }}" id="avatarPreview" alt="پروفایل">
+          {% else %}
+          <img src="{% static 'admin/img/default-avatar.png' %}" id="avatarPreview" alt="پروفایل">
+          {% endif %}
 
           <label class="avatar-upload-btn" for="avatarInput">
             <i class="bi bi-camera-fill"></i>
@@ -45,63 +48,44 @@
       <h6 class="fw-bold mb-4">اطلاعات حساب</h6>
 
       <form method="post" novalidate>
-        {% csrf_token %} {% if form.non_field_errors %}
+        {% csrf_token %}
+        {% if form.non_field_errors %}
         <div class="alert alert-danger small">{{ form.non_field_errors }}</div>
         {% endif %}
 
         <div class="row g-3">
           <div class="col-md-6">
-            <label class="form-label" for="{{ form.first_name.id_for_label }}"
-              >نام</label
-            >
-            {{ form.first_name }} {% if form.first_name.errors %}
-            <div class="text-danger small">
-              {{ form.first_name.errors|striptags }}
-            </div>
+            <label class="form-label" for="{{ form.first_name.id_for_label }}">نام</label>
+            {{ form.first_name }}
+            {% if form.first_name.errors %}
+            <div class="text-danger small">{{ form.first_name.errors|striptags }}</div>
             {% endif %}
           </div>
           <div class="col-md-6">
-            <label class="form-label" for="{{ form.last_name.id_for_label }}"
-              >نام خانوادگی</label
-            >
-            {{ form.last_name }} {% if form.last_name.errors %}
-            <div class="text-danger small">
-              {{ form.last_name.errors|striptags }}
-            </div>
+            <label class="form-label" for="{{ form.last_name.id_for_label }}">نام خانوادگی</label>
+            {{ form.last_name }}
+            {% if form.last_name.errors %}
+            <div class="text-danger small">{{ form.last_name.errors|striptags }}</div>
             {% endif %}
           </div>
           <div class="col-md-6">
-            <label class="form-label" for="{{ form.phone.id_for_label }}"
-              >شماره تماس</label
-            >
-            {{ form.phone }} {% if form.phone.errors %}
-            <div class="text-danger small">
-              {{ form.phone.errors|striptags }}
-            </div>
+            <label class="form-label" for="{{ form.phone.id_for_label }}">شماره تماس</label>
+            {{ form.phone }}
+            {% if form.phone.errors %}
+            <div class="text-danger small">{{ form.phone.errors|striptags }}</div>
             {% endif %}
           </div>
           <div class="col-md-6">
-            <label class="form-label" for="{{ form.email.id_for_label }}"
-              >ایمیل</label
-            >
-            {{ form.email }} {% if form.email.errors %}
-            <div class="text-danger small">
-              {{ form.email.errors|striptags }}
-            </div>
+            <label class="form-label" for="{{ form.email.id_for_label }}">ایمیل</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+            <div class="text-danger small">{{ form.email.errors|striptags }}</div>
             {% endif %}
           </div>
         </div>
 
         <div class="d-flex justify-content-end mt-4 pt-3 border-top">
-          <button
-            type="submit"
-            class="btn"
-            style="
-              background: var(--clr-forest);
-              color: #fff;
-              border-radius: 8px;
-            "
-          >
+          <button type="submit" class="btn" style="background: var(--clr-forest); color: #fff; border-radius: 8px;">
             <i class="bi bi-check2"></i> ذخیره تغییرات
           </button>
         </div>
@@ -110,7 +94,44 @@
   </div>
 </div>
 
-{% endblock %} {% block extra_js %}
+<style>
+    /* استایل مستقل و خوداتکا برای آپلود آواتار؛ به هیچ CSS بیرونی وابسته نیست */
+    .avatar-upload {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+    }
+    .avatar-upload img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--clr-forest-tint, #E7EFEB);
+        display: block;
+    }
+    .avatar-upload-btn {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--clr-forest, #1F4D3D);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        border: 3px solid #fff;
+        font-size: .85rem;
+    }
+    .avatar-upload-btn:hover { background: var(--clr-forest-dark, #163A2E); }
+    .avatar-upload input[type="file"] { display: none; }
+</style>
+
+{% endblock %}
+{% block extra_js %}
 <script>
   const avatarInput = document.getElementById("avatarInput");
   const avatarForm = document.getElementById("avatarForm");
@@ -118,7 +139,7 @@
 
   if (avatarInput) {
     avatarInput.addEventListener("change", () => {
-      if (avatarInput.files && avatarInput.files[0]) {
+      if (avatarInput.files && avatarInput.files[0] && avatarPreview) {
         avatarPreview.src = URL.createObjectURL(avatarInput.files[0]);
         avatarForm.submit();
       }

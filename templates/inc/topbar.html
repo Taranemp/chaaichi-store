@@ -26,9 +26,9 @@
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">دسته‌بندی</a>
           <ul class="dropdown-menu sw-dropdown mt-2">
-            <li><a class="dropdown-item" href="#">چای سیاه</a></li>
-            <li><a class="dropdown-item" href="#">چای سبز</a></li>
-            <li><a class="dropdown-item" href="#">دمنوش</a></li>
+            <li><a class="dropdown-item" href="{% url 'shop:product_grid' %}?category_id=1">چای سیاه</a></li>
+            <li><a class="dropdown-item" href="{% url 'shop:product_grid' %}?category_id=2">چای سبز</a></li>
+            <li><a class="dropdown-item" href="{% url 'shop:product_grid' %}?category_id=3">دمنوش</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item fw-semibold" href="{% url 'shop:product_grid' %}">همه محصولات</a></li>
           </ul>
