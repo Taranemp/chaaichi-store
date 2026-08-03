@@ -75,142 +75,278 @@ CITIES_BY_STATE = {
 
 
 class CheckoutForm(forms.Form):
-    """
-    فرم تسویه حساب (Checkout) با انتخاب آدرس یا وارد کردن آدرس جدید
-    """
+
+
     use_existing_address = forms.BooleanField(
         required=False,
         initial=True,
-        widget=forms.CheckboxInput(attrs={'class': 'form-check-input', 'id': 'use-existing-address'})
+        label="استفاده از آدرس ذخیره شده",
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-check-input",
+                "id": "use-existing-address"
+            }
+        )
     )
-    
+
+
     address_id = forms.ChoiceField(
         required=False,
-        widget=forms.Select(attrs={'class': 'form-select', 'id': 'address-select'}),
-        label="انتخاب آدرس"
+        label="آدرس ذخیره شده",
+        widget=forms.Select(
+            attrs={
+                "class": "form-select"
+            }
+        )
     )
-    
+
+
     address = forms.CharField(
         required=False,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'خیابان، پلاک، واحد...'}),
-        label="آدرس"
+        label="آدرس کامل",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "خیابان، پلاک، واحد"
+            }
+        )
     )
-    
+
+
     state = forms.ChoiceField(
         required=False,
-        choices=[("", "انتخاب استان...")] + IRAN_STATES,
-        widget=forms.Select(attrs={'class': 'form-select', 'id': 'state-select'}),
-        label="استان"
+        label="استان",
+        choices=[
+            ("", "انتخاب استان...")
+        ] + IRAN_STATES,
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+                "id": "state-select"
+            }
+        )
     )
-    
+
+
     city = forms.ChoiceField(
         required=False,
-        choices=[("", "ابتدا استان را انتخاب کنید...")],
-        widget=forms.Select(attrs={'class': 'form-select', 'id': 'city-select'}),
-        label="شهر"
+        label="شهر",
+        choices=[
+            ("", "انتخاب شهر...")
+        ],
+        widget=forms.Select(
+            attrs={
+                "class": "form-select",
+                "id": "city-select"
+            }
+        )
     )
-    
+
+
     zip_code = forms.CharField(
         required=False,
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'کد پستی', 'dir': 'ltr'}),
-        label="کد پستی"
+        label="کد پستی",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control"
+            }
+        )
     )
-    
+
+
     coupon_code = forms.CharField(
         required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'کد تخفیف را وارد کنید...',
-            'id': 'coupon-input'
-        }),
-        label="کد تخفیف"
+        label="کد تخفیف",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "کد تخفیف"
+            }
+        )
     )
 
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        self.cart_total = kwargs.pop('cart_total', 0)
-        super().__init__(*args, **kwargs)
-        
-        # پر کردن city choices بر اساس داده POST
-        if self.data and self.data.get('state'):
-            state = self.data.get('state')
-            cities = CITIES_BY_STATE.get(state, [])
-            self.fields['city'].choices = [("", "انتخاب شهر...")] + [(city, city) for city in cities]
-            if self.data.get('city'):
-                self.fields['city'].initial = self.data.get('city')
-        
-        # پر کردن آدرس‌های موجود
-        if self.user:
-            addresses = UserAddress.objects.filter(user=self.user)
-            if addresses.exists():
-                choices = [("", "انتخاب آدرس...")]
-                for addr in addresses:
-                    choices.append((addr.id, f"{addr.address} - {addr.city}"))
-                self.fields['address_id'].choices = choices
-                
-                default_address = addresses.filter(is_default=True).first()
-                if default_address:
-                    self.fields['address_id'].initial = default_address.id
-                    self.fields['use_existing_address'].initial = True
-            else:
-                self.fields['address_id'].choices = [("", "هیچ آدرسی ثبت نشده است")]
-                self.fields['use_existing_address'].initial = False
 
-    def clean(self):
-        cleaned_data = super().clean()
-        use_existing = cleaned_data.get('use_existing_address')
-        
-        if use_existing:
-            address_id = cleaned_data.get('address_id')
-            if not address_id:
-                raise forms.ValidationError("لطفاً یک آدرس انتخاب کنید.")
-            
-            try:
-                address = UserAddress.objects.get(id=address_id, user=self.user)
-                cleaned_data['selected_address'] = address
-            except UserAddress.DoesNotExist:
-                raise forms.ValidationError("آدرس انتخاب شده نامعتبر است.")
-        else:
-            address = cleaned_data.get('address')
-            state = cleaned_data.get('state')
-            city = cleaned_data.get('city')
-            
-            if not address:
-                raise forms.ValidationError("لطفاً آدرس را وارد کنید.")
-            if not state:
-                raise forms.ValidationError("لطفاً استان را انتخاب کنید.")
-            if not city:
-                raise forms.ValidationError("لطفاً شهر را انتخاب کنید.")
-        
-        return cleaned_data
+    def __init__(
+        self,
+        *args,
+        user=None,
+        cart_total=0,
+        **kwargs
+    ):
+
+        super().__init__(
+            *args,
+            **kwargs
+        )
+
+
+        self.user = user
+
+        self.cart_total = cart_total
+
+
+
+        if self.user:
+
+
+            addresses = UserAddress.objects.filter(
+                user=self.user
+            )
+
+
+            self.fields["address_id"].choices = [
+
+                (
+                    addr.id,
+                    f"{addr.city} - {addr.address}"
+                )
+
+                for addr in addresses
+
+            ]
+
+
+
+        if self.data.get("state"):
+
+            state = self.data.get(
+                "state"
+            )
+
+
+            cities = CITIES_BY_STATE.get(
+                state,
+                []
+            )
+
+
+            self.fields["city"].choices = [
+
+                (
+                    city,
+                    city
+                )
+
+                for city in cities
+
+            ]
+
+
 
     def clean_coupon_code(self):
-        code = self.cleaned_data.get('coupon_code')
+
+        code = self.cleaned_data.get(
+            "coupon_code"
+        )
+
+
         if not code:
+
             return None
 
+
+
         try:
-            coupon = Coupon.objects.get(code=code.upper())
+
+            coupon = Coupon.objects.get(
+                code=code.upper()
+            )
+
+
         except Coupon.DoesNotExist:
-            raise forms.ValidationError("کد تخفیف نامعتبر است.")
 
-        if not coupon.is_active:
-            raise forms.ValidationError("این کد تخفیف غیرفعال است.")
+            raise forms.ValidationError(
+                "کد تخفیف اشتباه است."
+            )
 
-        if coupon.expiration_date and coupon.expiration_date < timezone.now():
-            raise forms.ValidationError("کد تخفیف منقضی شده است.")
 
-        if coupon.used_by.count() >= coupon.max_limit_usage:
-            raise forms.ValidationError("تعداد استفاده از این کد به پایان رسیده است.")
 
-        if self.user and coupon.used_by.filter(id=self.user.id).exists():
-            raise forms.ValidationError("شما قبلاً از این کد تخفیف استفاده کرده‌اید.")
+        valid, message = coupon.is_valid(
+            user=self.user,
+            total_amount=self.cart_total
+        )
 
-        if coupon.min_purchase_amount and self.cart_total < coupon.min_purchase_amount:
-            raise forms.ValidationError(f"حداقل مبلغ خرید برای این کد تخفیف {coupon.min_purchase_amount:,} تومان است.")
+
+        if not valid:
+
+            raise forms.ValidationError(
+                message
+            )
+
+
 
         return coupon
 
+
+
+    def clean(self):
+
+        cleaned_data = super().clean()
+
+
+
+        use_existing = cleaned_data.get(
+            "use_existing_address"
+        )
+
+
+        if use_existing:
+
+
+            address_id = cleaned_data.get(
+                "address_id"
+            )
+
+
+            if not address_id:
+
+                raise forms.ValidationError(
+                    "یک آدرس انتخاب کنید."
+                )
+
+
+            try:
+
+                cleaned_data["selected_address"] = (
+                    UserAddress.objects.get(
+                        id=address_id,
+                        user=self.user
+                    )
+                )
+
+
+            except UserAddress.DoesNotExist:
+
+                raise forms.ValidationError(
+                    "آدرس انتخاب شده معتبر نیست."
+                )
+
+
+        else:
+
+
+            required_fields = [
+                "address",
+                "state",
+                "city",
+                "zip_code"
+            ]
+
+
+            for field in required_fields:
+
+                if not cleaned_data.get(field):
+
+                    raise forms.ValidationError(
+                        "لطفاً اطلاعات ارسال را کامل کنید."
+                    )
+
+
+            cleaned_data["selected_address"] = None
+
+
+
+        return cleaned_data        
 
 class OrderCreateForm(forms.ModelForm):
     class Meta:

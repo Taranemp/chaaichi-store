@@ -128,38 +128,218 @@
 
             <!-- خلاصه سفارش -->
             <div class="col-lg-4">
-                <div class="checkout-section position-sticky" style="top:24px;">
-                    <div class="checkout-section-header">
-                        <h6 class="fw-bold mb-0">خلاصه سفارش</h6>
-                    </div>
-                    <div class="checkout-section-body">
-                        <dl class="row small mb-0">
-                            <dt class="col-7 fw-normal text-muted">قیمت:</dt>
-                            <dd class="col-5 text-end">{{ total_price|floatformat:0 }} تومان</dd>
 
-                            <dt class="col-7 fw-normal text-muted">هزینه ارسال:</dt>
-                            <dd class="col-5 text-end">۳۶,۰۰۰ تومان</dd>
+<div class="card shadow-sm border-0">
 
-                            <dt class="col-7 fw-normal text-muted">مجموع تخفیف:</dt>
-                            <dd class="col-5 text-end text-danger">۰ تومان</dd>
-                        </dl>
-                        <hr>
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <span class="fw-bold">مبلغ قابل پرداخت:</span>
-                            <span class="fw-bold fs-5" style="color:#2c5f2d;">{{ total_price|floatformat:0 }} تومان</span>
-                        </div>
+    <div class="card-header bg-white">
 
-                        <button type="submit" class="btn w-100 rounded-pill py-3 fw-bold" style="background:#2c5f2d; color:#fff;"
-                                {% if not addresses %}disabled{% endif %}>
-                            پرداخت آنلاین ( {{ total_price|floatformat:0 }} تومان )
-                        </button>
-                    </div>
+        <h5 class="mb-0">
+            خلاصه سفارش
+        </h5>
+
+    </div>
+
+
+    <div class="card-body">
+
+
+        {% for item in cart_items %}
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+
+
+            <div>
+
+                <div class="fw-bold">
+                    {{ item.product.title }}
                 </div>
+
+
+                <small class="text-muted">
+                    تعداد:
+                    {{ item.quantity }}
+                </small>
+
             </div>
-            <!-- End Col -->
+
+
+
+            <div class="text-end">
+
+
+                {% if item.product.get_price != item.product.price %}
+
+                <div class="text-muted text-decoration-line-through small">
+
+                    {{ item.product.price|floatformat:0 }}
+
+                    تومان
+
+                </div>
+
+                {% endif %}
+
+
+
+                <div class="fw-bold">
+
+                    {{ item.subtotal|floatformat:0 }}
+
+                    تومان
+
+                </div>
+
+
+            </div>
+
+
         </div>
-        <!-- End Row -->
-    </form>
+
+
+        {% endfor %}
+
+
+
+        <hr>
+
+
+
+        <dl class="row small mb-0">
+
+
+            <dt class="col-7 fw-normal text-muted">
+
+                قیمت کالاها:
+
+            </dt>
+
+
+            <dd class="col-5 text-end">
+
+                {{ items_total|floatformat:0 }}
+
+                تومان
+
+            </dd>
+
+
+
+
+            <dt class="col-7 fw-normal text-muted">
+
+                تخفیف محصولات:
+
+            </dt>
+
+
+            <dd class="col-5 text-end text-danger">
+
+                -
+
+                {{ products_discount|floatformat:0 }}
+
+                تومان
+
+            </dd>
+
+
+
+
+            {% if coupon_discount %}
+
+
+            <dt class="col-7 fw-normal text-muted">
+
+                تخفیف کد:
+
+            </dt>
+
+
+            <dd class="col-5 text-end text-danger">
+
+                -
+
+                {{ coupon_discount|floatformat:0 }}
+
+                تومان
+
+            </dd>
+
+
+            {% endif %}
+
+
+
+
+
+            <dt class="col-7 fw-normal text-muted">
+
+                هزینه ارسال:
+
+            </dt>
+
+
+            <dd class="col-5 text-end">
+
+                {{ shipping_cost|floatformat:0 }}
+
+                تومان
+
+            </dd>
+
+
+
+        </dl>
+
+
+
+        <hr>
+
+
+
+
+        <div class="d-flex justify-content-between align-items-center">
+
+
+            <span class="fw-bold">
+
+                مبلغ قابل پرداخت:
+
+            </span>
+
+
+
+            <span class="fw-bold text-success fs-5">
+
+                {{ final_price|floatformat:0 }}
+
+                تومان
+
+            </span>
+
+
+        </div>
+
+
+
+
+        <button type="submit"
+                class="btn btn-success w-100 mt-4">
+
+
+            پرداخت
+
+            {{ final_price|floatformat:0 }}
+
+            تومان
+
+
+        </button>
+
+
+
+    </div>
+
 </div>
 
 <style>

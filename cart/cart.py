@@ -66,6 +66,66 @@ class CartSession:
     def get_total_price(self):
         cart = self._get_or_create_cart()
         return cart.calculate_total_price()
+    
+    def get_price_summary(self):
+
+        items = self.get_items()
+
+
+        original_total = 0
+        discount_total = 0
+        final_total = 0
+
+
+        for item in items:
+
+            product = item.product
+
+            quantity = item.quantity
+
+
+            # قیمت اصلی محصول
+            original_price = product.price
+
+
+            # قیمت نهایی محصول
+            # طبق مدل Product پروژه خودت
+            final_price = product.get_price()
+
+
+            discount_amount = (
+                original_price -
+                final_price
+            )
+
+
+            original_total += (
+                original_price *
+                quantity
+            )
+
+
+            discount_total += (
+                discount_amount *
+                quantity
+            )
+
+
+            final_total += (
+                final_price *
+                quantity
+            )
+
+
+        return {
+
+            "original_total": original_total,
+
+            "discount_total": discount_total,
+
+            "final_total": final_total,
+
+        }
 
     def get_total_quantity(self):
         cart = self._get_or_create_cart()
