@@ -196,6 +196,10 @@ class Product(models.Model):
     @property
     def has_discount(self):
         return self.discount_percent > 0
+    
+    @property
+    def is_discounted(self):
+        return self.discount_percent > 0
 
 
     def get_price(self):

@@ -241,6 +241,7 @@ class CartSummaryView(TemplateView):
         summary = cart.get_price_summary()
 
 
+
         context["cart_items"] = (
             cart.get_items()
         )
@@ -251,19 +252,23 @@ class CartSummaryView(TemplateView):
         )
 
 
-        context["original_total"] = (
+
+        # خلاصه قیمت سفارش
+
+        context["items_total"] = (
             summary["original_total"]
         )
 
 
-        context["discount_total"] = (
+        context["products_discount"] = (
             summary["discount_total"]
         )
 
 
-        context["total_price"] = (
+        context["final_price"] = (
             summary["final_total"]
         )
+
 
 
         context["cart_count"] = (
