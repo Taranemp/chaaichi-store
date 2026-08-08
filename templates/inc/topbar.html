@@ -1,7 +1,5 @@
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'css/theme-swiss.css' %}">
-
 <nav class="navbar navbar-expand-lg sw-navbar sticky-top">
   <div class="container">
 
@@ -81,60 +79,3 @@
     </div>
   </div>
 </nav>
-
-<style>
-    .sw-navbar {
-        background: #FDFDFB;
-        border-bottom: 1px solid #E4E1DA;
-        padding: 1.1rem 0;
-        z-index: 1030;
-    }
-    .sw-logo { display: flex; flex-direction: column; line-height: 1.25; text-decoration: none; }
-    .sw-logo-word { font-weight: 800; font-size: 1.3rem; letter-spacing: -.01em; color: #171614; }
-    .sw-logo-sub { font-size: .68rem; color: #6B6862; }
-
-    .sw-nav { gap: 0; }
-    .sw-nav .nav-item { position: relative; padding: 0 1.1rem; }
-    .sw-nav .nav-item:not(:last-child)::after {
-        content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-        width: 1px; height: 14px; background: #E4E1DA;
-    }
-    .sw-nav .nav-link {
-        color: #171614 !important;
-        font-size: .92rem;
-        font-weight: 500;
-        padding: .4rem 0 !important;
-        border-bottom: 1px solid transparent;
-    }
-    .sw-nav .nav-link:hover,
-    .sw-nav .nav-link.active { border-bottom-color: #1B4332; }
-    .sw-nav .dropdown-toggle::after { vertical-align: 1px; }
-
-    .sw-dropdown {
-        border: 1px solid #E4E1DA;
-        border-radius: 4px;
-        box-shadow: none;
-    }
-    .sw-dropdown .dropdown-item { padding: .55rem 1rem; font-size: .9rem; }
-    .sw-dropdown .dropdown-item:hover { background: #EEF1EC; color: #1B4332; }
-
-    .sw-actions { gap: .35rem; }
-    .sw-icon-btn {
-        width: 38px; height: 38px;
-        display: inline-flex; align-items: center; justify-content: center;
-        background: transparent; border: none; color: #171614; font-size: 1.05rem;
-        border-radius: 4px;
-    }
-    .sw-icon-btn:hover { background: #EEF1EC; }
-    .sw-cart-count {
-        position: absolute; top: 2px; left: 2px;
-        width: 15px; height: 15px; border-radius: 50%;
-        background: #A6602B; color: #fff; font-size: 9px;
-        display: flex; align-items: center; justify-content: center;
-    }
-
-    @media (max-width: 991px) {
-        .sw-nav .nav-item:not(:last-child)::after { display: none; }
-        .sw-actions { margin-top: 1rem; }
-    }
-</style>
