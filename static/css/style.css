@@ -84,17 +84,15 @@ button {
   max-width: 1320px;
 }
 
-
 /*==================================================
-NAVBAR / TOPBAR
+NAVBAR / TOPBAR (RESPONSIVE FIX)
 ==================================================*/
 
 .sw-navbar {
   background-color: #ffffff;
   border-bottom: 1px solid #E4E1DA;
-  padding: 1.8rem 0;
+  padding: 0.8rem 0;
   z-index: 1030;
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
 }
 
@@ -102,19 +100,9 @@ NAVBAR / TOPBAR
 .sw-logo {
   display: flex;
   flex-direction: column;
-  line-height: 1.25;
+  line-height: 1.2;
   text-decoration: none;
-}
-
-.sw-logo-img {
-  width: 38px;
-  height: 38px;
-  object-fit: contain;
-  transition: transform 0.4s ease;
-}
-
-.sw-logo:hover .sw-logo-img {
-  transform: scale(1.05);
+  white-space: nowrap;
 }
 
 .sw-logo-word {
@@ -122,22 +110,35 @@ NAVBAR / TOPBAR
   font-size: 1.3rem;
   letter-spacing: -0.01em;
   color: var(--primary);
-  line-height: 1;
 }
 
 .sw-logo-sub {
   font-size: 0.68rem;
   color: #6B6862;
-  letter-spacing: 0.06em;
-  margin-top: 3px;
-  font-weight: 400;
+  margin-top: 2px;
 }
 
 /* Navigation Links */
-/* Navigation Links Clean Style */
+.sw-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .sw-nav .nav-item {
   position: relative;
-  padding: 0 1.1rem;
+  padding: 0 0.8rem;
+}
+
+.sw-nav .nav-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 14px;
+  background: #E4E1DA;
 }
 
 .sw-nav .nav-link {
@@ -146,19 +147,19 @@ NAVBAR / TOPBAR
   font-weight: 500;
   padding: 0.4rem 0 !important;
   position: relative;
-  letter-spacing: -0.01em;
+  white-space: nowrap;
   border: none !important;
   outline: none !important;
   transition: color 0.3s ease;
 }
 
-/* حذف کامل فلش پیش‌فرض بوت‌استرپ روی دراپ‌داون */
+/* Fix dropdown arrow artifact */
 .sw-nav .dropdown-toggle::after {
   display: none !important;
   content: none !important;
 }
 
-/* ساخت خط زیرین اختصاصی هنگام هاور و فعال بودن */
+/* Custom underline animation */
 .sw-nav .nav-link::before {
   content: '';
   position: absolute;
@@ -173,8 +174,6 @@ NAVBAR / TOPBAR
 .sw-nav .nav-link:hover::before,
 .sw-nav .nav-link.active::before {
   width: 100%;
-  left: 0;
-  right: auto;
 }
 
 .sw-nav .nav-link:hover,
@@ -184,119 +183,28 @@ NAVBAR / TOPBAR
   background: transparent !important;
 }
 
-.sw-nav .dropdown-toggle::after {
-  vertical-align: 1px;
-}
-
-/* Dropdowns & RTL Alignment */
-.sw-actions .dropdown {
-  position: relative !important;
-}
-
-.sw-dropdown {
-  background-color: #ffffff;
-  border: 1px solid #E4E1DA;
-  border-radius: 12px;
-  padding: 0.5rem;
-  min-width: 200px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  position: absolute !important;
-  left: 0 !important;
-  right: auto !important;
-  transform: none !important;
-  margin-top: 0.8rem !important;
-}
-
-.sw-dropdown .dropdown-item {
-  border-radius: 8px;
-  padding: 0.55rem 0.9rem;
-  font-size: 0.85rem;
-  color: #4a4a4a;
-  font-weight: 400;
-  transition: all 0.25s ease;
-}
-
-.sw-dropdown .dropdown-item:hover {
-  background-color: #EEF1EC;
-  color: var(--primary);
-  padding-right: 1.1rem;
-}
-
-.sw-dropdown .dropdown-divider {
-  border-top: 1px solid #f0f0f0;
-  margin: 0.4rem 0;
-}
-
-.text-gold {
-  color: var(--accent) !important;
-}
-
-/* Header Actions & Search */
+/* Actions Section (Fix Icons Layout) */
 .sw-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.6rem !important;
+  flex-shrink: 0;
 }
 
-.sw-search-form {
-  position: relative;
-  width: 180px;
-  transition: width 0.35s ease;
-}
-
-.sw-search-form:focus-within {
-  width: 230px;
-}
-
-.sw-search-input {
-  border-radius: 20px;
-  padding-right: 1rem;
-  padding-left: 2.3rem;
-  font-size: 0.82rem;
-  background-color: #f7f7f7;
-  border: 1px solid #e8e8e8;
-  height: 38px;
-  transition: all 0.3s ease;
-}
-
-.sw-search-input:focus {
-  background-color: #ffffff;
-  border-color: rgba(47, 93, 80, 0.3);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-}
-
-.sw-search-btn {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #888888;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: color 0.25s ease;
-}
-
-.sw-search-input:focus ~ .sw-search-btn,
-.sw-search-btn:hover {
-  color: var(--primary);
-}
-
-/* Action Icon Buttons */
 .sw-icon-btn {
   width: 38px;
   height: 38px;
-  border-radius: 4px;
+  border-radius: 6px;
   background-color: transparent;
   color: #171614;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.05rem;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.1rem;
   border: none;
   text-decoration: none;
-  transition: all 0.3s ease;
+  position: relative;
+  transition: all 0.25s ease;
 }
 
 .sw-icon-btn:hover {
@@ -304,7 +212,6 @@ NAVBAR / TOPBAR
   color: var(--primary);
 }
 
-/* Cart Badge */
 .sw-cart-count {
   position: absolute;
   top: 2px;
@@ -316,9 +223,63 @@ NAVBAR / TOPBAR
   color: #ffffff;
   font-size: 9px;
   font-weight: 600;
+  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Dropdown Menu RTL Fix */
+.sw-dropdown {
+  background-color: #ffffff;
+  border: 1px solid #E4E1DA;
+  border-radius: 12px;
+  padding: 0.5rem;
+  min-width: 180px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.sw-dropdown .dropdown-item {
+  border-radius: 8px;
+  padding: 0.5rem 0.8rem;
+  font-size: 0.88rem;
+  color: #4a4a4a;
+  transition: all 0.2s ease;
+}
+
+.sw-dropdown .dropdown-item:hover {
+  background-color: #EEF1EC;
+  color: var(--primary);
+}
+
+/* Responsive Rules for Small Laptops & Tablets */
+@media (max-width: 1199px) {
+  .sw-nav .nav-item {
+    padding: 0 0.5rem;
+  }
+  .sw-nav .nav-link {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 991px) {
+  .sw-nav {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem 0;
+    gap: 0;
+  }
+  .sw-nav .nav-item {
+    width: 100%;
+    padding: 0.4rem 0;
+  }
+  .sw-nav .nav-item:not(:last-child)::after {
+    display: none;
+  }
+  .sw-actions {
+    margin-top: 0.8rem;
+    justify-content: flex-start;
+  }
 }
 
 /*==================================================
@@ -362,7 +323,6 @@ SEARCH GLOBAL
 .search-form button:hover {
   background: var(--primary-dark);
 }
-
 /*==================================================
 FOOTER
 ==================================================*/
