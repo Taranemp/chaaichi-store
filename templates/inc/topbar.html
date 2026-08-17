@@ -2,7 +2,6 @@
 
 <nav class="navbar navbar-expand-lg sw-navbar sticky-top">
   <div class="container">
-
     <!-- لوگو -->
     <a class="navbar-brand sw-logo" href="{% url 'website:index' %}">
       <span class="sw-logo-word">Chaai Chi</span>
@@ -10,7 +9,13 @@
     </a>
 
     <!-- دکمه موبایل -->
-    <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="باز کردن منو">
+    <button
+      class="navbar-toggler border-0 shadow-none"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-label="باز کردن منو"
+    >
       <i class="bi bi-list fs-2"></i>
     </button>
 
@@ -18,60 +23,137 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav mx-auto sw-nav">
         <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}" href="{% url 'website:index' %}">خانه</a>
+          <a
+            class="nav-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
+            href="{% url 'website:index' %}"
+            >خانه</a
+          >
         </li>
 
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">دسته‌بندی</a>
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            >دسته‌بندی</a
+          >
           <ul class="dropdown-menu sw-dropdown mt-2">
-            <li><a class="dropdown-item" href="{% url 'shop:product_grid' %}?category_id=1">چای سیاه</a></li>
-            <li><a class="dropdown-item" href="{% url 'shop:product_grid' %}?category_id=2">چای سبز</a></li>
-            <li><a class="dropdown-item" href="{% url 'shop:product_grid' %}?category_id=3">دمنوش</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item fw-semibold" href="{% url 'shop:product_grid' %}">همه محصولات</a></li>
+            <li>
+              <a
+                class="dropdown-item"
+                href="{% url 'shop:product_grid' %}?category_id=1"
+                >چای سیاه</a
+              >
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                href="{% url 'shop:product_grid' %}?category_id=2"
+                >چای سبز</a
+              >
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                href="{% url 'shop:product_grid' %}?category_id=3"
+                >دمنوش</a
+              >
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a
+                class="dropdown-item fw-semibold"
+                href="{% url 'shop:product_grid' %}"
+                >همه محصولات</a
+              >
+            </li>
           </ul>
         </li>
 
         <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" href="{% url 'website:about' %}">درباره ما</a>
+          <a
+            class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}"
+            href="{% url 'website:about' %}"
+            >درباره ما</a
+          >
         </li>
 
         <li class="nav-item">
-          <a class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}" href="{% url 'website:contact' %}">تماس با ما</a>
+          <a
+            class="nav-link {% if request.resolver_match.url_name == 'contact' %}active{% endif %}"
+            href="{% url 'website:contact' %}"
+            >تماس با ما</a
+          >
         </li>
       </ul>
 
       <!-- سمت راست -->
+      <!-- سمت چپ/راست هدر -->
       <div class="d-flex align-items-center sw-actions">
-
         <button class="sw-icon-btn" type="button" aria-label="جستجو">
           <i class="bi bi-search"></i>
         </button>
 
-        <a href="{% url 'cart:summary' %}" class="sw-icon-btn position-relative" aria-label="سبد خرید">
+        <a
+          href="{% url 'cart:summary' %}"
+          class="sw-icon-btn position-relative"
+          aria-label="سبد خرید"
+        >
           <i class="bi bi-basket"></i>
-          <span id="cart-count" class="sw-cart-count">{{ cart.get_total_quantity|default:0 }}</span>
+          <span id="cart-count" class="sw-cart-count"
+            >{{ cart.get_total_quantity|default:0 }}</span
+          >
         </a>
 
         {% if user.is_authenticated %}
         <div class="dropdown">
-          <button class="sw-icon-btn" type="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" aria-label="حساب کاربری">
+          <button
+            class="sw-icon-btn"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            aria-label="حساب کاربری"
+          >
             <i class="bi bi-person"></i>
           </button>
-          <ul class="dropdown-menu dropdown-menu-end sw-dropdown mt-2">
-            <li><a class="dropdown-item" href="{% url 'dashboard:home' %}">پروفایل</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger" href="{% url 'account:logout' %}">خروج</a></li>
+          <ul class="dropdown-menu dropdown-menu-start sw-dropdown mt-2">
+            <li>
+              <a class="dropdown-item" href="{% url 'dashboard:home' %}"
+                >پروفایل</a
+              >
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a
+                class="dropdown-item text-danger"
+                href="{% url 'account:logout' %}"
+                >خروج</a
+              >
+            </li>
           </ul>
         </div>
         {% else %}
         <div class="dropdown">
-          <button class="sw-icon-btn" type="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" aria-label="ورود یا ثبت‌نام">
+          <button
+            class="sw-icon-btn"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            aria-label="ورود یا ثبت‌نام"
+          >
             <i class="bi bi-person"></i>
           </button>
-          <ul class="dropdown-menu dropdown-menu-end sw-dropdown mt-2">
-            <li><a class="dropdown-item" href="{% url 'account:login' %}">ورود</a></li>
-            <li><a class="dropdown-item" href="{% url 'account:signup' %}">ثبت‌نام</a></li>
+          <ul class="dropdown-menu dropdown-menu-start sw-dropdown mt-2">
+            <li>
+              <a class="dropdown-item" href="{% url 'account:login' %}">ورود</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="{% url 'account:signup' %}"
+                >ثبت‌نام</a
+              >
+            </li>
           </ul>
         </div>
         {% endif %}

@@ -1,469 +1,590 @@
-{% extends 'base.html' %}
-{% load static %}
+{% extends 'base.html' %} 
+{% load static %} 
 
-{% block title %}{{ object.title }} - Chaai Chi{% endblock %}
+{% block title %}{{ object.title }} - Chaai Chi{% endblock %} 
 
 {% block content %}
+<style>
+  /* =========================================== */
+  /* استایل‌های اختصاصی عنوان و قیمت */
+  /* =========================================== */
+  .product-title {
+    color: #1a1a1a !important;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.2px;
+  }
+
+  .product-price {
+    color: #1a1a1a !important;
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+  }
+
+  .price-currency {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #555555;
+  }
+
+  /* =========================================== */
+  /* استایل دکمه افزودن به سبد خرید (مشکی و ظریف) */
+  /* =========================================== */
+  .btn-add-to-cart {
+    background-color: #1a1a1a !important;
+    border-color: #1a1a1a !important;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+    transition: all 0.25s ease;
+  }
+
+  .btn-add-to-cart:hover {
+    background-color: #333333 !important;
+    border-color: #333333 !important;
+    transform: translateY(-1px);
+  }
+
+  /* =========================================== */
+  /* استایل باکس کم/زیاد کردن تعداد به سبک دیجی‌کالا */
+  /* =========================================== */
+  .dk-qty-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 110px;
+    height: 44px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 0 8px;
+    background-color: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  }
+
+  .dk-qty-btn {
+    background: transparent;
+    border: none;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: transform 0.1s ease;
+  }
+
+  .dk-qty-btn:active {
+    transform: scale(0.9);
+  }
+
+  .dk-qty-plus {
+    color: #ef4056; /* قرمز دیجی‌کالا */
+  }
+
+  .dk-qty-count {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #ef4056;
+    user-select: none;
+  }
+
+  /* =========================================== */
+  /* استایل دکمه علاقه‌مندی و تصاویر کوچک */
+  /* =========================================== */
+  .wishlist-btn {
+    transition: all 0.3s ease;
+  }
+  .wishlist-btn:hover {
+    transform: scale(1.1);
+  }
+  .wishlist-btn.active {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: white;
+  }
+  .wishlist-btn.active i {
+    color: white;
+  }
+  
+  .thumb-img.active-thumb {
+    border-color: #1a1a1a !important;
+  }
+</style>
 
 <div class="container py-4">
-    <div class="row">
+  <div class="row">
+    <!-- ============ ستون راست: تصاویر محصول ============ -->
+    <div class="col-md-6 mb-4 mb-md-0">
+      <!-- عکس اصلی -->
+      <div class="card shadow-sm border-0 mb-3 bg-light overflow-hidden">
+        <img
+          id="mainProductImage"
+          src="{{ object.image.url }}"
+          class="card-img-top rounded w-100"
+          alt="{{ object.title }}"
+          style="height: 420px; object-fit: cover"
+        />
+      </div>
 
-        <!-- ============ ستون راست: تصاویر محصول ============ -->
-        <div class="col-md-6 mb-4 mb-md-0">
-            <div class="card shadow-sm border-0 mb-3">
-                <img src="{{ object.image.url }}" class="card-img-top rounded" alt="{{ object.title }}" style="max-height: 400px; object-fit: contain;">
-            </div>
-
-            {% if object.images.all %}
-            <div class="row g-2">
-                {% for img in object.images.all %}
-                <div class="col-3">
-                    <img src="{{ img.file.url }}" class="img-fluid rounded border" alt="" style="height: 80px; object-fit: cover; cursor: pointer;" onclick="changeMainImage(this.src)">
-                </div>
-                {% endfor %}
-            </div>
-            {% endif %}
+      <!-- گالری تصاویر کوچک -->
+      <div class="row g-2">
+        <!-- تصویر اصلی به عنوان اولویت اول گالری -->
+        <div class="col-3">
+          <img
+            src="{{ object.image.url }}"
+            class="img-fluid rounded border thumb-img active-thumb"
+            alt="{{ object.title }}"
+            style="height: 80px; width: 100%; object-fit: cover; cursor: pointer;"
+            onclick="changeMainImage(this)"
+          />
         </div>
 
-        <!-- ============ ستون چپ: اطلاعات محصول ============ -->
-        <div class="col-md-6">
-            <!-- عنوان + دکمه علاقه‌مندی -->
-            <div class="d-flex justify-content-between align-items-start">
-                <h1 class="h2 mb-2" style="color: #2c5f2d;">{{ object.title }}</h1>
-
-                {% if user.is_authenticated %}
-                <button type="button" class="btn btn-outline-danger btn-sm rounded-circle wishlist-btn {% if is_wished %}active{% endif %}" onclick="toggleWishlist('{{ object.id }}', this)" style="width: 40px; height: 40px; padding: 0; border-radius: 50%; flex-shrink: 0; transition: all 0.3s ease;" data-bs-toggle="tooltip" data-bs-placement="top" title="افزودن به علاقه‌مندی">
-                    <i class="bi {% if is_wished %}bi-heart-fill{% else %}bi-heart{% endif %} fs-5"></i>
-                </button>
-                {% else %}
-                <a href="{% url 'account:login' %}?next={{ request.path }}" class="btn btn-outline-secondary btn-sm rounded-circle" style="width: 40px; height: 40px; padding: 0; border-radius: 50%; flex-shrink: 0;" title="برای افزودن به علاقه‌مندی وارد شوید">
-                    <i class="bi bi-heart fs-5"></i>
-                </a>
-                {% endif %}
-            </div>
-
-            <!-- امتیاز و تعداد دیدگاه -->
-            <div class="d-flex align-items-center gap-2 mb-3">
-                <div class="text-warning">
-                    {% for i in "12345" %}
-                    {% if forloop.counter <= avg_rating_rounded %}
-                    <i class="bi bi-star-fill"></i>
-                    {% else %}
-                    <i class="bi bi-star"></i>
-                    {% endif %}
-                    {% endfor %}
-                </div>
-                <span class="text-muted small">
-                    {% if live_reviews_count %}
-                    {{ live_avg_rating }} از ۵ ({{ live_reviews_count }} دیدگاه)
-                    {% else %}
-                    هنوز دیدگاهی ثبت نشده
-                    {% endif %}
-                </span>
-            </div>
-
-            <!-- برند -->
-            {% if object.brand %}
-            <p class="text-muted mb-2">
-                <i class="bi bi-tag"></i> برند:
-                <a href="#" class="text-decoration-none">{{ object.brand.name }}</a>
-            </p>
-            {% endif %}
-
-            <!-- دسته‌بندی‌ها -->
-            {% if object.category.all %}
-            <p class="text-muted mb-3">
-                <i class="bi bi-folder"></i> دسته‌بندی:
-                {% for cat in object.category.all %}
-                <span class="badge rounded-pill" style="background: #e7efeb; color: #2c5f2d;">{{ cat.title }}</span>
-                {% endfor %}
-            </p>
-            {% endif %}
-
-            <!-- توضیحات کوتاه -->
-            {% if object.brief_description %}
-            <p class="text-secondary mb-4">{{ object.brief_description }}</p>
-            {% endif %}
-
-            <!-- قیمت -->
-            <div class="mb-4">
-                {% if object.is_discounted %}
-                <h2 class="text-primary d-inline">{{ object.get_price|floatformat:0 }} <small>تومان</small></h2>
-                <span class="text-muted text-decoration-line-through ms-2">{{ object.price|floatformat:0 }} تومان</span>
-                <span class="badge bg-danger ms-2">{{ object.discount_percent }}% تخفیف</span>
-                {% else %}
-                <h2 class="text-primary">{{ object.price|floatformat:0 }} <small>تومان</small></h2>
-                {% endif %}
-            </div>
-
-            <!-- درجه و بسته‌بندی -->
-            <div class="row mb-4">
-                {% if object.grade %}
-                <div class="col-6">
-                    <div class="border rounded p-2 text-center">
-                        <i class="bi bi-star text-warning"></i>
-                        <span class="d-block small">درجه</span>
-                        <span class="fw-bold">{{ object.grade.name }}</span>
-                    </div>
-                </div>
-                {% endif %}
-                {% if object.package %}
-                <div class="col-6">
-                    <div class="border rounded p-2 text-center">
-                        <i class="bi bi-box text-info"></i>
-                        <span class="d-block small">بسته‌بندی</span>
-                        <span class="fw-bold">{{ object.package.name }}</span>
-                        {% if object.package.weight_grams %}
-                        <span class="small">({{ object.package.weight_grams }} گرم)</span>
-                        {% endif %}
-                    </div>
-                </div>
-                {% endif %}
-            </div>
-
-            <!-- موجودی -->
-            <div class="mb-4">
-                {% if object.stock > 0 %}
-                <span class="text-success"><i class="bi bi-check-circle"></i> موجود در انبار ({{ object.stock }} عدد)</span>
-                {% else %}
-                <span class="text-danger"><i class="bi bi-x-circle"></i> ناموجود</span>
-                {% endif %}
-            </div>
-
-            <!-- کنترلر جدید انتخاب تعداد طرح دیجی‌کالا -->
-            <div class="dk-qty-wrapper mb-4">
-                <button type="button" class="dk-qty-btn dk-qty-plus" onclick="incrementQuantity()">
-                    <i class="bi bi-plus-lg"></i>
-                </button>
-                
-                <span id="quantity-display" class="dk-qty-count">۱</span>
-                <input type="hidden" id="quantity" value="1" min="1" max="{{ object.stock }}">
-                
-                <button type="button" class="dk-qty-btn dk-qty-minus" id="decrement-btn" onclick="decrementQuantity()">
-                    <i class="bi bi-trash3 text-danger" id="decrement-icon"></i>
-                </button>
-            </div>
-
-            <!-- دکمه افزودن به سبد خرید -->
-            <div class="d-grid mb-4">
-                <button class="btn btn-success btn-lg py-3 fw-semibold rounded-4 shadow-sm" onclick="addToCart('{{ object.id }}')">
-                    <i class="bi bi-cart-plus me-2"></i> افزودن به سبد خرید
-                </button>
-            </div>
-
-            <!-- اطلاعات اضافی -->
-            <div class="border-top pt-3">
-                <div class="row text-center">
-                    <div class="col-4">
-                        <i class="bi bi-truck fs-5 text-primary"></i>
-                        <p class="small mb-0">ارسال سریع</p>
-                    </div>
-                    <div class="col-4">
-                        <i class="bi bi-shield-check fs-5 text-primary"></i>
-                        <p class="small mb-0">ضمانت کیفیت</p>
-                    </div>
-                    <div class="col-4">
-                        <i class="bi bi-arrow-return-left fs-5 text-primary"></i>
-                        <p class="small mb-0">۷ روز گارانتی</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div> <!-- بستن row -->
-
-    <!-- ============ توضیحات کامل محصول ============ -->
-    <div class="row mt-5">
-        <div class="col-12">
-            <h4 class="border-bottom pb-2" style="color: #2c5f2d;">معرفی محصول</h4>
-            <div class="mt-3">{{ object.description|linebreaks }}</div>
-        </div>
-    </div>
-
-    <!-- ============ دیدگاه‌های کاربران ============ -->
-    <div class="row mt-5" id="reviews">
-        <div class="col-12 mb-4">
-            <h4 class="border-bottom pb-2" style="color: #2c5f2d;">دیدگاه کاربران</h4>
-        </div>
-
-        <div class="col-lg-4">
-            <div class="card border-0 shadow-sm text-center p-4" style="position: sticky; top: 90px;">
-                <span class="text-muted small mb-1">امتیاز محصول</span>
-                <h1 class="fw-bold mb-0" style="color: #2c5f2d; font-size: 3rem;">
-                    {{ live_avg_rating|default:"۰" }}<small class="fs-6 text-muted"> از ۵</small>
-                </h1>
-                <div class="text-warning my-2">
-                    {% for i in "12345" %}
-                    {% if forloop.counter <= avg_rating_rounded %}
-                    <i class="bi bi-star-fill"></i>
-                    {% else %}
-                    <i class="bi bi-star"></i>
-                    {% endif %}
-                    {% endfor %}
-                </div>
-                <span class="text-muted small mb-4">از مجموع {{ live_reviews_count }} امتیاز</span>
-
-                <hr>
-
-                {% if user.is_authenticated %}
-                <p class="small text-muted mb-3">شما هم درباره‌ی این محصول دیدگاه ثبت کنید</p>
-                <a href="{% url 'review:submit' object.pk %}" class="btn btn-outline-primary rounded-pill w-100">
-                    <i class="bi bi-pencil-square"></i> ثبت دیدگاه
-                </a>
-                {% else %}
-                <p class="small text-muted mb-3">برای ثبت دیدگاه ابتدا وارد حساب کاربری خود شوید</p>
-                <a href="{% url 'account:login' %}?next={{ request.path }}#reviews" class="btn btn-outline-primary rounded-pill w-100">
-                    <i class="bi bi-box-arrow-in-right"></i> ورود به حساب
-                </a>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="col-lg-8 mt-4 mt-lg-0">
-            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-                <span class="fw-semibold">{{ live_reviews_count }} دیدگاه</span>
-
-                <div class="btn-group btn-group-sm" role="group">
-                    <a href="?review_order=newest#reviews" class="btn {% if current_review_order == 'newest' %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill me-1">جدیدترین</a>
-                    <a href="?review_order=rating_high#reviews" class="btn {% if current_review_order == 'rating_high' %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill me-1">بیشترین امتیاز</a>
-                    <a href="?review_order=rating_low#reviews" class="btn {% if current_review_order == 'rating_low' %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill">کمترین امتیاز</a>
-                </div>
-            </div>
-
-            {% for review in reviews %}
-            <div class="card border-0 shadow-sm mb-3">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width: 38px; height: 38px; background: #2c5f2d; flex-shrink: 0;">
-                                {{ review.user.profile.get_fullname|default:review.user.phone|first|upper }}
-                            </div>
-                            <div>
-                                <span class="fw-semibold d-block">{{ review.user.profile.get_fullname|default:review.user.phone }}</span>
-                                {% if review.is_purchased %}
-                                <span class="badge rounded-pill" style="background: #e7efeb; color: #2c5f2d; font-size: 0.68rem;">
-                                    <i class="bi bi-patch-check"></i> خریدار
-                                </span>
-                                {% endif %}
-                            </div>
-                        </div>
-                        <span class="text-muted small">{{ review.created_date|date:"Y/m/d" }}</span>
-                    </div>
-
-                    <div class="text-warning mb-2">
-                        {% for i in "12345" %}
-                        {% if forloop.counter <= review.rate %}
-                        <i class="bi bi-star-fill"></i>
-                        {% else %}
-                        <i class="bi bi-star"></i>
-                        {% endif %}
-                        {% endfor %}
-                    </div>
-
-                    <p class="mb-0 text-secondary">{{ review.comment }}</p>
-                </div>
-            </div>
-            {% empty %}
-            <div class="text-center text-muted py-5">
-                <i class="bi bi-chat-square-text fs-1 d-block mb-2 opacity-50"></i>
-                هنوز دیدگاهی برای این محصول ثبت نشده. اولین نفری باشید که نظر می‌دهد!
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-
-    <!-- ============ محصولات مرتبط ============ -->
-    {% if related_products %}
-    <div class="row mt-5">
-        <div class="col-12">
-            <h4 class="border-bottom pb-2" style="color: #2c5f2d;">محصولات مرتبط</h4>
-        </div>
-        {% for product in related_products %}
-        <div class="col-md-3 col-6 mt-3">
-            <div class="card h-100 shadow-sm">
-                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}" style="height: 150px; object-fit: cover;">
-                <div class="card-body text-center">
-                    <h6 class="card-title">{{ product.title }}</h6>
-                    <p class="card-text text-primary fw-bold">{{ product.get_price|floatformat:0 }} تومان</p>
-                    <a href="{% url 'shop:product_detail' product.slug %}" class="btn btn-sm btn-outline-primary">مشاهده</a>
-                </div>
-            </div>
+        <!-- سایر تصاویر گالری -->
+        {% for img in object.images.all %}
+        <div class="col-3">
+          <img
+            src="{{ img.file.url }}"
+            class="img-fluid rounded border thumb-img"
+            alt="{{ object.title }} - تصویر {{ forloop.counter }}"
+            style="height: 80px; width: 100%; object-fit: cover; cursor: pointer;"
+            onclick="changeMainImage(this)"
+          />
         </div>
         {% endfor %}
+      </div>
     </div>
-    {% endif %}
 
-</div> <!-- بستن container -->
+    <!-- ============ ستون چپ: اطلاعات محصول ============ -->
+    <div class="col-md-6">
+      <!-- عنوان + دکمه علاقه‌مندی -->
+      <div class="d-flex justify-content-between align-items-start mb-2">
+        <h1 class="product-title mb-0">{{ object.title }}</h1>
+
+        {% if user.is_authenticated %}
+        <button
+          type="button"
+          class="btn btn-outline-danger btn-sm rounded-circle wishlist-btn {% if is_wished %}active{% endif %}"
+          onclick="toggleWishlist('{{ object.id }}', this)"
+          style="width: 40px; height: 40px; padding: 0; border-radius: 50%; flex-shrink: 0;"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title="افزودن به علاقه‌مندی"
+        >
+          <i class="bi {% if is_wished %}bi-heart-fill{% else %}bi-heart{% endif %} fs-5"></i>
+        </button>
+        {% else %}
+        <a
+          href="{% url 'account:login' %}?next={{ request.path }}"
+          class="btn btn-outline-secondary btn-sm rounded-circle"
+          style="width: 40px; height: 40px; padding: 0; border-radius: 50%; flex-shrink: 0;"
+          title="برای افزودن به علاقه‌مندی وارد شوید"
+        >
+          <i class="bi bi-heart fs-5"></i>
+        </a>
+        {% endif %}
+      </div>
+
+      <!-- امتیاز و تعداد دیدگاه -->
+      <div class="d-flex align-items-center gap-2 mb-3">
+        <div class="text-warning">
+          {% for i in "12345" %}
+            {% if forloop.counter <= avg_rating_rounded %}
+              <i class="bi bi-star-fill"></i>
+            {% else %}
+              <i class="bi bi-star"></i>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <span class="text-muted small">
+          {% if live_reviews_count %}
+            {{ live_avg_rating }} از ۵ ({{ live_reviews_count }} دیدگاه)
+          {% else %}
+            هنوز دیدگاهی ثبت نشده
+          {% endif %}
+        </span>
+      </div>
+
+      <!-- برند -->
+      {% if object.brand %}
+      <p class="text-muted mb-2">
+        <i class="bi bi-tag"></i> برند:
+        <a href="#" class="text-decoration-none">{{ object.brand.name }}</a>
+      </p>
+      {% endif %}
+
+      <!-- دسته‌بندی‌ها -->
+      {% if object.category.all %}
+        <p class="text-muted mb-3">
+          <i class="bi bi-folder"></i> دسته‌بندی: 
+          {% for cat in object.category.all %}
+            <span class="badge rounded-pill" style="background: #e7efeb; color: #2c5f2d">
+              {{ cat.title }}
+            </span>
+          {% endfor %}
+        </p>
+      {% endif %}
+
+      <!-- توضیحات کوتاه -->
+      {% if object.brief_description %}
+        <p class="text-secondary mb-4">{{ object.brief_description }}</p>
+      {% endif %}
+
+      <!-- بخش قیمت -->
+      <div class="mb-4 pt-2">
+        {% if object.is_discounted %}
+          <div class="d-flex align-items-baseline gap-2">
+            <span class="product-price">
+              {{ object.get_price|floatformat:0 }} <small class="price-currency">تومان</small>
+            </span>
+            <span class="text-muted text-decoration-line-through small ms-1">
+              {{ object.price|floatformat:0 }}
+            </span>
+            <span class="badge bg-danger rounded-pill px-2 py-1" style="font-size: 0.75rem;">
+              {{ object.discount_percent }}٪ تخفیف
+            </span>
+          </div>
+        {% else %}
+          <span class="product-price">
+            {{ object.price|floatformat:0 }} <small class="price-currency">تومان</small>
+          </span>
+        {% endif %}
+      </div>
+
+      <!-- درجه و بسته‌بندی -->
+      <div class="row mb-4">
+        {% if object.grade %}
+        <div class="col-6">
+          <div class="border rounded p-2 text-center">
+            <i class="bi bi-star text-warning"></i>
+            <span class="d-block small">درجه</span>
+            <span class="fw-bold">{{ object.grade.name }}</span>
+          </div>
+        </div>
+        {% endif %}
+        
+        {% if object.package %}
+        <div class="col-6">
+          <div class="border rounded p-2 text-center">
+            <i class="bi bi-box text-info"></i>
+            <span class="d-block small">بسته‌بندی</span>
+            <span class="fw-bold">{{ object.package.name }}</span>
+            {% if object.package.weight_grams %}
+            <span class="small">({{ object.package.weight_grams }} گرم)</span>
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- موجودی -->
+      <div class="mb-4">
+        {% if object.stock > 0 %}
+        <span class="text-success">
+          <i class="bi bi-check-circle"></i> موجود در انبار ({{ object.stock }} عدد)
+        </span>
+        {% else %}
+        <span class="text-danger"><i class="bi bi-x-circle"></i> ناموجود</span>
+        {% endif %}
+      </div>
+
+      <!-- کنترلر تعداد انتخاب -->
+      <div class="dk-qty-wrapper mb-4">
+        <button type="button" class="dk-qty-btn dk-qty-plus" onclick="incrementQuantity()">
+          <i class="bi bi-plus-lg"></i>
+        </button>
+
+        <span id="quantity-display" class="dk-qty-count">۱</span>
+        <input type="hidden" id="quantity" value="1" min="1" max="{{ object.stock }}" />
+
+        <button type="button" class="dk-qty-btn dk-qty-minus" id="decrement-btn" onclick="decrementQuantity()">
+          <i class="bi bi-trash3 text-danger" id="decrement-icon"></i>
+        </button>
+      </div>
+
+      <!-- دکمه افزودن به سبد خرید (مشکی و ظریف) -->
+      <div class="d-grid mb-4">
+        <button
+          class="btn btn-dark btn-add-to-cart py-2 px-4 fw-medium rounded-3 shadow-sm"
+          onclick="addToCart('{{ object.id }}')"
+        >
+          <i class="bi bi-bag-plus me-2"></i> افزودن به سبد خرید
+        </button>
+      </div>
+
+      <!-- اطلاعات اضافی -->
+      <div class="border-top pt-3">
+        <div class="row text-center">
+          <div class="col-4">
+            <i class="bi bi-truck fs-5 text-primary"></i>
+            <p class="small mb-0">ارسال سریع</p>
+          </div>
+          <div class="col-4">
+            <i class="bi bi-shield-check fs-5 text-primary"></i>
+            <p class="small mb-0">ضمانت کیفیت</p>
+          </div>
+          <div class="col-4">
+            <i class="bi bi-arrow-return-left fs-5 text-primary"></i>
+            <p class="small mb-0">۷ روز گارانتی</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- پایان row اصلی -->
+
+  <!-- ============ توضیحات کامل محصول ============ -->
+  <div class="row mt-5">
+    <div class="col-12">
+      <h4 class="border-bottom pb-2" style="color: #2c5f2d">معرفی محصول</h4>
+      <div class="mt-3">{{ object.description|linebreaks }}</div>
+    </div>
+  </div>
+
+  <!-- ============ دیدگاه‌های کاربران ============ -->
+  <div class="row mt-5" id="reviews">
+    <div class="col-12 mb-4">
+      <h4 class="border-bottom pb-2" style="color: #2c5f2d">دیدگاه کاربران</h4>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm text-center p-4" style="position: sticky; top: 90px">
+        <span class="text-muted small mb-1">امتیاز محصول</span>
+        <h1 class="fw-bold mb-0" style="color: #2c5f2d; font-size: 3rem">
+          {{ live_avg_rating|default:"۰" }}<small class="fs-6 text-muted"> از ۵</small>
+        </h1>
+        <div class="text-warning my-2">
+          {% for i in "12345" %}
+            {% if forloop.counter <= avg_rating_rounded %}
+              <i class="bi bi-star-fill"></i>
+            {% else %}
+              <i class="bi bi-star"></i>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <span class="text-muted small mb-4">از مجموع {{ live_reviews_count }} امتیاز</span>
+
+        <hr />
+
+        {% if user.is_authenticated %}
+        <p class="small text-muted mb-3">شما هم درباره‌ی این محصول دیدگاه ثبت کنید</p>
+        <a href="{% url 'review:submit' object.pk %}" class="btn btn-outline-primary rounded-pill w-100">
+          <i class="bi bi-pencil-square"></i> ثبت دیدگاه
+        </a>
+        {% else %}
+        <p class="small text-muted mb-3">برای ثبت دیدگاه ابتدا وارد حساب کاربری خود شوید</p>
+        <a href="{% url 'account:login' %}?next={{ request.path }}#reviews" class="btn btn-outline-primary rounded-pill w-100">
+          <i class="bi bi-box-arrow-in-right"></i> ورود به حساب
+        </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="col-lg-8 mt-4 mt-lg-0">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <span class="fw-semibold">{{ live_reviews_count }} دیدگاه</span>
+
+        <div class="btn-group btn-group-sm" role="group">
+          <a
+            href="?review_order=newest#reviews"
+            class="btn {% if current_review_order == 'newest' %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill me-1"
+          >جدیدترین</a>
+          <a
+            href="?review_order=rating_high#reviews"
+            class="btn {% if current_review_order == 'rating_high' %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill me-1"
+          >بیشترین امتیاز</a>
+          <a
+            href="?review_order=rating_low#reviews"
+            class="btn {% if current_review_order == 'rating_low' %}btn-primary{% else %}btn-outline-secondary{% endif %} rounded-pill"
+          >کمترین امتیاز</a>
+        </div>
+      </div>
+
+      {% for review in reviews %}
+      <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <div class="d-flex align-items-center gap-2">
+              <div
+                class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+                style="width: 38px; height: 38px; background: #2c5f2d; flex-shrink: 0;"
+              >
+                {{ review.user.profile.get_fullname|default:review.user.phone|first|upper }}
+              </div>
+              <div>
+                <span class="fw-semibold d-block">
+                  {{ review.user.profile.get_fullname|default:review.user.phone }}
+                </span>
+                {% if review.is_purchased %}
+                <span class="badge rounded-pill" style="background: #e7efeb; color: #2c5f2d; font-size: 0.68rem;">
+                  <i class="bi bi-patch-check"></i> خریدار
+                </span>
+                {% endif %}
+              </div>
+            </div>
+            <span class="text-muted small">{{ review.created_date|date:"Y/m/d" }}</span>
+          </div>
+
+          <div class="text-warning mb-2">
+            {% for i in "12345" %}
+              {% if forloop.counter <= review.rate %}
+                <i class="bi bi-star-fill"></i>
+              {% else %}
+                <i class="bi bi-star"></i>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          <p class="mb-0 text-secondary">{{ review.comment }}</p>
+        </div>
+      </div>
+      {% empty %}
+      <div class="text-center text-muted py-5">
+        <i class="bi bi-chat-square-text fs-1 d-block mb-2 opacity-50"></i>
+        هنوز دیدگاهی برای این محصول ثبت نشده. اولین نفری باشید که نظر می‌دهد!
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- ============ محصولات مرتبط ============ -->
+  {% if related_products %}
+  <div class="row mt-5">
+    <div class="col-12">
+      <h4 class="border-bottom pb-2" style="color: #2c5f2d">محصولات مرتبط</h4>
+    </div>
+    {% for product in related_products %}
+    <div class="col-md-3 col-6 mt-3">
+      <div class="card h-100 shadow-sm">
+        <img
+          src="{{ product.image.url }}"
+          class="card-img-top"
+          alt="{{ product.title }}"
+          style="height: 150px; object-fit: cover"
+        />
+        <div class="card-body text-center">
+          <h6 class="card-title">{{ product.title }}</h6>
+          <p class="card-text text-primary fw-bold">
+            {{ product.get_price|floatformat:0 }} تومان
+          </p>
+          <a href="{% url 'shop:product_detail' product.slug %}" class="btn btn-sm btn-outline-primary">
+            مشاهده
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
 
 <!-- ============ اسکریپت‌ها ============ -->
 <script>
-    function changeMainImage(src) {
-        document.querySelector(".card-img-top").src = src;
+  function changeMainImage(element) {
+    document.getElementById("mainProductImage").src = element.src;
+
+    document.querySelectorAll(".thumb-img").forEach((img) => {
+      img.classList.remove("active-thumb");
+    });
+    element.classList.add("active-thumb");
+  }
+
+  function toPersianDigits(n) {
+    const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+    return n.toString().replace(/\d/g, (x) => farsiDigits[x]);
+  }
+
+  function updateQtyControls(val) {
+    const input = document.getElementById("quantity");
+    const display = document.getElementById("quantity-display");
+    const decIcon = document.getElementById("decrement-icon");
+
+    input.value = val;
+    display.textContent = toPersianDigits(val);
+
+    if (val <= 1) {
+      decIcon.className = "bi bi-trash3 text-danger";
+    } else {
+      decIcon.className = "bi bi-dash-lg text-danger";
     }
+  }
 
-    // تبدیل اعداد انگلیسی به فارسی برای نمایش دیجی‌کالایی
-    function toPersianDigits(n) {
-        const farsiDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-        return n.toString().replace(/\d/g, x => farsiDigits[x]);
+  function incrementQuantity() {
+    let input = document.getElementById("quantity");
+    let max = parseInt(input.getAttribute("max")) || 999;
+    let current = parseInt(input.value);
+
+    if (current < max) {
+      updateQtyControls(current + 1);
     }
+  }
 
-    function updateQtyControls(val) {
-        const input = document.getElementById("quantity");
-        const display = document.getElementById("quantity-display");
-        const decIcon = document.getElementById("decrement-icon");
-        
-        input.value = val;
-        display.textContent = toPersianDigits(val);
+  function decrementQuantity() {
+    let input = document.getElementById("quantity");
+    let current = parseInt(input.value);
 
-        // تغییر آیکون: اگر ۱ بود سطل زباله، بیشتر از ۱ بود منفی
-        if (val <= 1) {
-            decIcon.className = 'bi bi-trash3 text-danger';
+    if (current > 1) {
+      updateQtyControls(current - 1);
+    } else {
+      alert("حداقل تعداد سفارش ۱ عدد می‌باشد.");
+    }
+  }
+
+  function addToCart(productId) {
+    let quantity = document.getElementById("quantity").value;
+
+    fetch("/cart/add/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+      body: "product_id=" + productId + "&quantity=" + quantity,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          const cartCount = document.getElementById("cart-count");
+          if (cartCount) cartCount.textContent = data.total_quantity;
+          alert("محصول به سبد خرید اضافه شد");
         } else {
-            decIcon.className = 'bi bi-dash-lg text-danger';
+          alert("خطا: " + data.message);
         }
-    }
+      })
+      .catch((error) => {
+        alert("خطا در ارتباط با سرور");
+      });
+  }
 
-    function incrementQuantity() {
-        let input = document.getElementById("quantity");
-        let max = parseInt(input.getAttribute("max")) || 999;
-        let current = parseInt(input.value);
-
-        if (current < max) {
-            updateQtyControls(current + 1);
+  function toggleWishlist(productId, element) {
+    fetch("/shop/toggle-wishlist/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "X-CSRFToken": "{{ csrf_token }}",
+      },
+      body: "product_id=" + productId,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          const icon = element.querySelector("i");
+          if (data.is_wished) {
+            element.classList.add("active");
+            icon.className = "bi bi-heart-fill";
+            alert("محصول به لیست علاقه‌مندی اضافه شد");
+          } else {
+            element.classList.remove("active");
+            icon.className = "bi bi-heart";
+            alert("محصول از لیست علاقه‌مندی حذف شد");
+          }
         }
-    }
-
-    function decrementQuantity() {
-        let input = document.getElementById("quantity");
-        let current = parseInt(input.value);
-
-        if (current > 1) {
-            updateQtyControls(current - 1);
-        } else {
-            // عملکرد در صورت زدن دکمه سطل زباله (تعداد = ۱)
-            alert('حداقل تعداد سفارش ۱ عدد می‌باشد.');
-        }
-    }
-
-    function addToCart(productId) {
-        let quantity = document.getElementById('quantity').value;
-
-        fetch('/cart/add/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: 'product_id=' + productId + '&quantity=' + quantity
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                document.getElementById('cart-count').textContent = data.total_quantity;
-                alert('محصول به سبد خرید اضافه شد');
-            } else {
-                alert('خطا: ' + data.message);
-            }
-        })
-        .catch(error => {
-            alert('خطا در ارتباط با سرور');
-        });
-    }
-
-    // ============ تابع علاقه‌مندی ============
-    function toggleWishlist(productId, element) {
-        fetch('/shop/toggle-wishlist/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-CSRFToken': '{{ csrf_token }}'
-            },
-            body: 'product_id=' + productId
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const icon = element.querySelector('i');
-                if (data.is_wished) {
-                    element.classList.add('active');
-                    icon.className = 'bi bi-heart-fill';
-                    alert('محصول به لیست علاقه‌مندی اضافه شد');
-                } else {
-                    element.classList.remove('active');
-                    icon.className = 'bi bi-heart';
-                    alert('محصول از لیست علاقه‌مندی حذف شد');
-                }
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('خطا در ارتباط با سرور');
-        });
-    }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        alert("خطا در ارتباط با سرور");
+      });
+  }
 </script>
-
-<style>
-    /* =========================================== */
-    /* استایل باکس کم/زیاد کردن تعداد به سبک دیجی‌کالا */
-    /* =========================================== */
-    .dk-qty-wrapper {
-        display: inline-flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 110px;
-        height: 44px;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        padding: 0 8px;
-        background-color: #fff;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-    }
-
-    .dk-qty-btn {
-        background: transparent;
-        border: none;
-        outline: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-        cursor: pointer;
-        font-size: 1.1rem;
-        transition: transform 0.1s ease;
-    }
-
-    .dk-qty-btn:active {
-        transform: scale(0.9);
-    }
-
-    .dk-qty-plus {
-        color: #ef4056; /* قرمز دیجی‌کالا */
-    }
-
-    .dk-qty-count {
-        font-weight: 700;
-        font-size: 1.1rem;
-        color: #ef4056;
-        user-select: none;
-    }
-
-    /* =========================================== */
-    /* استایل دکمه علاقه‌مندی */
-    /* =========================================== */
-    .wishlist-btn {
-        transition: all 0.3s ease;
-    }
-    .wishlist-btn:hover {
-        transform: scale(1.1);
-    }
-    .wishlist-btn.active {
-        background: #dc3545;
-        border-color: #dc3545;
-        color: white;
-    }
-    .wishlist-btn.active i {
-        color: white;
-    }
-</style>
-
 {% endblock %}

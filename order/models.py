@@ -205,14 +205,13 @@ class Order(models.Model):
         on_delete=models.PROTECT
     )
 
-
-    transaction = models.ForeignKey(
-        "payment.Transaction",
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True
+    payment = models.ForeignKey(
+    "payment.Payment",
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True,
+    related_name="orders",
     )
-
 
     coupon = models.ForeignKey(
         Coupon,
@@ -221,6 +220,7 @@ class Order(models.Model):
         blank=True
     )
 
+    
 
     receiver_name = models.CharField(
         max_length=100,

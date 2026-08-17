@@ -1,303 +1,58 @@
 {% load static %}
 
-<footer class="custom-footer">
-
+<footer class="minimal-footer">
     <div class="container">
-
-        <div class="footer-top">
-
-            <div class="row gy-5">
-
-                <!-- =========================
-                     ABOUT
-                ========================== -->
-
-                <div class="col-lg-5">
-
-                    <div class="footer-brand">
-
-                        <a href="{% url 'website:index' %}" class="footer-logo-wrap">
-
-                            <img
-                                src="{% static 'img/logo.png' %}"
-                                alt="Chaai Chi"
-                                class="footer-logo">
-
-                            <div>
-
-                                <h3 class="footer-brand-title">
-                                    Chaai Chi
-                                </h3>
-
-                                <span class="footer-brand-subtitle">
-                                    فروشگاه تخصصی چای
-                                </span>
-
-                            </div>
-
-                        </a>
-
-                    </div>
-
-                    <p class="footer-description">
-
-                        فروشگاه تخصصی چای Chaai Chi با ارائه بهترین
-                        چای‌های ایرانی و خارجی، تلاش می‌کند تجربه‌ای
-                        متفاوت، مطمئن و لذت‌بخش از خرید آنلاین چای
-                        برای شما فراهم کند.
-
-                    </p>
-
-                    <div class="footer-social">
-
-                        <a href="#">
-                            <i class="bi bi-instagram"></i>
-                        </a>
-
-                        <a href="#">
-                            <i class="bi bi-telegram"></i>
-                        </a>
-
-                        <a href="#">
-                            <i class="bi bi-whatsapp"></i>
-                        </a>
-
-                    </div>
-
-                </div>
-
-                <!-- =========================
-                     QUICK LINKS
-                ========================== -->
-
-                <div class="col-sm-6 col-lg-2">
-
-                    <h5 class="footer-title">
-
-                        دسترسی سریع
-
-                    </h5>
-
-                    <ul class="footer-links">
-
-                        <li>
-
-                            <a href="{% url 'website:index' %}">
-
-                                خانه
-
-                            </a>
-
-                        </li>
-
-                        <li>
-
-                            <a href="{% url 'shop:product_grid' %}">
-
-                                محصولات
-
-                            </a>
-
-                        </li>
-
-                        <li>
-
-                            <a href="{% url 'website:about' %}">
-
-                                درباره ما
-
-                            </a>
-
-                        </li>
-
-                        <li>
-
-                            <a href="{% url 'website:contact' %}">
-
-                                تماس با ما
-
-                            </a>
-
-                        </li>
-
-                    </ul>
-
-                </div>
-
-                <!-- =========================
-                     CONTACT
-                ========================== -->
-
-                <div class="col-sm-6 col-lg-3">
-
-                    <h5 class="footer-title">
-
-                        تماس با ما
-
-                    </h5>
-
-                    <div class="footer-contact">
-
-                        <div class="footer-contact-item">
-
-                            <i class="bi bi-telephone"></i>
-
-                            <span>
-
-                                021-00000000
-
-                            </span>
-
-                        </div>
-
-                        <div class="footer-contact-item">
-
-                            <i class="bi bi-envelope"></i>
-
-                            <span>
-
-                                info@chaaichi.com
-
-                            </span>
-
-                        </div>
-
-                        <div class="footer-contact-item">
-
-                            <i class="bi bi-geo-alt"></i>
-
-                            <span>
-
-                                تهران، ایران
-
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- =========================
-                     FEATURES
-                ========================== -->
-
-                <div class="col-lg-2">
-
-                    <h5 class="footer-title">
-
-                        خدمات
-
-                    </h5>
-
-                    <div class="footer-feature">
-
-                        <i class="bi bi-truck"></i>
-
-                        <span>
-
-                            ارسال سریع
-
-                        </span>
-
-                    </div>
-
-                    <div class="footer-feature">
-
-                        <i class="bi bi-shield-check"></i>
-
-                        <span>
-
-                            پرداخت امن
-
-                        </span>
-
-                    </div>
-
-                    <div class="footer-feature">
-
-                        <i class="bi bi-headset"></i>
-
-                        <span>
-
-                            پشتیبانی
-
-                        </span>
-
-                    </div>
-
-                    <div class="footer-feature">
-
-                        <i class="bi bi-patch-check"></i>
-
-                        <span>
-
-                            ضمانت کیفیت
-
-                        </span>
-
-                    </div>
-
-                </div>
-
+        
+        <!-- TOP SECTION -->
+        <div class="row gy-4 align-items-start mb-5">
+            
+            <!-- خرید از چای چی -->
+            <div class="col-6 col-md-3">
+                <h6 class="footer-heading">خرید از چای چی</h6>
+                <ul class="footer-links-list">
+                    <li><a href="#">شرایط تعویض کالا</a></li>
+                    <li><a href="#">قوانین چای چی</a></li>
+                    <li><a href="#">روش ارسال</a></li>
+                    <li><a href="{% url 'website:contact' %}">تماس با ما</a></li>
+                </ul>
             </div>
 
-        </div>
+            <!-- درباره چای چی -->
+            <div class="col-6 col-md-4">
+                <h6 class="footer-heading">درباره چای چی</h6>
+                <p class="footer-about-text">
+                    تلاش تیم چای چی ارائه بهترین چای‌های اصیل و باکیفیت است. اینجا چای‌های ناب ایرانی و دمنوش‌های طبیعی به کسانی که به طعم واقعی اهمیت می‌دهند پیشنهاد می‌شود.
+                </p>
+            </div>
 
-        <div class="footer-divider"></div>
+            <!-- اعتماد به چای چی -->
+            <div class="col-6 col-md-3">
+                <h6 class="footer-heading">اعتماد به چای چی</h6>
+                <!-- محل نماد یا توضیحات اعتماد -->
+            </div>
 
-        <div class="footer-bottom">
-
-            <div class="row align-items-center">
-
-                <div class="col-md-6">
-
-                    <p class="footer-copy">
-
-                        © ۱۴۰۵ Chaai Chi
-
-                        تمامی حقوق محفوظ است.
-
-                    </p>
-
+            <!-- دنبال کنید -->
+            <div class="col-6 col-md-2 text-md-center">
+                <h6 class="footer-heading">دنبال کنید</h6>
+                <div class="social-icons">
+                    <a href="#" class="social-btn instagram" aria-label="اینستاگرام">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+                    <a href="#" class="social-btn telegram" aria-label="تلگرام">
+                        <i class="bi bi-telegram"></i>
+                    </a>
                 </div>
-
-                <div class="col-md-6">
-
-                    <div class="footer-bottom-links">
-
-                        <a href="{% url 'website:about' %}">
-
-                            درباره ما
-
-                        </a>
-
-                        <a href="{% url 'website:contact' %}">
-
-                            تماس
-
-                        </a>
-
-                        <a href="#">
-
-                            قوانین
-
-                        </a>
-
-                        <a href="#">
-
-                            حریم خصوصی
-
-                        </a>
-
-                    </div>
-
-                </div>
-
             </div>
 
         </div>
 
     </div>
 
+    <!-- BOTTOM BAR -->
+    <div class="footer-bottom-bar">
+        <div class="container d-flex justify-content-between align-items-center fs-8 text-secondary">
+            <div>© ۱۴۰۵ Chaai Chi — تمامی حقوق محفوظ است.</div>
+            <div>طراحی و توسعه اختصاصی</div>
+        </div>
+    </div>
 </footer>

@@ -1,8 +1,13 @@
 from django import forms
 from django.utils import timezone
-from .models import Order, Coupon, UserAddress
-import json
 
+from .models import Order, Coupon, UserAddress
+from payment.models import PaymentMethodType
+
+
+# =========================================================
+# IRAN STATES
+# =========================================================
 
 IRAN_STATES = [
     ("آذربایجان شرقی", "آذربایجان شرقی"),
@@ -38,44 +43,277 @@ IRAN_STATES = [
     ("یزد", "یزد"),
 ]
 
-# لیست شهرهای هر استان
+
+# =========================================================
+# CITIES BY STATE
+# =========================================================
+
 CITIES_BY_STATE = {
-    "تهران": ["تهران", "ری", "شهریار", "قدس", "ملارد", "ورامین", "قرچک", "پاکدشت"],
-    "اصفهان": ["اصفهان", "کاشان", "خمینی‌شهر", "نجف‌آباد", "فولادشهر", "شاهین‌شهر", "مبارکه", "زرین‌شهر"],
-    "مازندران": ["ساری", "بابل", "آمل", "قائم‌شهر", "بابلسر", "نوشهر", "چالوس", "رامسر"],
-    "گیلان": ["رشت", "انزلی", "لاهیجان", "آستارا", "رودسر", "فومن", "صومعه‌سرا"],
-    "خراسان رضوی": ["مشهد", "نیشابور", "سبزوار", "تربت حیدریه", "کاشمر", "قوچان"],
-    "فارس": ["شیراز", "مرودشت", "کازرون", "لار", "فیروزآباد", "جهرم"],
-    "خوزستان": ["اهواز", "دزفول", "آبادان", "خرمشهر", "بهبهان", "اندیمشک"],
-    "آذربایجان شرقی": ["تبریز", "مراغه", "مرند", "میانه", "اهر", "بستان‌آباد"],
-    "آذربایجان غربی": ["ارومیه", "خوی", "بوکان", "مهاباد", "سردشت", "پیرانشهر"],
-    "کرمان": ["کرمان", "رفسنجان", "سیرجان", "زرند", "بم", "جیرفت"],
-    "کرمانشاه": ["کرمانشاه", "اسلام‌آباد غرب", "سنقر", "هرسین"],
-    "هرمزگان": ["بندرعباس", "میناب", "قشم", "کیش", "بندرلنگه"],
-    "یزد": ["یزد", "میبد", "اردکان", "بافق", "مهریز", "تفت"],
-    "همدان": ["همدان", "ملایر", "نهاوند", "اسدآباد", "تویسرکان"],
-    "لرستان": ["خرم‌آباد", "بروجرد", "دورود", "الیگودرز", "کوهدشت"],
-    "زنجان": ["زنجان", "ابهر", "خدابنده", "طارم"],
-    "سمنان": ["سمنان", "شاهرود", "دامغان", "گرمسار", "میامی"],
-    "مرکزی": ["اراک", "ساوه", "خمین", "محلات", "تفرش", "دلیجان"],
-    "البرز": ["کرج", "نظرآباد", "تاکستان", "ساوجبلاغ"],
-    "کردستان": ["سنندج", "سقز", "مریوان", "بانه", "دیواندره"],
-    "اردبیل": ["اردبیل", "پارس‌آباد", "مشگین‌شهر", "بیله‌سوار"],
-    "سیستان و بلوچستان": ["زاهدان", "چابهار", "زابل", "ایرانشهر", "خاش"],
-    "گلستان": ["گرگان", "گنبد کاووس", "علی‌آباد", "آق‌قلا"],
-    "چهارمحال و بختیاری": ["شهرکرد", "بروجن", "فارسان", "لردگان"],
-    "بوشهر": ["بوشهر", "برازجان", "جم", "کنگان", "دشتستان"],
-    "ایلام": ["ایلام", "دهلران", "ایوان", "آبدانان"],
-    "قزوین": ["قزوین", "الوند", "بوئین‌زهرا", "تاکستان"],
-    "قم": ["قم", "کهک", "جعفریه"],
-    "خراسان جنوبی": ["بیرجند", "قائن", "طبس", "درمیان"],
-    "خراسان شمالی": ["بجنورد", "شیروان", "اسفراین", "جاجرم"],
-    "کهگیلویه و بویراحمد": ["یاسوج", "گچساران", "دوگنبدان", "دهدشت"],
+    "تهران": [
+        "تهران",
+        "ری",
+        "شهریار",
+        "قدس",
+        "ملارد",
+        "ورامین",
+        "قرچک",
+        "پاکدشت",
+    ],
+
+    "اصفهان": [
+        "اصفهان",
+        "کاشان",
+        "خمینی‌شهر",
+        "نجف‌آباد",
+        "فولادشهر",
+        "شاهین‌شهر",
+        "مبارکه",
+        "زرین‌شهر",
+    ],
+
+    "مازندران": [
+        "ساری",
+        "بابل",
+        "آمل",
+        "قائم‌شهر",
+        "بابلسر",
+        "نوشهر",
+        "چالوس",
+        "رامسر",
+    ],
+
+    "گیلان": [
+        "رشت",
+        "انزلی",
+        "لاهیجان",
+        "آستارا",
+        "رودسر",
+        "فومن",
+        "صومعه‌سرا",
+    ],
+
+    "خراسان رضوی": [
+        "مشهد",
+        "نیشابور",
+        "سبزوار",
+        "تربت حیدریه",
+        "کاشمر",
+        "قوچان",
+    ],
+
+    "فارس": [
+        "شیراز",
+        "مرودشت",
+        "کازرون",
+        "لار",
+        "فیروزآباد",
+        "جهرم",
+    ],
+
+    "خوزستان": [
+        "اهواز",
+        "دزفول",
+        "آبادان",
+        "خرمشهر",
+        "بهبهان",
+        "اندیمشک",
+    ],
+
+    "آذربایجان شرقی": [
+        "تبریز",
+        "مراغه",
+        "مرند",
+        "میانه",
+        "اهر",
+        "بستان‌آباد",
+    ],
+
+    "آذربایجان غربی": [
+        "ارومیه",
+        "خوی",
+        "بوکان",
+        "مهاباد",
+        "سردشت",
+        "پیرانشهر",
+    ],
+
+    "کرمان": [
+        "کرمان",
+        "رفسنجان",
+        "سیرجان",
+        "زرند",
+        "بم",
+        "جیرفت",
+    ],
+
+    "کرمانشاه": [
+        "کرمانشاه",
+        "اسلام‌آباد غرب",
+        "سنقر",
+        "هرسین",
+    ],
+
+    "هرمزگان": [
+        "بندرعباس",
+        "میناب",
+        "قشم",
+        "کیش",
+        "بندرلنگه",
+    ],
+
+    "یزد": [
+        "یزد",
+        "میبد",
+        "اردکان",
+        "بافق",
+        "مهریز",
+        "تفت",
+    ],
+
+    "همدان": [
+        "همدان",
+        "ملایر",
+        "نهاوند",
+        "اسدآباد",
+        "تویسرکان",
+    ],
+
+    "لرستان": [
+        "خرم‌آباد",
+        "بروجرد",
+        "دورود",
+        "الیگودرز",
+        "کوهدشت",
+    ],
+
+    "زنجان": [
+        "زنجان",
+        "ابهر",
+        "خدابنده",
+        "طارم",
+    ],
+
+    "سمنان": [
+        "سمنان",
+        "شاهرود",
+        "دامغان",
+        "گرمسار",
+        "میامی",
+    ],
+
+    "مرکزی": [
+        "اراک",
+        "ساوه",
+        "خمین",
+        "محلات",
+        "تفرش",
+        "دلیجان",
+    ],
+
+    "البرز": [
+        "کرج",
+        "نظرآباد",
+        "تاکستان",
+        "ساوجبلاغ",
+    ],
+
+    "کردستان": [
+        "سنندج",
+        "سقز",
+        "مریوان",
+        "بانه",
+        "دیواندره",
+    ],
+
+    "اردبیل": [
+        "اردبیل",
+        "پارس‌آباد",
+        "مشگین‌شهر",
+        "بیله‌سوار",
+    ],
+
+    "سیستان و بلوچستان": [
+        "زاهدان",
+        "چابهار",
+        "زابل",
+        "ایرانشهر",
+        "خاش",
+    ],
+
+    "گلستان": [
+        "گرگان",
+        "گنبد کاووس",
+        "علی‌آباد",
+        "آق‌قلا",
+    ],
+
+    "چهارمحال و بختیاری": [
+        "شهرکرد",
+        "بروجن",
+        "فارسان",
+        "لردگان",
+    ],
+
+    "بوشهر": [
+        "بوشهر",
+        "برازجان",
+        "جم",
+        "کنگان",
+        "دشتستان",
+    ],
+
+    "ایلام": [
+        "ایلام",
+        "دهلران",
+        "ایوان",
+        "آبدانان",
+    ],
+
+    "قزوین": [
+        "قزوین",
+        "الوند",
+        "بوئین‌زهرا",
+        "تاکستان",
+    ],
+
+    "قم": [
+        "قم",
+        "کهک",
+        "جعفریه",
+    ],
+
+    "خراسان جنوبی": [
+        "بیرجند",
+        "قائن",
+        "طبس",
+        "درمیان",
+    ],
+
+    "خراسان شمالی": [
+        "بجنورد",
+        "شیروان",
+        "اسفراین",
+        "جاجرم",
+    ],
+
+    "کهگیلویه و بویراحمد": [
+        "یاسوج",
+        "گچساران",
+        "دوگنبدان",
+        "دهدشت",
+    ],
 }
 
 
+# =========================================================
+# CHECKOUT FORM
+# =========================================================
+
 class CheckoutForm(forms.Form):
 
+    # -----------------------------------------------------
+    # Existing Address
+    # -----------------------------------------------------
 
     use_existing_address = forms.BooleanField(
         required=False,
@@ -84,34 +322,61 @@ class CheckoutForm(forms.Form):
         widget=forms.CheckboxInput(
             attrs={
                 "class": "form-check-input",
-                "id": "use-existing-address"
+                "id": "use-existing-address",
             }
-        )
+        ),
     )
-
 
     address_id = forms.ChoiceField(
         required=False,
         label="آدرس ذخیره شده",
         widget=forms.Select(
             attrs={
-                "class": "form-select"
+                "class": "form-select",
+                "id": "address-select",
             }
-        )
+        ),
     )
 
+    # -----------------------------------------------------
+    # New Address
+    # -----------------------------------------------------
+
+    receiver_name = forms.CharField(
+        required=False,
+        max_length=100,
+        label="نام گیرنده",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "نام و نام خانوادگی گیرنده",
+            }
+        ),
+    )
+
+    receiver_phone = forms.CharField(
+        required=False,
+        max_length=20,
+        label="شماره گیرنده",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "شماره تماس گیرنده",
+            }
+        ),
+    )
 
     address = forms.CharField(
         required=False,
+        max_length=250,
         label="آدرس کامل",
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "خیابان، پلاک، واحد"
+                "placeholder": "خیابان، پلاک، واحد",
             }
-        )
+        ),
     )
-
 
     state = forms.ChoiceField(
         required=False,
@@ -122,11 +387,10 @@ class CheckoutForm(forms.Form):
         widget=forms.Select(
             attrs={
                 "class": "form-select",
-                "id": "state-select"
+                "id": "state-select",
             }
-        )
+        ),
     )
-
 
     city = forms.ChoiceField(
         required=False,
@@ -137,101 +401,129 @@ class CheckoutForm(forms.Form):
         widget=forms.Select(
             attrs={
                 "class": "form-select",
-                "id": "city-select"
+                "id": "city-select",
             }
-        )
+        ),
     )
-
 
     zip_code = forms.CharField(
         required=False,
+        max_length=50,
         label="کد پستی",
         widget=forms.TextInput(
             attrs={
-                "class": "form-control"
+                "class": "form-control",
+                "placeholder": "کد پستی",
             }
-        )
+        ),
     )
 
+    # -----------------------------------------------------
+    # Coupon
+    # -----------------------------------------------------
 
     coupon_code = forms.CharField(
         required=False,
+        max_length=100,
         label="کد تخفیف",
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "کد تخفیف"
+                "placeholder": "کد تخفیف",
+                "id": "coupon-input",
             }
-        )
+        ),
     )
 
+    # -----------------------------------------------------
+    # Payment Method
+    # -----------------------------------------------------
+
+    payment_method = forms.ChoiceField(
+        required=True,
+        label="روش پرداخت",
+        choices=[
+            (
+                PaymentMethodType.GATEWAY.value,
+                "پرداخت آنلاین",
+            ),
+            (
+                PaymentMethodType.WALLET.value,
+                "پرداخت از کیف پول",
+            ),
+        ],
+        widget=forms.RadioSelect(
+            attrs={
+                "class": "form-check-input",
+            }
+        ),
+    )
+
+    # =====================================================
+    # INIT
+    # =====================================================
 
     def __init__(
         self,
         *args,
         user=None,
         cart_total=0,
-        **kwargs
+        **kwargs,
     ):
-
         super().__init__(
             *args,
-            **kwargs
+            **kwargs,
         )
 
-
         self.user = user
-
         self.cart_total = cart_total
 
-
+        # -------------------------------------------------
+        # User Addresses
+        # -------------------------------------------------
 
         if self.user:
-
 
             addresses = UserAddress.objects.filter(
                 user=self.user
             )
 
-
-            self.fields["address_id"].choices = [
-
+            self.fields[
+                "address_id"
+            ].choices = [
                 (
-                    addr.id,
-                    f"{addr.city} - {addr.address}"
+                    str(address.id),
+                    f"{address.city} - {address.address}",
                 )
-
-                for addr in addresses
-
+                for address in addresses
             ]
 
+        # -------------------------------------------------
+        # Cities
+        # -------------------------------------------------
 
+        state = self.data.get("state")
 
-        if self.data.get("state"):
-
-            state = self.data.get(
-                "state"
-            )
-
+        if state:
 
             cities = CITIES_BY_STATE.get(
                 state,
-                []
+                [],
             )
 
-
-            self.fields["city"].choices = [
-
+            self.fields[
+                "city"
+            ].choices = [
                 (
                     city,
-                    city
+                    city,
                 )
-
                 for city in cities
-
             ]
 
-
+    # =====================================================
+    # CLEAN COUPON
+    # =====================================================
 
     def clean_coupon_code(self):
 
@@ -239,19 +531,16 @@ class CheckoutForm(forms.Form):
             "coupon_code"
         )
 
-
         if not code:
-
             return None
 
-
+        code = code.strip().upper()
 
         try:
 
             coupon = Coupon.objects.get(
-                code=code.upper()
+                code=code
             )
-
 
         except Coupon.DoesNotExist:
 
@@ -259,13 +548,10 @@ class CheckoutForm(forms.Form):
                 "کد تخفیف اشتباه است."
             )
 
-
-
         valid, message = coupon.is_valid(
             user=self.user,
-            total_amount=self.cart_total
+            total_amount=self.cart_total,
         )
-
 
         if not valid:
 
@@ -273,47 +559,44 @@ class CheckoutForm(forms.Form):
                 message
             )
 
-
-
         return coupon
 
-
+    # =====================================================
+    # CLEAN
+    # =====================================================
 
     def clean(self):
 
         cleaned_data = super().clean()
 
-
-
         use_existing = cleaned_data.get(
             "use_existing_address"
         )
 
+        # =================================================
+        # EXISTING ADDRESS
+        # =================================================
 
         if use_existing:
-
 
             address_id = cleaned_data.get(
                 "address_id"
             )
 
-
             if not address_id:
 
                 raise forms.ValidationError(
-                    "یک آدرس انتخاب کنید."
+                    "لطفاً یک آدرس انتخاب کنید."
                 )
-
 
             try:
 
-                cleaned_data["selected_address"] = (
+                selected_address = (
                     UserAddress.objects.get(
                         id=address_id,
-                        user=self.user
+                        user=self.user,
                     )
                 )
-
 
             except UserAddress.DoesNotExist:
 
@@ -321,17 +604,24 @@ class CheckoutForm(forms.Form):
                     "آدرس انتخاب شده معتبر نیست."
                 )
 
+            cleaned_data[
+                "selected_address"
+            ] = selected_address
+
+        # =================================================
+        # NEW ADDRESS
+        # =================================================
 
         else:
 
-
             required_fields = [
+                "receiver_name",
+                "receiver_phone",
                 "address",
                 "state",
                 "city",
-                "zip_code"
+                "zip_code",
             ]
-
 
             for field in required_fields:
 
@@ -341,98 +631,62 @@ class CheckoutForm(forms.Form):
                         "لطفاً اطلاعات ارسال را کامل کنید."
                     )
 
+            # -------------------------------------------------
+            # Validate city belongs to selected state
+            # -------------------------------------------------
 
-            cleaned_data["selected_address"] = None
+            state = cleaned_data.get(
+                "state"
+            )
 
+            city = cleaned_data.get(
+                "city"
+            )
 
+            valid_cities = CITIES_BY_STATE.get(
+                state,
+                [],
+            )
 
-        return cleaned_data        
+            if city not in valid_cities:
 
-class OrderCreateForm(forms.ModelForm):
-    class Meta:
-        model = Order
-        fields = [
-            'address',
-            'state',
-            'city',
-            'zip_code',
-            'coupon',
-        ]
-
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        self.cart_items = kwargs.pop('cart_items', [])
-        self.selected_address = kwargs.pop('selected_address', None)
-        super().__init__(*args, **kwargs)
-
-    def save(self, commit=True):
-        order = super().save(commit=False)
-        order.user = self.user
-        
-        if self.selected_address:
-            order.address = self.selected_address.address
-            order.state = self.selected_address.state
-            order.city = self.selected_address.city
-            order.zip_code = self.selected_address.zip_code
-        
-        total_price = sum(item['product'].get_price() * item['quantity'] for item in self.cart_items)
-        order.total_price = total_price
-        
-        if order.coupon:
-            discount_amount = total_price * (order.coupon.discount_percent / 100)
-            order.total_price = round(total_price - discount_amount)
-            order.coupon.used_by.add(self.user)
-
-        if commit:
-            order.save()
-            for item in self.cart_items:
-                order.items.create(
-                    product=item['product'],
-                    quantity=item['quantity'],
-                    price=item['product'].get_price()
+                raise forms.ValidationError(
+                    "شهر انتخاب شده با استان انتخابی مطابقت ندارد."
                 )
-        return order
 
+            cleaned_data[
+                "selected_address"
+            ] = None
 
-class CouponApplyForm(forms.Form):
-    coupon_code = forms.CharField(
-        required=True,
-        max_length=100,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'کد تخفیف را وارد کنید...',
-            'id': 'coupon-input'
-        })
-    )
+        # =================================================
+        # PAYMENT METHOD
+        # =================================================
 
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        self.cart_total = kwargs.pop('cart_total', 0)
-        super().__init__(*args, **kwargs)
+        payment_method = cleaned_data.get(
+            "payment_method"
+        )
 
-    def clean_coupon_code(self):
-        code = self.cleaned_data.get('coupon_code')
-        if not code:
-            raise forms.ValidationError("لطفاً کد تخفیف را وارد کنید.")
+        valid_payment_methods = {
+            str(
+                PaymentMethodType.GATEWAY.value
+            ),
+            str(
+                PaymentMethodType.WALLET.value
+            ),
+        }
 
-        try:
-            coupon = Coupon.objects.get(code=code.upper())
-        except Coupon.DoesNotExist:
-            raise forms.ValidationError("کد تخفیف نامعتبر است.")
+        if payment_method not in valid_payment_methods:
 
-        if not coupon.is_active:
-            raise forms.ValidationError("این کد تخفیف غیرفعال است.")
+            raise forms.ValidationError(
+                "روش پرداخت انتخاب شده معتبر نیست."
+            )
 
-        if coupon.expiration_date and coupon.expiration_date < timezone.now():
-            raise forms.ValidationError("کد تخفیف منقضی شده است.")
+        # =================================================
+        # NORMALIZE PAYMENT METHOD
+        # =================================================
 
-        if coupon.used_by.count() >= coupon.max_limit_usage:
-            raise forms.ValidationError("تعداد استفاده از این کد به پایان رسیده است.")
+        cleaned_data[
+            "payment_method"
+        ] = int(payment_method)
 
-        if self.user and coupon.used_by.filter(id=self.user.id).exists():
-            raise forms.ValidationError("شما قبلاً از این کد تخفیف استفاده کرده‌اید.")
-
-        if coupon.min_purchase_amount and self.cart_total < coupon.min_purchase_amount:
-            raise forms.ValidationError(f"حداقل مبلغ خرید برای این کد تخفیف {coupon.min_purchase_amount:,} تومان است.")
-
-        return coupon
+        return cleaned_data

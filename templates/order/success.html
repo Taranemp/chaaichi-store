@@ -1,58 +1,166 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}سفارش موفق{% endblock %}
+{% block title %}سفارش موفق - Chaai Chi{% endblock %}
 
 {% block content %}
 
-<div class="container py-5 text-center">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-body p-5">
-                    <div class="mb-4">
-                        <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
-                    </div>
-                    <h2 class="fw-bold mb-3">سفارش شما با موفقیت ثبت شد!</h2>
-                    <p class="text-muted mb-4">
-                        از خرید شما متشکریم. سفارش شما با موفقیت ثبت شد و در اسرع وقت پردازش خواهد شد.
-                    </p>
+<div class="status-page py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7 col-md-9">
+                <div class="status-card text-center p-4 p-md-5">
                     
+                    <div class="status-icon success-icon mb-4">
+                        <i class="bi bi-check-circle-fill"></i>
+                    </div>
+
+                    <h2 class="status-title text-success mb-2">سفارش شما با موفقیت ثبت شد!</h2>
+                    <p class="status-subtitle text-muted mb-4">
+                        از خرید شما متشکریم. سفارش شما ثبت شده و آماده پردازش است.
+                    </p>
+
                     {% if order %}
-                    <div class="bg-light p-4 rounded-3 mb-4 text-start">
-                        <h6 class="fw-bold">جزئیات سفارش #{{ order.id }}</h6>
-                        <hr>
-                        <p><strong>تاریخ:</strong> {{ order.created_date|date:"Y/m/d H:i" }}</p>
-                        <p><strong>مبلغ کل:</strong> {{ order.total_price|floatformat:0 }} تومان</p>
-                        <p><strong>وضعیت:</strong> 
-                            <span class="badge bg-warning">در انتظار پردازش</span>
-                        </p>
-                        <p><strong>آدرس:</strong> {{ order.get_full_address }}</p>
-                        
-                        <h6 class="fw-bold mt-3">محصولات</h6>
-                        <ul class="list-unstyled">
+                    <div class="order-details-box text-start p-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+                            <h6 class="fw-bold mb-0 color-dark">جزئیات سفارش <span class="text-primary">#{{ order.id }}</span></h6>
+                            <span class="badge bg-status-pending">در انتظار پردازش</span>
+                        </div>
+
+                        <div class="row g-2 fs-7 mb-3">
+                            <div class="col-sm-6">
+                                <span class="text-muted">تاریخ ثبت:</span>
+                                <strong class="d-block color-dark">{{ order.created_date|date:"Y/m/d H:i" }}</strong>
+                            </div>
+                            <div class="col-sm-6">
+                                <span class="text-muted">مبلغ کل:</span>
+                                <strong class="d-block color-dark">{{ order.total_price|floatformat:0 }} تومان</strong>
+                            </div>
+                            {% if order.get_full_address %}
+                            <div class="col-12 mt-2">
+                                <span class="text-muted">آدرس تحویل:</span>
+                                <strong class="d-block color-dark">{{ order.get_full_address }}</strong>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        {% if order_items %}
+                        <h6 class="fw-bold mt-4 mb-2 color-dark fs-7">محصولات خریداری شده:</h6>
+                        <div class="order-items-list">
                             {% for item in order_items %}
-                            <li class="d-flex justify-content-between border-bottom py-2">
-                                <span>{{ item.product.title }} × {{ item.quantity }}</span>
-                                <span>{{ item.price|floatformat:0 }} تومان</span>
-                            </li>
+                            <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light fs-7">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-cup-hot text-muted"></i>
+                                    <span>{{ item.product.title }}</span>
+                                    <span class="badge bg-light text-dark border">× {{ item.quantity }}</span>
+                                </div>
+                                <strong>{{ item.price|floatformat:0 }} تومان</strong>
+                            </div>
                             {% endfor %}
-                        </ul>
+                        </div>
+                        {% endif %}
                     </div>
                     {% endif %}
 
-                    <div class="d-flex gap-3 justify-content-center">
-                        <a href="{% url 'shop:product_grid' %}" class="btn btn-outline-primary">
-                            <i class="bi bi-shop"></i> ادامه خرید
+                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mt-4">
+                        <a href="{% url 'dashboard:customer:order-list' %}" class="btn btn-brand-primary">
+                            <i class="bi bi-list-ul me-1"></i> مشاهده سفارشات
                         </a>
-                        <a href="{% url 'dashboard:customer:order-list' %}" class="btn btn-primary">
-                            <i class="bi bi-list-ul"></i> مشاهده سفارشات
+                        <a href="{% url 'shop:product_grid' %}" class="btn btn-brand-outline">
+                            <i class="bi bi-shop me-1"></i> ادامه خرید
                         </a>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.status-page {
+    background: #f8faf8;
+    min-height: calc(100vh - 100px);
+    direction: rtl;
+}
+
+.status-card {
+    background: #fff;
+    border: 1px solid #e9eee9;
+    border-radius: 20px;
+    box-shadow: 0 7px 25px rgba(36, 67, 40, .05);
+}
+
+.status-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.8rem;
+}
+
+.success-icon {
+    background: #eaf5eb;
+    color: #2c5f2d;
+}
+
+.status-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.text-success { color: #2c5f2d !important; }
+.color-dark { color: #263b29; }
+.fs-7 { font-size: 0.82rem; }
+
+.order-details-box {
+    background: #fafcfd;
+    border: 1px solid #edf2ed;
+    border-radius: 14px;
+}
+
+.bg-status-pending {
+    background-color: #f3eee2;
+    color: #967a3c;
+    font-weight: 600;
+    padding: 0.4em 0.8em;
+    border-radius: 8px;
+    font-size: 0.75rem;
+}
+
+.btn-brand-primary {
+    background: #2c5f2d;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.4rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all .2s ease;
+}
+.btn-brand-primary:hover {
+    background: #214a23;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(44, 95, 45, .25);
+}
+
+.btn-brand-outline {
+    background: transparent;
+    color: #2c5f2d;
+    border: 1.5px solid #2c5f2d;
+    padding: 0.75rem 1.4rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all .2s ease;
+}
+.btn-brand-outline:hover {
+    background: #eaf3ec;
+    color: #2c5f2d;
+}
+</style>
 
 {% endblock %}

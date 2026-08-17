@@ -1,35 +1,125 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}خطا در ثبت سفارش{% endblock %}
+{% block title %}خطا در ثبت سفارش - Chaai Chi{% endblock %}
 
 {% block content %}
 
-<div class="container py-5 text-center">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-body p-5">
-                    <div class="mb-4">
-                        <i class="bi bi-x-circle-fill text-danger" style="font-size: 4rem;"></i>
-                    </div>
-                    <h2 class="fw-bold mb-3">خطا در ثبت سفارش!</h2>
-                    <p class="text-muted mb-4">
-                        متأسفانه ثبت سفارش شما با مشکل مواجه شد. لطفاً دوباره تلاش کنید.
-                    </p>
+<div class="status-page py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="status-card text-center p-4 p-md-5">
                     
-                    <div class="d-flex gap-3 justify-content-center">
-                        <a href="{% url 'cart:summary' %}" class="btn btn-outline-primary">
-                            <i class="bi bi-arrow-right"></i> بازگشت به سبد خرید
+                    <div class="status-icon failed-icon mb-4">
+                        <i class="bi bi-x-circle-fill"></i>
+                    </div>
+
+                    <h2 class="status-title text-danger mb-2">خطا در ثبت سفارش!</h2>
+                    <p class="status-subtitle text-muted mb-4">
+                        متأسفانه ثبت سفارش شما با مشکل مواجه شد یا پرداخت ناموفق بود. لطفاً مجدداً بررسی کنید.
+                    </p>
+
+                    <div class="failed-notice-box p-3 mb-4 text-start">
+                        <div class="d-flex align-items-center gap-2 mb-1">
+                            <i class="bi bi-info-circle text-danger"></i>
+                            <strong class="fs-7 text-danger">اگر وجه از حساب شما کسر شده است:</strong>
+                        </div>
+                        <p class="fs-8 text-muted mb-0 ps-4">
+                            مبلغ کسر شده معمولاً ظرف حداکثر ۷۲ ساعت آینده توسط بانک به حساب شما بازگردانده می‌شود.
+                        </p>
+                    </div>
+
+                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                        <a href="{% url 'cart:summary' %}" class="btn btn-brand-primary">
+                            <i class="bi bi-arrow-right me-1"></i> بازگشت به سبد خرید
                         </a>
-                        <a href="{% url 'payment:wallet' %}" class="btn btn-primary">
-                            <i class="bi bi-wallet2"></i> بررسی کیف پول
+                        <a href="{% url 'payment:wallet' %}" class="btn btn-brand-outline">
+                            <i class="bi bi-wallet2 me-1"></i> بررسی کیف پول
                         </a>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.status-page {
+    background: #f8faf8;
+    min-height: calc(100vh - 100px);
+    direction: rtl;
+}
+
+.status-card {
+    background: #fff;
+    border: 1px solid #e9eee9;
+    border-radius: 20px;
+    box-shadow: 0 7px 25px rgba(36, 67, 40, .05);
+}
+
+.status-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.8rem;
+}
+
+.failed-icon {
+    background: #fdf0f0;
+    color: #d85b5b;
+}
+
+.status-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.text-danger { color: #d85b5b !important; }
+.fs-7 { font-size: 0.82rem; }
+.fs-8 { font-size: 0.75rem; }
+
+.failed-notice-box {
+    background: #fffdfd;
+    border: 1px solid #f9ecec;
+    border-radius: 12px;
+}
+
+.btn-brand-primary {
+    background: #2c5f2d;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.4rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all .2s ease;
+}
+.btn-brand-primary:hover {
+    background: #214a23;
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(44, 95, 45, .25);
+}
+
+.btn-brand-outline {
+    background: transparent;
+    color: #2c5f2d;
+    border: 1.5px solid #2c5f2d;
+    padding: 0.75rem 1.4rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    transition: all .2s ease;
+}
+.btn-brand-outline:hover {
+    background: #eaf3ec;
+    color: #2c5f2d;
+}
+</style>
 
 {% endblock %}

@@ -17,6 +17,7 @@ urlpatterns = [
     path('cart/', include('cart.urls')),
     path('dashboard/', include('dashboard.urls')),
     path('review/', include('review.urls', namespace='review')),
+    path('/wallet/deposit/', include('wallet.urls', namespace='wallet')),
     
 ]
 

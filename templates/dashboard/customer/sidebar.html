@@ -93,14 +93,16 @@
     {% endif %}
 </a>ّ
 
-    <a class="sb-link" href="#">
+    <a class="sb-link {% if request.resolver_match.url_name == 'wallet' %}active{% endif %}"
+
+    href="{% url 'dashboard:customer:wallet' %}">
       <i class="bi bi-wallet2"></i>
       <span>کیف پول</span>
-      {% comment %} {% if request.user.wallet.balance %}
-      <span class="sb-badge"
-        >{{ request.user.wallet.balance|floatformat:0 }}</span
-      >
-      {% endif %} {% endcomment %}
+      {% if request.user.wallet %}
+          <span class="sb-badge">
+              {{ request.user.wallet.balance|floatformat:0 }} <small class="fs-9">تومان</small>
+          </span>
+      {% endif %}
     </a>
   </div>
 </nav>

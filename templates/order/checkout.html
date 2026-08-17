@@ -4,394 +4,624 @@
 {% block title %}تکمیل سفارش - Chaai Chi{% endblock %}
 
 {% block content %}
-<div class="container py-5">
 
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb mb-4 small">
-            <li class="breadcrumb-item"><a href="{% url 'cart:summary' %}" style="color:#6c757d;">سبد خرید</a></li>
-            <li class="breadcrumb-item active" style="color:#2c5f2d;">تکمیل سفارش</li>
-        </ol>
-    </nav>
+<div class="checkout-page py-5">
+    <div class="container">
 
-    <form method="post" id="checkout-form">
-        {% csrf_token %}
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb checkout-breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'cart:summary' %}">سبد خرید</a>
+                </li>
+                <li class="breadcrumb-item active">تکمیل سفارش</li>
+            </ol>
+        </nav>
 
-        <div class="row g-4">
-            <div class="col-lg-8">
+        <!-- Page Header -->
+        <div class="checkout-title mb-4">
+            <h1>تکمیل سفارش</h1>
+            <p>اطلاعات ارسال و روش پرداخت خود را انتخاب کنید.</p>
+        </div>
 
-                <!-- آدرس تحویل -->
-                <div class="checkout-section mb-4">
-                    <div class="checkout-section-header d-flex justify-content-between align-items-center">
-                        <h6 class="fw-bold mb-0">آدرس تحویل</h6>
-                        <a href="{% url 'dashboard:customer:addresses:address-create' %}" class="small text-decoration-none fw-semibold" style="color:#2c5f2d;">
-                            <i class="bi bi-plus-lg"></i> افزودن آدرس جدید
-                        </a>
+        <!-- Display Messages -->
+        {% if messages %}
+            <div class="mb-4">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                    <div class="checkout-section-body">
-                        {% if addresses %}
-                        <div class="row g-3">
-                            {% for addr in addresses %}
-                            <div class="col-md-6">
-                                <label class="checkout-option-card d-block h-100">
-                                    <input type="radio" name="address_id" value="{{ addr.id }}" {% if forloop.first %}checked{% endif %} required>
-                                    <div class="checkout-option-card-body">
-                                        <span class="fw-bold d-block mb-1">{{ addr.state }} - {{ addr.city }}</span>
-                                        <span class="text-muted small d-block">{{ addr.address }}</span>
-                                        <span class="text-muted small d-block">کد پستی: {{ addr.zip_code }}</span>
-                                    </div>
-                                </label>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" id="checkout-form">
+            {% csrf_token %}
+
+            <div class="row g-4">
+
+                <!-- ================================= -->
+                <!-- RIGHT COLUMN (Form Sections) -->
+                <!-- ================================= -->
+
+                <div class="col-lg-8">
+
+                    <!-- 1. ADDRESS -->
+                    <section class="checkout-section mb-4">
+                        <div class="checkout-section-header">
+                            <div>
+                                <span class="section-number">۱</span>
+                                <div>
+                                    <h5>آدرس تحویل</h5>
+                                    <p>سفارش به این آدرس ارسال خواهد شد.</p>
+                                </div>
                             </div>
-                            {% endfor %}
-                        </div>
-                        {% else %}
-                        <div class="text-center py-4">
-                            <i class="bi bi-geo-alt fs-2 text-muted d-block mb-2"></i>
-                            <p class="text-muted small mb-3">هنوز آدرسی ثبت نکرده‌اید.</p>
-                            <a href="{% url 'dashboard:customer:addresses:address-create' %}" class="btn btn-sm btn-primary rounded-pill px-4">
-                                <i class="bi bi-plus-lg"></i> افزودن آدرس
+
+                            <a href="{% url 'dashboard:customer:addresses:address-create' %}" class="add-address-btn">
+                                <i class="bi bi-plus-lg"></i>
+                                افزودن آدرس
                             </a>
                         </div>
-                        {% endif %}
-                    </div>
-                </div>
 
-                <!-- شیوه پرداخت -->
-                <div class="checkout-section mb-4">
-                    <div class="checkout-section-header">
-                        <h6 class="fw-bold mb-0">شیوه پرداخت</h6>
-                    </div>
-                    <div class="checkout-section-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="checkout-option-card d-block h-100">
-                                    <input type="radio" name="payment_method" value="wallet"
-                                           {% if wallet_balance >= total_price %}checked{% else %}disabled{% endif %}>
-                                    <div class="checkout-option-card-body d-flex align-items-center gap-3">
-                                        <div class="checkout-method-icon"><i class="bi bi-wallet2"></i></div>
-                                        <div>
-                                            <span class="fw-bold d-block">پرداخت از کیف پول</span>
-                                            <span class="text-muted small">موجودی: {{ wallet_balance|floatformat:0 }} تومان</span>
-                                            {% if wallet_balance < total_price %}
-                                            <span class="text-danger small d-block">موجودی کافی نیست</span>
-                                            {% endif %}
+                        <div class="checkout-section-body">
+                            {% if addresses %}
+                                <div class="row g-3">
+                                    {% for addr in addresses %}
+                                        <div class="col-md-6">
+                                            <label class="address-card">
+                                                <input
+                                                    type="radio"
+                                                    name="selected_address"
+                                                    value="{{ addr.id }}"
+                                                    {% if forloop.first %}checked{% endif %}
+                                                    required
+                                                >
+
+                                                <div class="address-card-content">
+                                                    <div class="address-card-top">
+                                                        <div class="address-icon">
+                                                            <i class="bi bi-geo-alt"></i>
+                                                        </div>
+                                                        <div class="address-check">
+                                                            <i class="bi bi-check-lg"></i>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="address-location">
+                                                        <strong>{{ addr.state }}</strong>
+                                                        <span>{{ addr.city }}</span>
+                                                    </div>
+
+                                                    <p class="address-text">{{ addr.address }}</p>
+
+                                                    {% if addr.receiver_name %}
+                                                        <div class="address-info">
+                                                            <i class="bi bi-person"></i>
+                                                            {{ addr.receiver_name }}
+                                                        </div>
+                                                    {% endif %}
+
+                                                    {% if addr.receiver_phone %}
+                                                        <div class="address-info">
+                                                            <i class="bi bi-telephone"></i>
+                                                            {{ addr.receiver_phone }}
+                                                        </div>
+                                                    {% endif %}
+
+                                                    <div class="address-info">
+                                                        <i class="bi bi-mailbox"></i>
+                                                        {{ addr.zip_code }}
+                                                    </div>
+                                                </div>
+                                            </label>
                                         </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="empty-address">
+                                    <div class="empty-address-icon">
+                                        <i class="bi bi-geo-alt"></i>
                                     </div>
-                                </label>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="checkout-option-card d-block h-100">
-                                    <input type="radio" name="payment_method" value="zarinpal" {% if wallet_balance < total_price %}checked{% endif %}>
-                                    <div class="checkout-option-card-body d-flex align-items-center gap-3">
-                                        <div class="checkout-method-icon"><i class="bi bi-credit-card-2-front"></i></div>
-                                        <div>
-                                            <span class="fw-bold d-block">درگاه زرین‌پال</span>
-                                            <span class="text-muted small">پرداخت آنلاین با تمامی کارت‌های عضو شتاب</span>
-                                        </div>
-                                    </div>
-                                </label>
+                                    <h6>هنوز آدرسی ثبت نکرده‌اید</h6>
+                                    <p>برای ادامه سفارش ابتدا یک آدرس ثبت کنید.</p>
+                                    <a href="{% url 'dashboard:customer:addresses:address-create' %}" class="btn-add-address">
+                                        <i class="bi bi-plus-lg"></i>
+                                        افزودن آدرس جدید
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </section>
+
+
+                    <!-- 2. PAYMENT METHOD -->
+                    <section class="checkout-section mb-4">
+                        <div class="checkout-section-header">
+                            <div>
+                                <span class="section-number">۲</span>
+                                <div>
+                                    <h5>روش پرداخت</h5>
+                                    <p>روش پرداخت موردنظر خود را انتخاب کنید.</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- محصولات انتخاب‌شده -->
-                <div class="checkout-section">
-                    <div class="checkout-section-header">
-                        <h6 class="fw-bold mb-0">محصولات انتخاب‌شده</h6>
-                    </div>
-                    <div class="checkout-section-body">
-                        <div class="d-flex flex-column gap-3">
-                            {% for item in cart_items %}
-                            <div class="d-flex align-items-center gap-3 pb-3 border-bottom">
-                                <div style="width:64px; height:64px;" class="flex-shrink-0 rounded-3 overflow-hidden border">
-                                    {% if item.product.image %}
-                                    <img src="{{ item.product.image.url }}" class="w-100 h-100" style="object-fit:cover;" alt="{{ item.product.title }}">
-                                    {% else %}
-                                    <div class="w-100 h-100 d-flex align-items-center justify-content-center bg-light">
-                                        <i class="bi bi-cup-hot text-muted"></i>
-                                    </div>
-                                    {% endif %}
+                        <div class="checkout-section-body">
+                            <div class="row g-3">
+                                <!-- Gateway -->
+                                <div class="col-md-6">
+                                    <label class="payment-card">
+                                        <input
+                                            type="radio"
+                                            name="payment_method"
+                                            value="zarinpal"
+                                            checked
+                                        >
+                                        <div class="payment-card-content">
+                                            <div class="payment-icon gateway-icon">
+                                                <i class="bi bi-credit-card-2-front"></i>
+                                            </div>
+                                            <div class="payment-info">
+                                                <strong>پرداخت آنلاین</strong>
+                                                <span>پرداخت امن با تمامی کارت‌های بانکی</span>
+                                            </div>
+                                            <div class="payment-radio">
+                                                <span></span>
+                                            </div>
+                                        </div>
+                                    </label>
                                 </div>
-                                <div class="flex-grow-1">
-                                    <h6 class="small fw-semibold mb-1">{{ item.product.title }}</h6>
-                                    <span class="text-muted small">تعداد: {{ item.quantity }}</span>
+
+                                <!-- Wallet -->
+                                <div class="col-md-6">
+                                    <label class="payment-card">
+                                        <input
+                                            type="radio"
+                                            name="payment_method"
+                                            value="wallet"
+                                        >
+                                        <div class="payment-card-content">
+                                            <div class="payment-icon wallet-icon">
+                                                <i class="bi bi-wallet2"></i>
+                                            </div>
+                                            <div class="payment-info">
+                                                <strong>کیف پول</strong>
+                                                <span>پرداخت سریع با موجودی حساب</span>
+                                            </div>
+                                            <div class="payment-radio">
+                                                <span></span>
+                                            </div>
+                                        </div>
+                                    </label>
                                 </div>
-                                <span class="fw-bold small">{{ item.subtotal|floatformat:0 }} تومان</span>
                             </div>
+
+                            <div class="secure-payment-box">
+                                <i class="bi bi-shield-check"></i>
+                                <div>
+                                    <strong>پرداخت امن</strong>
+                                    <span>اطلاعات بانکی شما مستقیماً در درگاه پرداخت وارد می‌شود و نزد Chaai Chi ذخیره نمی‌شود.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+
+                    <!-- 3. PRODUCTS -->
+                    <section class="checkout-section">
+                        <div class="checkout-section-header">
+                            <div>
+                                <span class="section-number">۳</span>
+                                <div>
+                                    <h5>محصولات سفارش</h5>
+                                    <p>{{ cart_items|length }} محصول در سفارش شما</p>
+                                </div>
+                            </div>
+                            <a href="{% url 'cart:summary' %}" class="edit-cart-link">
+                                ویرایش سبد خرید
+                            </a>
+                        </div>
+
+                        <div class="checkout-section-body products-body">
+                            {% for item in cart_items %}
+                                <div class="checkout-product">
+                                    <div class="checkout-product-image">
+                                        {% if item.product.image %}
+                                            <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}">
+                                        {% else %}
+                                            <div class="product-placeholder">
+                                                <i class="bi bi-cup-hot"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="checkout-product-info">
+                                        <h6>{{ item.product.title }}</h6>
+                                        <span>تعداد: {{ item.quantity }}</span>
+                                    </div>
+
+                                    <div class="checkout-product-price">
+                                        {% if item.product.get_price != item.product.price %}
+                                            <del>{{ item.product.price|floatformat:0 }} تومان</del>
+                                        {% endif %}
+                                        <strong>{{ item.subtotal|floatformat:0 }} تومان</strong>
+                                    </div>
+                                </div>
+                            {% empty %}
+                                <div class="empty-cart-message">
+                                    <i class="bi bi-cart-x"></i>
+                                    <p>سبد خرید شما خالی است.</p>
+                                </div>
                             {% endfor %}
                         </div>
+                    </section>
+
+                </div>
+
+
+                <!-- ================================= -->
+                <!-- LEFT COLUMN (Order Summary) -->
+                <!-- ================================= -->
+
+                <div class="col-lg-4">
+
+                    <div class="order-summary-card">
+
+
+                        <!-- Coupon Input Section -->
+                        <div class="p-3 border-bottom">
+                            <label class="form-label text-muted fs-7 mb-2">کد تخفیف داری؟</label>
+                            <div class="input-group">
+                                <input type="text" name="coupon_code" class="form-control form-control-sm" placeholder="کد تخفیف را وارد کنید">
+                            </div>
+                            {% if form.coupon_code.errors %}
+                                <div class="text-danger fs-8 mt-1">
+                                    {{ form.coupon_code.errors.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Price Details -->
+                        <div class="summary-details">
+                            <div class="summary-row">
+                                <span>قیمت کالاها</span>
+                                <strong>{{ items_total|floatformat:0 }} <small>تومان</small></strong>
+                            </div>
+
+                            {% if products_discount %}
+                                <div class="summary-row discount-row">
+                                    <span>تخفیف محصولات</span>
+                                    <strong>- {{ products_discount|floatformat:0 }} <small>تومان</small></strong>
+                                </div>
+                            {% endif %}
+
+                            {% if coupon_discount %}
+                                <div class="summary-row discount-row">
+                                    <span>تخفیف کد تخفیف</span>
+                                    <strong>- {{ coupon_discount|floatformat:0 }} <small>تومان</small></strong>
+                                </div>
+                            {% endif %}
+
+                            <div class="summary-row">
+                                <span>هزینه ارسال</span>
+                                {% if shipping_cost == 0 %}
+                                    <strong class="free-shipping">رایگان</strong>
+                                {% else %}
+                                    <strong>{{ shipping_cost|floatformat:0 }} <small>تومان</small></strong>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Total -->
+                        <div class="summary-total">
+                            <span>مبلغ قابل پرداخت</span>
+                            <strong>{{ final_price|floatformat:0 }} <small>تومان</small></strong>
+                        </div>
+
+                        <!-- Submit -->
+                        <button type="submit" class="checkout-submit">
+                            <span>ادامه و پرداخت</span>
+                            <strong>{{ final_price|floatformat:0 }} تومان</strong>
+                            <i class="bi bi-arrow-left"></i>
+                        </button>
+
+                        <div class="checkout-trust">
+                            <i class="bi bi-shield-lock"></i>
+                            پرداخت شما در محیط امن انجام می‌شود.
+                        </div>
+
                     </div>
+
                 </div>
 
             </div>
-            <!-- End Col -->
 
-            <!-- خلاصه سفارش -->
-            <div class="col-lg-4">
-
-<div class="card shadow-sm border-0">
-
-    <div class="card-header bg-white">
-
-        <h5 class="mb-0">
-            خلاصه سفارش
-        </h5>
+        </form>
 
     </div>
-
-
-    <div class="card-body">
-
-
-        {% for item in cart_items %}
-
-        <div class="d-flex justify-content-between align-items-center mb-3">
-
-
-            <div>
-
-                <div class="fw-bold">
-                    {{ item.product.title }}
-                </div>
-
-
-                <small class="text-muted">
-                    تعداد:
-                    {{ item.quantity }}
-                </small>
-
-            </div>
-
-
-
-            <div class="text-end">
-
-
-                {% if item.product.get_price != item.product.price %}
-
-                <div class="text-muted text-decoration-line-through small">
-
-                    {{ item.product.price|floatformat:0 }}
-
-                    تومان
-
-                </div>
-
-                {% endif %}
-
-
-
-                <div class="fw-bold">
-
-                    {{ item.subtotal|floatformat:0 }}
-
-                    تومان
-
-                </div>
-
-
-            </div>
-
-
-        </div>
-
-
-        {% endfor %}
-
-
-
-        <hr>
-
-
-
-        <dl class="row small mb-0">
-
-
-            <dt class="col-7 fw-normal text-muted">
-
-                قیمت کالاها:
-
-            </dt>
-
-
-            <dd class="col-5 text-end">
-
-                {{ items_total|floatformat:0 }}
-
-                تومان
-
-            </dd>
-
-
-
-
-            <dt class="col-7 fw-normal text-muted">
-
-                تخفیف محصولات:
-
-            </dt>
-
-
-            <dd class="col-5 text-end text-danger">
-
-                -
-
-                {{ products_discount|floatformat:0 }}
-
-                تومان
-
-            </dd>
-
-
-
-
-            {% if coupon_discount %}
-
-
-            <dt class="col-7 fw-normal text-muted">
-
-                تخفیف کد:
-
-            </dt>
-
-
-            <dd class="col-5 text-end text-danger">
-
-                -
-
-                {{ coupon_discount|floatformat:0 }}
-
-                تومان
-
-            </dd>
-
-
-            {% endif %}
-
-
-
-
-
-            <dt class="col-7 fw-normal text-muted">
-
-                هزینه ارسال:
-
-            </dt>
-
-
-            <dd class="col-5 text-end">
-
-                {{ shipping_cost|floatformat:0 }}
-
-                تومان
-
-            </dd>
-
-
-
-        </dl>
-
-
-
-        <hr>
-
-
-
-
-        <div class="d-flex justify-content-between align-items-center">
-
-
-            <span class="fw-bold">
-
-                مبلغ قابل پرداخت:
-
-            </span>
-
-
-
-            <span class="fw-bold text-success fs-5">
-
-                {{ final_price|floatformat:0 }}
-
-                تومان
-
-            </span>
-
-
-        </div>
-
-
-
-
-        <button type="submit"
-                class="btn btn-success w-100 mt-4">
-
-
-            پرداخت
-
-            {{ final_price|floatformat:0 }}
-
-            تومان
-
-
-        </button>
-
-
-
-    </div>
-
 </div>
 
 <style>
-    .checkout-section {
-        background: #fff;
-        border-radius: 16px;
-        border: 1px solid #eee;
-        overflow: hidden;
-    }
-    .checkout-section-header {
-        background: #FAFAFA;
-        padding: 1rem 1.25rem;
-        border-bottom: 1px solid #eee;
-    }
-    .checkout-section-body { padding: 1.25rem; }
+/* =====================================================
+   CHECKOUT PAGE & UTILITIES
+===================================================== */
+.fs-7 { font-size: 0.8rem; }
+.fs-8 { font-size: 0.72rem; }
 
-    .checkout-option-card { position: relative; cursor: pointer; }
-    .checkout-option-card input { position: absolute; opacity: 0; }
-    .checkout-option-card-body {
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 1rem;
-        height: 100%;
-        transition: border-color .15s ease, background .15s ease;
-    }
-    .checkout-option-card:has(input:checked) .checkout-option-card-body {
-        border-color: #2c5f2d;
-        background: #f5f9f5;
-    }
-    .checkout-option-card:has(input:checked)::after {
-        content: '';
-        position: absolute;
-        top: 12px; left: 12px;
-        width: 10px; height: 10px;
-        border-radius: 50%;
-        background: #2c5f2d;
-    }
-    .checkout-option-card input:disabled ~ .checkout-option-card-body {
-        opacity: .5;
-        cursor: not-allowed;
-    }
+.checkout-page {
+    background: #f8faf8;
+    min-height: calc(100vh - 100px);
+    direction: rtl;
+}
 
-    .checkout-method-icon {
-        width: 42px; height: 42px;
-        border-radius: 50%;
-        background: #EAF3EC;
-        color: #2c5f2d;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        font-size: 1.1rem;
-    }
+/* =====================================================
+   BREADCRUMB
+===================================================== */
+.checkout-breadcrumb { font-size: .82rem; }
+.checkout-breadcrumb a { color: #6c757d; text-decoration: none; }
+.checkout-breadcrumb a:hover { color: #2c5f2d; }
+.checkout-breadcrumb .active { color: #2c5f2d; font-weight: 600; }
+
+/* =====================================================
+   TITLE
+===================================================== */
+.checkout-title h1 { font-size: 1.7rem; font-weight: 800; color: #203522; margin-bottom: .4rem; }
+.checkout-title p { color: #7a837b; margin: 0; font-size: .9rem; }
+
+/* =====================================================
+   SECTION
+===================================================== */
+.checkout-section {
+    background: #fff;
+    border: 1px solid #e9eee9;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 3px 16px rgba(36, 67, 40, .035);
+}
+
+.checkout-section-header {
+    padding: 1.15rem 1.35rem;
+    background: #fcfdfc;
+    border-bottom: 1px solid #edf0ed;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.checkout-section-header > div:first-child {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+}
+
+.section-number {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #eaf3ec;
+    color: #2c5f2d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: .9rem;
+    flex-shrink: 0;
+}
+
+.checkout-section-header h5 { margin: 0 0 .15rem; font-size: 1rem; font-weight: 800; color: #263b29; }
+.checkout-section-header p { margin: 0; color: #8a928b; font-size: .75rem; }
+
+.add-address-btn, .edit-cart-link {
+    color: #2c5f2d;
+    text-decoration: none;
+    font-size: .78rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.add-address-btn:hover, .edit-cart-link:hover { color: #214a23; }
+.checkout-section-body { padding: 1.35rem; }
+
+/* =====================================================
+   ADDRESS CARD
+===================================================== */
+.address-card { display: block; position: relative; cursor: pointer; height: 100%; }
+.address-card input { position: absolute; opacity: 0; pointer-events: none; }
+.address-card-content {
+    height: 100%;
+    min-height: 180px;
+    border: 1.5px solid #e4e9e4;
+    border-radius: 14px;
+    padding: 1rem;
+    transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+    background: #fff;
+}
+.address-card:hover .address-card-content { border-color: #b7cbb9; }
+.address-card input:checked ~ .address-card-content {
+    border-color: #2c5f2d;
+    background: #f7fbf7;
+    box-shadow: 0 0 0 3px rgba(44, 95, 45, .08);
+}
+.address-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: .8rem; }
+.address-icon {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: #edf6ee; color: #2c5f2d;
+    display: flex; align-items: center; justify-content: center;
+}
+.address-check {
+    width: 23px; height: 23px; border-radius: 50%;
+    border: 1.5px solid #d8dfd8; color: transparent;
+    display: flex; align-items: center; justify-content: center; font-size: .75rem;
+}
+.address-card input:checked ~ .address-card-content .address-check {
+    background: #2c5f2d; border-color: #2c5f2d; color: #fff;
+}
+.address-location { display: flex; align-items: center; gap: .45rem; margin-bottom: .5rem; }
+.address-location strong { color: #293c2c; font-size: .86rem; }
+.address-location span { color: #7c857d; font-size: .8rem; }
+.address-text { color: #5f6861; font-size: .78rem; line-height: 1.8; margin-bottom: .7rem; }
+.address-info { display: flex; align-items: center; gap: .35rem; color: #89918a; font-size: .72rem; margin-top: .3rem; }
+.address-info i { color: #709174; }
+
+/* =====================================================
+   EMPTY ADDRESS
+===================================================== */
+.empty-address { text-align: center; padding: 2.5rem 1rem; }
+.empty-address-icon {
+    width: 60px; height: 60px; margin: 0 auto 1rem;
+    border-radius: 50%; background: #edf5ee; color: #2c5f2d;
+    display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+}
+.empty-address h6 { font-weight: 800; color: #344438; }
+.empty-address p { color: #8a928b; font-size: .8rem; }
+.btn-add-address {
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: #2c5f2d; color: #fff; padding: .65rem 1.1rem;
+    border-radius: 9px; text-decoration: none; font-size: .8rem; font-weight: 700;
+}
+.btn-add-address:hover { background: #214a23; color: #fff; }
+
+/* =====================================================
+   PAYMENT
+===================================================== */
+.payment-card { position: relative; display: block; cursor: pointer; height: 100%; }
+.payment-card input { position: absolute; opacity: 0; pointer-events: none; }
+.payment-card-content {
+    height: 100%; display: flex; align-items: center; gap: .8rem;
+    border: 1.5px solid #e4e9e4; border-radius: 14px; padding: 1rem; transition: .2s ease;
+}
+.payment-card:hover .payment-card-content { border-color: #b7cbb9; }
+.payment-card input:checked ~ .payment-card-content {
+    border-color: #2c5f2d; background: #f7fbf7; box-shadow: 0 0 0 3px rgba(44, 95, 45, .08);
+}
+.payment-icon {
+    width: 45px; height: 45px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.15rem; flex-shrink: 0;
+}
+.gateway-icon { background: #eaf3ec; color: #2c5f2d; }
+.wallet-icon { background: #f3eee2; color: #967a3c; }
+.payment-info { flex-grow: 1; }
+.payment-info strong { display: block; color: #293b2c; font-size: .85rem; margin-bottom: .25rem; }
+.payment-info span { display: block; color: #858d86; font-size: .72rem; line-height: 1.6; }
+.payment-radio {
+    width: 20px; height: 20px; border: 1.5px solid #ccd4cc; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.payment-radio span { width: 10px; height: 10px; border-radius: 50%; }
+.payment-card input:checked ~ .payment-card-content .payment-radio { border-color: #2c5f2d; }
+.payment-card input:checked ~ .payment-card-content .payment-radio span { background: #2c5f2d; }
+
+/* =====================================================
+   SECURE PAYMENT & PRODUCTS
+===================================================== */
+.secure-payment-box {
+    display: flex; align-items: center; gap: .7rem;
+    background: #f6faf6; border: 1px solid #e3eee4; border-radius: 11px;
+    padding: .8rem 1rem; margin-top: 1rem;
+}
+.secure-payment-box > i { color: #2c5f2d; font-size: 1.2rem; }
+.secure-payment-box strong { display: block; color: #405343; font-size: .75rem; }
+.secure-payment-box span { display: block; color: #8a938b; font-size: .67rem; line-height: 1.7; }
+
+.products-body { padding-top: .5rem; padding-bottom: .5rem; }
+.checkout-product { display: flex; align-items: center; gap: 1rem; padding: .85rem 0; border-bottom: 1px solid #edf0ed; }
+.checkout-product:last-child { border-bottom: 0; }
+.checkout-product-image {
+    width: 68px; height: 68px; border-radius: 12px; overflow: hidden;
+    background: #f3f5f3; border: 1px solid #e7ebe7; flex-shrink: 0;
+}
+.checkout-product-image img { width: 100%; height: 100%; object-fit: cover; }
+.product-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #9ba39c; }
+.checkout-product-info { flex-grow: 1; }
+.checkout-product-info h6 { margin: 0 0 .35rem; font-size: .83rem; font-weight: 700; color: #344437; }
+.checkout-product-info span { color: #89918a; font-size: .72rem; }
+.checkout-product-price { text-align: left; white-space: nowrap; }
+.checkout-product-price del { display: block; color: #a5aaa5; font-size: .67rem; margin-bottom: .15rem; }
+.checkout-product-price strong { color: #334536; font-size: .78rem; }
+
+/* =====================================================
+   ORDER SUMMARY
+===================================================== */
+.order-summary-card {
+    position: sticky; top: 20px; background: #fff;
+    border: 1px solid #e4ebe4; border-radius: 20px; overflow: hidden;
+    box-shadow: 0 7px 25px rgba(36, 67, 40, .07);
+}
+.order-summary-header {
+    padding: 1.25rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #edf0ed;
+}
+.order-summary-header h5 { margin: 0 0 .2rem; font-size: 1rem; font-weight: 800; color: #263a29; }
+.order-summary-header span { color: #909890; font-size: .7rem; }
+.summary-cart-icon {
+    width: 40px; height: 40px; border-radius: 11px; background: #edf5ee; color: #2c5f2d;
+    display: flex; align-items: center; justify-content: center;
+}
+
+.summary-details { margin: 0 1.25rem; padding: .8rem 0; border-bottom: 1px solid #edf0ed; }
+.summary-row { display: flex; align-items: center; justify-content: space-between; padding: .45rem 0; font-size: .75rem; }
+.summary-row span { color: #818981; }
+.summary-row strong { color: #4b554c; font-weight: 700; }
+.summary-row strong small { font-size: .6rem; font-weight: 400; }
+.discount-row strong { color: #d85b5b; }
+.free-shipping { color: #2c7a3b !important; }
+
+.summary-total { display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 1.25rem; }
+.summary-total span { color: #39473b; font-size: .82rem; font-weight: 700; }
+.summary-total strong { color: #2c5f2d; font-size: 1.1rem; font-weight: 900; }
+.summary-total small { font-size: .62rem; font-weight: 500; }
+
+.checkout-submit {
+    width: calc(100% - 2.5rem); margin: 0 1.25rem; border: 0; border-radius: 12px;
+    background: #2c5f2d; color: #fff; min-height: 52px; padding: .7rem 1rem;
+    display: flex; align-items: center; justify-content: space-between; gap: .5rem;
+    cursor: pointer; transition: background .2s ease, transform .15s ease, box-shadow .2s ease;
+}
+.checkout-submit:hover { background: #214a23; box-shadow: 0 7px 18px rgba(44, 95, 45, .2); transform: translateY(-1px); }
+.checkout-submit span { font-size: .8rem; font-weight: 700; }
+.checkout-submit strong { font-size: .75rem; font-weight: 800; }
+.checkout-submit i { font-size: .9rem; }
+
+.checkout-trust {
+    display: flex; align-items: center; justify-content: center; gap: .35rem;
+    padding: .9rem 1rem 1.1rem; color: #9aa19b; font-size: .64rem;
+}
+.checkout-trust i { color: #6f9272; }
+
+.empty-cart-message { text-align: center; padding: 2rem; color: #929992; }
+.empty-cart-message i { display: block; font-size: 1.8rem; margin-bottom: .5rem; }
+.empty-cart-message p { margin: 0; font-size: .8rem; }
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+@media (max-width: 991.98px) { .order-summary-card { position: static; } }
+@media (max-width: 767.98px) {
+    .checkout-page { padding-top: 1.5rem !important; }
+    .checkout-title h1 { font-size: 1.35rem; }
+    .checkout-section-header, .checkout-section-body { padding: 1rem; }
+    .checkout-section-header p { display: none; }
+    .add-address-btn { font-size: .7rem; }
+    .checkout-product-image { width: 58px; height: 58px; }
+    .checkout-product { gap: .7rem; }
+    .checkout-product-price strong { font-size: .7rem; }
+    .checkout-product-info h6 { font-size: .75rem; }
+    .address-card-content { min-height: 165px; }
+}
+@media (max-width: 480px) {
+    .checkout-section-header { align-items: flex-start; }
+    .section-number { width: 30px; height: 30px; font-size: .78rem; }
+    .checkout-section-header h5 { font-size: .88rem; }
+    .payment-card-content { padding: .8rem; }
+    .payment-icon { width: 40px; height: 40px; }
+    .payment-info span { font-size: .66rem; }
+    .checkout-product-image { width: 52px; height: 52px; }
+    .checkout-product-price del { font-size: .6rem; }
+    .checkout-product-price strong { font-size: .65rem; }
+    .order-summary-header, .summary-total { padding: 1rem; }
+    .summary-details { margin: 0 1rem; }
+    .checkout-submit { width: calc(100% - 2rem); margin: 0 1rem; }
+}
 </style>
+
 {% endblock %}
