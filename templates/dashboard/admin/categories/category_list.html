@@ -1,0 +1,73 @@
+{% extends 'dashboard/admin/base.html' %}
+
+{% block title %}مدیریت دسته‌بندی‌ها{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">مدیریت دسته‌بندی‌ها</h4>
+            <p class="text-muted fs-7 mb-0">لیست تمامی دسته‌بندی‌های فعال فروشگاه</p>
+        </div>
+        <a href="{% url 'dashboard:admin:category-create' %}" class="btn btn-success d-inline-flex align-items-center gap-2">
+            <i class="bi bi-plus-lg"></i>
+            افزودن دسته‌بندی جدید
+        </a>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Categories Table Card -->
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">عنوان</th>
+                            <th>اسلاگ</th>
+                            <th>توضیحات</th>
+                            <th class="text-end pe-4">عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                            <tr>
+                                <td class="ps-4 fw-bold text-dark">{{ category.title }}</td>
+                                <td><span class="badge bg-light text-dark border">{{ category.slug }}</span></td>
+                                <td class="text-muted fs-7">{{ category.description|truncatewords:10|default:"-" }}</td>
+                                <td class="text-end pe-4">
+                                    <a href="{% url 'dashboard:admin:category-update' category.pk %}" class="btn btn-sm btn-outline-primary ms-1" title="ویرایش">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'dashboard:admin:category-delete' category.pk %}" class="btn btn-sm btn-outline-danger" title="حذف">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <i class="bi bi-folder-x fs-1 d-block mb-2"></i>
+                                    هنوز هیچ دسته‌بندی ثبت نشده است.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

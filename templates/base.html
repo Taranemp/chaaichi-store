@@ -21,6 +21,17 @@
     <!-- Custom Style -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
+    <!-- بارگذاری آنلاین فونت وزیرمتن (Vazirmatn) -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+
+    <!-- تنظیمات تایپوگرافی و اعداد فارسی -->
+    <style>
+        body, input, button, select, textarea {
+            font-family: 'Vazirmatn', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            font-feature-settings: "ss01", "ss02"; /* فعال‌سازی اعداد فارسی استاندارد */
+        }
+    </style>
+
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -69,12 +80,26 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            // فعال‌سازی توست‌های بوست‌استرپ
             const toastElList = document.querySelectorAll('.toast');
             toastElList.forEach(function (toastEl) {
                 new bootstrap.Toast(toastEl, {
                     delay: 4000
                 }).show();
             });
+
+            // فرمت سه‌رقمی و فارسی‌سازی اعداد تمام قیمت‌های دارای کلاس price-format
+            function formatIranianPrices() {
+                document.querySelectorAll(".price-format").forEach(function (el) {
+                    let rawValue = el.innerText.trim().replace(/[^\d]/g, "");
+                    if (rawValue) {
+                        let formatted = Number(rawValue).toLocaleString("fa-IR");
+                        el.innerText = formatted;
+                    }
+                });
+            }
+
+            formatIranianPrices();
         });
     </script>
 

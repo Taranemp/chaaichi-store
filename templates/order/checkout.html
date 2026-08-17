@@ -243,9 +243,9 @@
 
                                     <div class="checkout-product-price">
                                         {% if item.product.get_price != item.product.price %}
-                                            <del>{{ item.product.price|floatformat:0 }} تومان</del>
+                                            <del><span class="price-format">{{ item.product.price|floatformat:0 }}</span> تومان</del>
                                         {% endif %}
-                                        <strong>{{ item.subtotal|floatformat:0 }} تومان</strong>
+                                        <strong><span class="price-format">{{ item.subtotal|floatformat:0 }}</span> تومان</strong>
                                     </div>
                                 </div>
                             {% empty %}
@@ -286,20 +286,20 @@
                         <div class="summary-details">
                             <div class="summary-row">
                                 <span>قیمت کالاها</span>
-                                <strong>{{ items_total|floatformat:0 }} <small>تومان</small></strong>
+                                <strong><span class="price-format">{{ items_total|floatformat:0 }}</span> <small>تومان</small></strong>
                             </div>
 
                             {% if products_discount %}
                                 <div class="summary-row discount-row">
                                     <span>تخفیف محصولات</span>
-                                    <strong>- {{ products_discount|floatformat:0 }} <small>تومان</small></strong>
+                                    <strong>- <span class="price-format">{{ products_discount|floatformat:0 }}</span> <small>تومان</small></strong>
                                 </div>
                             {% endif %}
 
                             {% if coupon_discount %}
                                 <div class="summary-row discount-row">
                                     <span>تخفیف کد تخفیف</span>
-                                    <strong>- {{ coupon_discount|floatformat:0 }} <small>تومان</small></strong>
+                                    <strong>- <span class="price-format">{{ coupon_discount|floatformat:0 }}</span> <small>تومان</small></strong>
                                 </div>
                             {% endif %}
 
@@ -308,7 +308,7 @@
                                 {% if shipping_cost == 0 %}
                                     <strong class="free-shipping">رایگان</strong>
                                 {% else %}
-                                    <strong>{{ shipping_cost|floatformat:0 }} <small>تومان</small></strong>
+                                    <strong><span class="price-format">{{ shipping_cost|floatformat:0 }}</span> <small>تومان</small></strong>
                                 {% endif %}
                             </div>
                         </div>
@@ -316,13 +316,13 @@
                         <!-- Total -->
                         <div class="summary-total">
                             <span>مبلغ قابل پرداخت</span>
-                            <strong>{{ final_price|floatformat:0 }} <small>تومان</small></strong>
+                            <strong><span class="price-format">{{ final_price|floatformat:0 }}</span> <small>تومان</small></strong>
                         </div>
 
                         <!-- Submit -->
                         <button type="submit" class="checkout-submit">
                             <span>ادامه و پرداخت</span>
-                            <strong>{{ final_price|floatformat:0 }} تومان</strong>
+                            <strong><span class="price-format">{{ final_price|floatformat:0 }}</span> تومان</strong>
                             <i class="bi bi-arrow-left"></i>
                         </button>
 

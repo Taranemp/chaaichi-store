@@ -9,60 +9,26 @@
         سبد خرید
     </h1>
 
-
     {% if cart_items %}
 
-
     <div class="table-responsive">
-
         <table class="table align-middle">
-
-
             <thead class="table-light">
-
                 <tr>
-
-                    <th>
-                        محصول
-                    </th>
-
-                    <th>
-                        قیمت
-                    </th>
-
-                    <th>
-                        تعداد
-                    </th>
-
-                    <th>
-                        جمع
-                    </th>
-
+                    <th>محصول</th>
+                    <th>قیمت</th>
+                    <th>تعداد</th>
+                    <th>جمع</th>
                     <th></th>
-
                 </tr>
-
             </thead>
 
-
-
             <tbody>
-
-
             {% for item in cart_items %}
-
-
             <tr>
-
-
                 <td>
-
-
                     <div class="d-flex align-items-center gap-3">
-
-
                         {% if item.product.image %}
-
                         <img
                             src="{{ item.product.image.url }}"
                             alt="{{ item.product.title }}"
@@ -70,554 +36,194 @@
                             height="60"
                             style="object-fit:cover;border-radius:8px"
                         >
-
                         {% endif %}
-
-
 
                         <a href="{{ item.product.get_absolute_url }}"
                            class="text-decoration-none fw-semibold">
-
                             {{ item.product.title }}
-
                         </a>
-
-
                     </div>
-
-
                 </td>
 
-
-
                 <td>
-
-
                     {% if item.product.has_discount %}
-
-
                         <div class="text-muted text-decoration-line-through small">
-
-                            {{ item.product.price|floatformat:0 }}
-
-                            تومان
-
+                            <span class="price-format">{{ item.product.price|floatformat:0 }}</span> تومان
                         </div>
-
-
 
                         <div class="fw-bold text-success">
-
-
-                            {{ item.product.get_price|floatformat:0 }}
-
-                            تومان
-
-
+                            <span class="price-format">{{ item.product.get_price|floatformat:0 }}</span> تومان
                         </div>
-
-
 
                         <span class="badge bg-danger">
-
-
                             {{ item.product.discount_percent }}٪ تخفیف
-
-
                         </span>
-
-
-
                     {% else %}
-
-
-
                         <div class="fw-bold">
-
-
-                            {{ item.product.price|floatformat:0 }}
-
-                            تومان
-
-
+                            <span class="price-format">{{ item.product.price|floatformat:0 }}</span> تومان
                         </div>
-
-
-
                     {% endif %}
-
-
                 </td>
 
-
-
-
                 <td>
-
-
                     <input
-
                         type="number"
-
                         class="form-control form-control-sm quantity-input"
-
                         style="width:70px"
-
                         value="{{ item.quantity }}"
-
                         min="1"
-
                         data-product-id="{{ item.product.id }}"
-
                     >
-
-
                 </td>
 
-
-
-
                 <td>
-
-
                     <div class="fw-bold">
-
-
-                        {{ item.subtotal|floatformat:0 }}
-
-                        تومان
-
-
+                        <span class="price-format">{{ item.subtotal|floatformat:0 }}</span> تومان
                     </div>
-
-
                 </td>
-
-
-
 
                 <td>
-
-
                     <button
-
                         class="btn btn-sm btn-outline-danger remove-item"
-
                         data-product-id="{{ item.product.id }}"
-
                     >
-
                         <i class="bi bi-trash"></i>
-
-
                     </button>
-
-
                 </td>
-
-
             </tr>
-
-
-
             {% endfor %}
-
-
             </tbody>
-
-
         </table>
-
-
     </div>
-
-
-
 
     <div class="row justify-content-end">
-
-
         <div class="col-md-4">
-
-
             <div class="card">
-
-
                 <div class="card-body">
-
-
-                    <h5 class="card-title">
-
-                        خلاصه سبد خرید
-
-                    </h5>
-
-
-
+                    <h5 class="card-title">خلاصه سبد خرید</h5>
                     <hr>
 
-
-
-
                     <div class="d-flex justify-content-between mb-2">
-
-
-                        <span>
-
-                            تعداد کالاها:
-
-                        </span>
-
-
-                        <span>
-
-                            {{ total_quantity }}
-
-                        </span>
-
-
+                        <span>تعداد کالاها:</span>
+                        <span>{{ total_quantity }}</span>
                     </div>
 
-
                     <div class="d-flex justify-content-between mb-2">
-
-
+                        <span>قیمت کالاها:</span>
                         <span>
-
-                            قیمت کالاها:
-
+                            <span class="price-format">{{ items_total|floatformat:0 }}</span> تومان
                         </span>
-
-
-                        <span>
-
-                            {{ items_total|floatformat:0 }}
-
-                            تومان
-
-                        </span>
-
                     </div>
 
-
-
-
-
                     <div class="d-flex justify-content-between mb-2">
-
-
-                        <span>
-
-                            تخفیف محصولات:
-
-                        </span>
-
-
+                        <span>تخفیف محصولات:</span>
                         <span class="text-danger">
-
-
-                            -
-
-                            {{ products_discount }}
-
-                            تومان
-
-
+                            - <span class="price-format">{{ products_discount|floatformat:0 }}</span> تومان
                         </span>
-
-
                     </div>
 
-
-
-
-
                     <hr>
-
-
-
 
                     <div class="d-flex justify-content-between mb-3">
-
-
-                        <span>
-
-                            مبلغ کل:
-
-                        </span>
-
-
+                        <span>مبلغ کل:</span>
                         <span class="fw-bold text-success">
-
-
-                            {{ final_price }}
-
-                            تومان
-
-
+                            <span class="price-format">{{ final_price|floatformat:0 }}</span> تومان
                         </span>
-
-
                     </div>
 
-
-
-
-
-                    <a
-
-                        href="{% url 'order:checkout' %}"
-
-                        class="btn btn-primary btn-lg w-100"
-
-                    >
-
-
-                        <i class="bi bi-credit-card"></i>
-
-                        تکمیل سفارش
-
-
+                    <a href="{% url 'order:checkout' %}" class="btn btn-primary btn-lg w-100">
+                        <i class="bi bi-credit-card"></i> تکمیل سفارش
                     </a>
-
-
-
                 </div>
-
-
             </div>
-
-
         </div>
-
-
     </div>
-
-
-
 
     {% else %}
 
-
-
     <div class="text-center py-5">
-
-
-        <i class="bi bi-cart-x"
-           style="font-size:3rem;color:#ccc">
-
-        </i>
-
-
-
-        <p class="mt-3 text-muted">
-
-            سبد خرید شما خالی است
-
-        </p>
-
-
-
-
-        <a href="{% url 'shop:product_grid' %}"
-
-           class="btn btn-primary">
-
-            مشاهده محصولات
-
-        </a>
-
-
+        <i class="bi bi-cart-x" style="font-size:3rem;color:#ccc"></i>
+        <p class="mt-3 text-muted">سبد خرید شما خالی است</p>
+        <a href="{% url 'shop:product_grid' %}" class="btn btn-primary">مشاهده محصولات</a>
     </div>
-
-
 
     {% endif %}
 
-
-
 </div>
-
 
 {% endblock content %}
 
-
-
-
-
 {% block extra_js %}
-
-
 <script>
-
 document.addEventListener("DOMContentLoaded", function(){
 
-
-function getCookie(name){
-
-    let cookieValue = null;
-
-
-    if(document.cookie && document.cookie !== ""){
-
-
-        const cookies = document.cookie.split(";");
-
-
-        for(let cookie of cookies){
-
-
-            cookie = cookie.trim();
-
-
-            if(cookie.startsWith(name+"=")){
-
-
-                cookieValue =
-                decodeURIComponent(
-                    cookie.substring(name.length+1)
-                );
-
-
-                break;
-
-            }
-
-        }
-
+    // اسکریپت جداسازی ۳ رقمی و تبدیل قیمت‌ها به فارسی
+    function formatPrice(number) {
+        let numStr = parseInt(number, 10).toString();
+        if (isNaN(numStr)) return number;
+        let formatted = numStr.replace(/\B(?=(\d{3})+(?!\d))/g, "،");
+        const farsiDigits = ["۰", "۱", "۲", "۳", "۴", "۵", "۶", "۷", "۸", "۹"];
+        return formatted.replace(/\d/g, (x) => farsiDigits[x]);
     }
 
+    document.querySelectorAll(".price-format").forEach(function (el) {
+        let rawValue = el.innerText.trim().replace(/[^\d]/g, "");
+        if (rawValue) {
+            el.innerText = formatPrice(rawValue);
+        }
+    });
 
-    return cookieValue;
+    function getCookie(name){
+        let cookieValue = null;
+        if(document.cookie && document.cookie !== ""){
+            const cookies = document.cookie.split(";");
+            for(let cookie of cookies){
+                cookie = cookie.trim();
+                if(cookie.startsWith(name+"=")){
+                    cookieValue = decodeURIComponent(cookie.substring(name.length+1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
 
-}
+    const csrftoken = getCookie("csrftoken");
 
+    function cartRequest(url,data,callback){
+        fetch(url,{
+            method:"POST",
+            headers:{
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": csrftoken
+            },
+            body:new URLSearchParams(data)
+        })
+        .then(res=>res.json())
+        .then(callback)
+        .catch(err=>console.error(err));
+    }
 
+    document.querySelectorAll(".quantity-input").forEach(input=>{
+        input.addEventListener("change",function(){
+            cartRequest(
+                "{% url 'cart:update' %}",
+                { product_id:this.dataset.productId, quantity:this.value },
+                function(data){ if(data.success) location.reload(); }
+            );
+        });
+    });
 
-const csrftoken = getCookie("csrftoken");
-
-
-
-function cartRequest(url,data,callback){
-
-
-fetch(url,{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":
-"application/x-www-form-urlencoded",
-
-"X-CSRFToken":csrftoken
-
-},
-
-
-body:new URLSearchParams(data)
-
-
-})
-
-
-.then(res=>res.json())
-
-.then(callback)
-
-.catch(err=>console.error(err));
-
-
-}
-
-
-
-
-document.querySelectorAll(".quantity-input")
-.forEach(input=>{
-
-
-input.addEventListener("change",function(){
-
-
-cartRequest(
-
-"{% url 'cart:update' %}",
-
-{
-
-product_id:this.dataset.productId,
-
-quantity:this.value
-
-},
-
-
-function(data){
-
-
-if(data.success)
-
-location.reload();
-
-
-}
-
-
-);
-
+    document.querySelectorAll(".remove-item").forEach(btn=>{
+        btn.addEventListener("click",function(){
+            cartRequest(
+                "{% url 'cart:remove' %}",
+                { product_id:this.dataset.productId },
+                function(data){ if(data.success) location.reload(); }
+            );
+        });
+    });
 
 });
-
-
-});
-
-
-
-
-
-document.querySelectorAll(".remove-item")
-.forEach(btn=>{
-
-
-btn.addEventListener("click",function(){
-
-
-cartRequest(
-
-"{% url 'cart:remove' %}",
-
-{
-
-product_id:this.dataset.productId
-
-},
-
-
-function(data){
-
-
-if(data.success)
-
-location.reload();
-
-
-}
-
-
-);
-
-
-});
-
-
-});
-
-
-
-});
-
 </script>
-
-
 {% endblock extra_js %}

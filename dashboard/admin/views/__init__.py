@@ -6,3 +6,4 @@ from .generals import *
 from .coupons import *
 from .reviews import *
 from .contacts import *
+from .categories import *

@@ -1,0 +1,55 @@
+{% extends 'dashboard/admin/base.html' %}
+
+{% block title %}
+    {% if object %}ویرایش دسته‌بندی{% else %}افزودن دسته‌بندی جدید{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+    <div class="mb-4">
+        <h4 class="fw-bold mb-1">
+            {% if object %}ویرایش دسته‌بندی: {{ object.title }}{% else %}افزودن دسته‌بندی جدید{% endif %}
+        </h4>
+        <p class="text-muted fs-7 mb-0">اطلاعات دسته‌بندی را وارد کنید.</p>
+    </div>
+
+    <!-- Form Card -->
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold fs-7">عنوان دسته‌بندی</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger fs-8 mt-1">{{ form.title.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold fs-7">توضیحات</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger fs-8 mt-1">{{ form.description.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success px-4">ذخیره تغییرات</button>
+                            <a href="{% url 'dashboard:admin:category-list' %}" class="btn btn-outline-secondary px-4">انصراف</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
