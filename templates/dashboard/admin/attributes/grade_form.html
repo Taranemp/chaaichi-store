@@ -1,0 +1,33 @@
+{% extends 'dashboard/admin/base.html' %}
+{% block title %}{% if object %}ویرایش درجه کیفی{% else %}افزودن درجه کیفی{% endif %}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="mb-4">
+        <h4 class="fw-bold mb-1">{% if object %}ویرایش درجه کیفی: {{ object.name }}{% else %}افزودن درجه کیفی جدید{% endif %}</h4>
+    </div>
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold fs-7">عنوان درجه کیفی</label>
+                            {{ form.name }}
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold fs-7">سطح اولویت</label>
+                            {{ form.level }}
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-success px-4">ذخیره</button>
+                            <a href="{% url 'dashboard:admin:attributes:grade-list' %}" class="btn btn-outline-secondary px-4">انصراف</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

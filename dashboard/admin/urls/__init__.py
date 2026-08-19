@@ -3,7 +3,8 @@ from django.urls import path, include
 app_name = "admin"
 
 urlpatterns = [
-    path("",include("dashboard.admin.urls.generals")),
+    # برنامه‌های اصلی قبلی پروژه بدون پیشوند اضافه
+    path("", include("dashboard.admin.urls.generals")),
     path("", include("dashboard.admin.urls.products")),
     path("", include("dashboard.admin.urls.orders")),
     path("", include("dashboard.admin.urls.users")),
@@ -11,6 +12,9 @@ urlpatterns = [
     path("", include("dashboard.admin.urls.coupons")),
     path("", include("dashboard.admin.urls.reviews")),
     path("", include("dashboard.admin.urls.contacts")),
-    path("", include("dashboard.admin.urls.categories")),
     
+    # فقط برای دسته‌بندی و برند پیشوند اختصاصی قرار می‌دهیم
+    path("categories/", include("dashboard.admin.urls.categories")),
+    path("brands/", include("dashboard.admin.urls.brands")),
+    path("attributes/", include("dashboard.admin.urls.attributes")),
 ]

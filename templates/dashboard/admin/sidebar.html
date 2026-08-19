@@ -45,6 +45,25 @@
             <span>دسته‌بندی‌ها</span>
         </a>
 
+        <a class="sb-link {% if 'brand' in request.resolver_match.url_name %}active{% endif %}"
+        href="{% url 'dashboard:admin:brands:brand-list' %}">
+            <i class="bi bi-award"></i>
+            <span>برندها</span>
+        </a>
+
+
+        <a class="sb-link {% if 'grade' in request.resolver_match.url_name %}active{% endif %}"
+            href="{% url 'dashboard:admin:attributes:grade-list' %}">
+                <i class="bi bi-star"></i>
+            <span>درجه‌های کیفی</span>
+        </a>
+
+        <a class="sb-link {% if 'package' in request.resolver_match.url_name %}active{% endif %}"
+            href="{% url 'dashboard:admin:attributes:package-list' %}">
+                <i class="bi bi-box"></i>
+            <span>انواع بسته‌بندی</span>
+        </a>
+
         <a class="sb-link {% if request.resolver_match.url_name == 'order-list' %}active{% endif %}"
            href="{% url 'dashboard:admin:orders:order-list' %}">
             <i class="bi bi-receipt"></i>

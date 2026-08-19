@@ -1,0 +1,67 @@
+{% extends 'dashboard/admin/base.html' %}
+
+{% block title %}مدیریت درجه‌های کیفی{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-bold mb-1">مدیریت درجه‌های کیفی</h4>
+            <p class="text-muted fs-7 mb-0">درجه‌های کیفی محصولات (مانند ممتاز، سرگل، درجه یک)</p>
+        </div>
+        <a href="{% url 'dashboard:admin:attributes:grade-create' %}" class="btn btn-success d-inline-flex align-items-center gap-2">
+            <i class="bi bi-plus-lg"></i>
+            افزودن درجه کیفی
+        </a>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">عنوان</th>
+                            <th>اسلاگ</th>
+                            <th>سطح اولویت</th>
+                            <th class="text-end pe-4">عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for grade in grades %}
+                            <tr>
+                                <td class="ps-4 fw-bold text-dark">{{ grade.name }}</td>
+                                <td><span class="badge bg-light text-dark border">{{ grade.slug }}</span></td>
+                                <td><span class="badge bg-primary fs-8">{{ grade.level }}</span></td>
+                                <td class="text-end pe-4">
+                                    <a href="{% url 'dashboard:admin:attributes:grade-update' grade.pk %}" class="btn btn-sm btn-outline-primary ms-1">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{% url 'dashboard:admin:attributes:grade-delete' grade.pk %}" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">هنوز هیچ درجه کیفی ثبت نشده است.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
