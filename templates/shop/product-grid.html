@@ -6,6 +6,41 @@
 {% endblock %}
 
 {% block content %}
+<style>
+    .product-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+    }
+
+    /* بخش توضیحات و فوتر (در حالت عادی مخفی) */
+    .product-card-hover-content {
+        background-color: #ffffff;
+        border-top: 1px solid #f0f0f0;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(10px);
+        transition: all 0.3s ease;
+    }
+
+    /* نمایش توضیحات و دکمه‌ها هنگام هور روی کارت */
+    .product-card:hover .product-card-hover-content {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+
+    .product-card-footer button, 
+    .product-card-footer a {
+        color: #333;
+        transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .product-card-footer button:hover, 
+    .product-card-footer a:hover {
+        background-color: #f8f9fa;
+        color: #000;
+    }
+</style>
 
 <div class="container py-4">
     <div class="row">
@@ -101,43 +136,58 @@
             <div class="row">
                 {% for product in object_list %}
                 <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <!-- تصویر + دکمه علاقه‌مندی -->
-                        <div class="position-relative">
-                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}" style="height: 200px; object-fit: cover;">
-                            
-                            <!-- دکمه علاقه‌مندی روی تصویر (فقط قلب) -->
-            {% if user.is_authenticated %}
-            <button type="button" 
-                    class="btn btn-link p-0 wishlist-btn position-absolute top-0 end-0 m-2 {% if product.id in wishlist_ids %}active{% endif %}"
-                    style="border: none; background: none; font-size: 1.5rem; line-height: 1; color: {% if product.id in wishlist_ids %}#dc3545{% else %}rgba(255,255,255,0.7){% endif %}; text-shadow: 0 0 4px rgba(0,0,0,0.3); z-index: 5; transition: all 0.3s ease;"
-                    onclick="toggleWishlist('{{ product.id }}', this)"
-                    data-bs-toggle="tooltip" data-bs-placement="top" title="افزودن به علاقه‌مندی">
-                <i class="bi {% if product.id in wishlist_ids %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
-            </button>
-            {% else %}
-            <a href="{% url 'account:login' %}?next={{ request.path }}" 
-            class="btn btn-link p-0 position-absolute top-0 end-0 m-2"
-            style="border: none; background: none; font-size: 1.5rem; line-height: 1; color: rgba(255,255,255,0.7); text-shadow: 0 0 4px rgba(0,0,0,0.3); z-index: 5; text-decoration: none;"
-            title="برای افزودن به علاقه‌مندی وارد شوید">
-                <i class="bi bi-heart"></i>
-            </a>
-            {% endif %}
-                        </div>
+                    <div class="card product-card h-100 shadow-sm border-0 rounded-3 overflow-hidden d-flex flex-column">
+                        <a href="{% url 'shop:product_detail' product.slug %}">
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}" style="height: 220px; object-fit: cover;">
+                        </a>
                         
-                        <div class="card-body text-center">
-                            <h6 class="card-title">{{ product.title }}</h6>
-                            <p class="card-text text-primary fw-bold">
+                        <div class="card-body text-center d-flex flex-column justify-content-between pb-2">
+                            <a href="{% url 'shop:product_detail' product.slug %}" class="text-decoration-none text-dark">
+                                <h6 class="card-title fw-bold mb-2">{{ product.title }}</h6>
+                            </a>
+                            <p class="card-text text-dark fw-bold mb-0">
                                 {% if product.is_discounted %}
                                 <span class="text-danger">{{ product.get_price|floatformat:0 }}</span>
-                                <span class="text-muted text-decoration-line-through small"> {{ product.price|floatformat:0 }}</span>
+                                <span class="text-muted text-decoration-line-through small me-1">{{ product.price|floatformat:0 }}</span>
                                 {% else %}
                                 {{ product.price|floatformat:0 }}
                                 {% endif %}
-                                تومان
+                                <small class="text-muted fw-normal">تومان</small>
                             </p>
-                            <a href="{% url 'shop:product_detail' product.slug %}" class="btn btn-outline-primary btn-sm">مشاهده محصول</a>
                         </div>
+
+                        <!-- بخش هوُری: توضیحات کوتاه + دکمه‌ها -->
+                        <div class="product-card-hover-content">
+                            {% if product.brief_description or product.description %}
+                            <div class="p-2 text-center border-bottom bg-light">
+                                <p class="text-muted small mb-0 lh-sm" style="font-size: 0.78rem;">
+                                    {{ product.brief_description|default:product.description|truncatewords:10 }}
+                                </p>
+                            </div>
+                            {% endif %}
+
+                            <div class="product-card-footer d-flex align-items-center">
+                                <button type="button" class="btn flex-fill py-2 rounded-0 border-end border-0" onclick="addToCart('{{ product.id }}')" title="افزودن به سبد خرید">
+                                    <i class="bi bi-cart3 fs-5"></i>
+                                </button>
+
+                                {% if user.is_authenticated %}
+                                <button type="button" 
+                                        class="btn flex-fill py-2 rounded-0 border-0 wishlist-btn {% if product.id in wishlist_ids %}active{% endif %}"
+                                        onclick="toggleWishlist('{{ product.id }}', this)"
+                                        title="افزودن به علاقه‌مندی">
+                                    <i class="bi {% if product.id in wishlist_ids %}bi-heart-fill text-danger{% else %}bi-heart{% endif %} fs-5"></i>
+                                </button>
+                                {% else %}
+                                <a href="{% url 'account:login' %}?next={{ request.path }}" 
+                                   class="btn flex-fill py-2 rounded-0 border-0 text-center"
+                                   title="برای افزودن به علاقه‌مندی وارد شوید">
+                                    <i class="bi bi-heart fs-5"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+
                     </div>
                 </div>
                 {% empty %}
@@ -182,7 +232,28 @@
         window.location.href = url.toString();
     });
 
-    // ============ تابع علاقه‌مندی ============
+    function addToCart(productId) {
+        fetch("/cart/add/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+            body: "product_id=" + productId + "&quantity=1",
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                const cartCount = document.getElementById("cart-count");
+                if (cartCount) cartCount.textContent = data.total_quantity;
+                alert("محصول به سبد خرید اضافه شد");
+            } else {
+                alert("خطا: " + data.message);
+            }
+        })
+        .catch((error) => alert("خطا در ارتباط با سرور"));
+    }
+
     function toggleWishlist(productId, element) {
         fetch('/shop/toggle-wishlist/', {
             method: 'POST',
@@ -198,12 +269,10 @@
                 const icon = element.querySelector('i');
                 if (data.is_wished) {
                     element.classList.add('active');
-                    icon.className = 'bi bi-heart-fill text-danger';
-                    alert('محصول به لیست علاقه‌مندی اضافه شد');
+                    icon.className = 'bi bi-heart-fill text-danger fs-5';
                 } else {
                     element.classList.remove('active');
-                    icon.className = 'bi bi-heart';
-                    alert('محصول از لیست علاقه‌مندی حذف شد');
+                    icon.className = 'bi bi-heart fs-5';
                 }
             }
         })
@@ -213,22 +282,4 @@
         });
     }
 </script>
-
-<style>
-    .wishlist-btn {
-        transition: all 0.3s ease;
-    }
-    .wishlist-btn:hover {
-        transform: scale(1.1);
-    }
-    .wishlist-btn.active {
-        background: #dc3545 !important;
-        border-color: #dc3545 !important;
-        color: white !important;
-    }
-    .wishlist-btn.active i {
-        color: white !important;
-    }
-</style>
-
 {% endblock %}

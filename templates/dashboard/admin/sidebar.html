@@ -1,125 +1,187 @@
 {% load static %}
 
 <div class="sb-brand">
-    <div class="sb-brand-mark">
-        <i class="bi bi-cup-hot-fill"></i>
-    </div>
-    <div class="sb-brand-text">
-        <span class="sb-brand-name">چایچی</span>
-        <span class="sb-brand-sub">پنل مدیریت</span>
-    </div>
+  <div class="sb-brand-mark">
+    <i class="bi bi-cup-hot-fill"></i>
+  </div>
+  <div class="sb-brand-text">
+    <span class="sb-brand-name">چایچی</span>
+    <span class="sb-brand-sub">پنل مدیریت</span>
+  </div>
 </div>
 
 <div class="sb-profile">
-    <div class="sb-avatar">
-        <img src="{{ request.user.profile.image.url|default:'/static/img/default-avatar.png' }}" alt="پروفایل">
-    </div>
-    <div class="sb-profile-info">
-        <span class="sb-profile-name">{{ request.user.profile.get_fullname|default:request.user.phone }}</span>
-        <span class="sb-profile-role">مدیر فروشگاه</span>
-    </div>
+  <div class="sb-avatar">
+    <img
+      src="{{ request.user.profile.image.url|default:'/static/img/default-avatar.png' }}"
+      alt="پروفایل"
+    />
+  </div>
+  <div class="sb-profile-info">
+    <span class="sb-profile-name"
+      >{{ request.user.profile.get_fullname|default:request.user.phone }}</span
+    >
+    <span class="sb-profile-role">مدیر فروشگاه</span>
+  </div>
 </div>
 
 <nav class="sb-nav">
+  <div class="sb-group">
+    <span class="sb-group-label">کلی</span>
+    <a
+      class="sb-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
+      href="{% url 'dashboard:admin:home' %}"
+    >
+      <i class="bi bi-grid-fill"></i>
+      <span>داشبورد</span>
+    </a>
+  </div>
 
-    <div class="sb-group">
-        <span class="sb-group-label">کلی</span>
-        <a class="sb-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
-           href="{% url 'dashboard:admin:home' %}">
-            <i class="bi bi-grid-fill"></i>
-            <span>داشبورد</span>
-        </a>
-    </div>
+  <div class="sb-group">
+    <span class="sb-group-label">فروشگاه</span>
+    <a
+      class="sb-link {% if request.resolver_match.url_name == 'product-list' %}active{% endif %}"
+      href="{% url 'dashboard:admin:product-list' %}"
+    >
+      <i class="bi bi-box-seam"></i>
+      <span>محصولات</span>
+    </a>
 
-    <div class="sb-group">
-        <span class="sb-group-label">فروشگاه</span>
-        <a class="sb-link {% if request.resolver_match.url_name == 'product-list' %}active{% endif %}"
-           href="{% url 'dashboard:admin:product-list' %}">
-            <i class="bi bi-box-seam"></i>
-            <span>محصولات</span>
-        </a>
+    <!-- منوی آکاردئونی ویژگی‌های محصول -->
+    {% with current_url=request.resolver_match.url_name %}
+    <li class="nav-item">
+      <a
+        class="sb-link d-flex align-items-center justify-content-between {% if 'category' in current_url or 'brand' in current_url or 'grade' in current_url or 'package' in current_url %}active{% endif %}"
+        data-bs-toggle="collapse"
+        href="#collapseAttributes"
+        role="button"
+        aria-expanded="{% if 'category' in current_url or 'brand' in current_url or 'grade' in current_url or 'package' in current_url %}true{% else %}false{% endif %}"
+        aria-controls="collapseAttributes"
+      >
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-tags"></i>
+          <span>ویژگی‌های محصولات</span>
+        </div>
+        <i class="bi bi-chevron-down fs-8"></i>
+      </a>
 
-        <a class="sb-link {% if 'category' in request.resolver_match.url_name %}active{% endif %}"
-           href="{% url 'dashboard:admin:category-list' %}">
-            <i class="bi bi-grid"></i>
-            <span>دسته‌بندی‌ها</span>
-        </a>
+      <!-- زیرمنوها -->
+      <div
+        class="collapse {% if 'category' in current_url or 'brand' in current_url or 'grade' in current_url or 'package' in current_url %}show{% endif %} me-3 mt-1"
+        id="collapseAttributes"
+      >
+        <ul class="nav flex-column border-end pe-2">
+          <li class="nav-item">
+            <a
+              class="sb-link fs-7 py-2 {% if 'category' in current_url %}active{% endif %}"
+              href="{% url 'dashboard:admin:category-list' %}"
+            >
+              <i class="bi bi-grid fs-8"></i>
+              <span>دسته‌بندی‌ها</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="sb-link fs-7 py-2 {% if 'brand' in current_url %}active{% endif %}"
+              href="{% url 'dashboard:admin:brands:brand-list' %}"
+            >
+              <i class="bi bi-award fs-8"></i>
+              <span>برندها</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="sb-link fs-7 py-2 {% if 'grade' in current_url %}active{% endif %}"
+              href="{% url 'dashboard:admin:attributes:grade-list' %}"
+            >
+              <i class="bi bi-star fs-8"></i>
+              <span>درجه‌های کیفی</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="sb-link fs-7 py-2 {% if 'package' in current_url %}active{% endif %}"
+              href="{% url 'dashboard:admin:attributes:package-list' %}"
+            >
+              <i class="bi bi-box fs-8"></i>
+              <span>انواع بسته‌بندی</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </li>
+    {% endwith %}
+    <a
+      class="sb-link {% if request.resolver_match.url_name == 'order-list' %}active{% endif %}"
+      href="{% url 'dashboard:admin:orders:order-list' %}"
+    >
+      <i class="bi bi-receipt"></i>
+      <span>سفارشات</span>
+      {% if pending_orders_count %}<span class="sb-badge"
+        >{{ pending_orders_count }}</span
+      >{% endif %}
+    </a>
+    <a
+      class="sb-link {% if request.resolver_match.url_name == 'coupon-list' or request.resolver_match.url_name == 'coupon-create' or request.resolver_match.url_name == 'coupon-edit' %}active{% endif %}"
+      href="{% url 'dashboard:admin:coupons:coupon-list' %}"
+    >
+      <i class="bi bi-ticket-perforated"></i>
+      <span>کد تخفیف</span>
+    </a>
+    <!-- ========== نظرات ========== -->
+    <a
+      class="sb-link {% if request.resolver_match.url_name == 'review-list' or request.resolver_match.url_name == 'review-edit' %}active{% endif %}"
+      href="{% url 'dashboard:admin:reviews:review-list' %}"
+    >
+      <i class="bi bi-chat-square-text"></i>
+      <span>نظرات</span>
+    </a>
+  </div>
 
-        <a class="sb-link {% if 'brand' in request.resolver_match.url_name %}active{% endif %}"
-        href="{% url 'dashboard:admin:brands:brand-list' %}">
-            <i class="bi bi-award"></i>
-            <span>برندها</span>
-        </a>
+  <div class="sb-group">
+    <span class="sb-group-label">کاربران</span>
+    <a
+      class="sb-link {% if request.resolver_match.url_name == 'user-list' %}active{% endif %}"
+      href="{% url 'dashboard:admin:users:user-list' %}"
+    >
+      <i class="bi bi-people"></i>
+      <span>لیست کاربران</span>
+    </a>
+    <!-- ========== پیام‌های تماس ========== -->
+    <a
+      class="sb-link {% if request.resolver_match.url_name == 'contact-list' or request.resolver_match.url_name == 'contact-detail' %}active{% endif %}"
+      href="{% url 'dashboard:admin:contacts:contact-list' %}"
+    >
+      <i class="bi bi-envelope"></i>
+      <span> تماس با ما</span>
+      {% if unseen_contacts_count %}
+      <span class="sb-badge">{{ unseen_contacts_count }}</span>
+      {% endif %}
+    </a>
+  </div>
 
-
-        <a class="sb-link {% if 'grade' in request.resolver_match.url_name %}active{% endif %}"
-            href="{% url 'dashboard:admin:attributes:grade-list' %}">
-                <i class="bi bi-star"></i>
-            <span>درجه‌های کیفی</span>
-        </a>
-
-        <a class="sb-link {% if 'package' in request.resolver_match.url_name %}active{% endif %}"
-            href="{% url 'dashboard:admin:attributes:package-list' %}">
-                <i class="bi bi-box"></i>
-            <span>انواع بسته‌بندی</span>
-        </a>
-
-        <a class="sb-link {% if request.resolver_match.url_name == 'order-list' %}active{% endif %}"
-           href="{% url 'dashboard:admin:orders:order-list' %}">
-            <i class="bi bi-receipt"></i>
-            <span>سفارشات</span>
-            {% if pending_orders_count %}<span class="sb-badge">{{ pending_orders_count }}</span>{% endif %}
-        </a>
-        <a class="sb-link {% if request.resolver_match.url_name == 'coupon-list' or request.resolver_match.url_name == 'coupon-create' or request.resolver_match.url_name == 'coupon-edit' %}active{% endif %}"
-           href="{% url 'dashboard:admin:coupons:coupon-list' %}">
-            <i class="bi bi-ticket-perforated"></i>
-            <span>کد تخفیف</span>
-        </a>
-        <!-- ========== نظرات ========== -->
-        <a class="sb-link {% if request.resolver_match.url_name == 'review-list' or request.resolver_match.url_name == 'review-edit' %}active{% endif %}"
-           href="{% url 'dashboard:admin:reviews:review-list' %}">
-            <i class="bi bi-chat-square-text"></i>
-            <span>نظرات</span>
-        </a>
-    </div>
-
-    <div class="sb-group">
-        <span class="sb-group-label">کاربران</span>
-        <a class="sb-link {% if request.resolver_match.url_name == 'user-list' %}active{% endif %}"
-           href="{% url 'dashboard:admin:users:user-list' %}">
-            <i class="bi bi-people"></i>
-            <span>لیست کاربران</span>
-        </a>
-        <!-- ========== پیام‌های تماس ========== -->
-        <a class="sb-link {% if request.resolver_match.url_name == 'contact-list' or request.resolver_match.url_name == 'contact-detail' %}active{% endif %}"
-           href="{% url 'dashboard:admin:contacts:contact-list' %}">
-            <i class="bi bi-envelope"></i>
-            <span> تماس با ما</span>
-            {% if unseen_contacts_count %}
-            <span class="sb-badge">{{ unseen_contacts_count }}</span>
-            {% endif %}
-        </a>
-    </div>
-
-    <div class="sb-group">
-        <span class="sb-group-label">حساب من</span>
-        <a class="sb-link {% if request.resolver_match.url_name == 'profile-edit' %}active{% endif %}"
-           href="{% url 'dashboard:admin:profiles:profile-edit' %}">
-            <i class="bi bi-person"></i>
-            <span>پروفایل</span>
-        </a>
-        <a class="sb-link {% if request.resolver_match.url_name == 'security-edit' %}active{% endif %}"
-           href="{% url 'dashboard:admin:profiles:security-edit' %}">
-            <i class="bi bi-shield-lock"></i>
-            <span>امنیت</span>
-        </a>
-    </div>
-
+  <div class="sb-group">
+    <span class="sb-group-label">حساب من</span>
+    <a
+      class="sb-link {% if request.resolver_match.url_name == 'profile-edit' %}active{% endif %}"
+      href="{% url 'dashboard:admin:profiles:profile-edit' %}"
+    >
+      <i class="bi bi-person"></i>
+      <span>پروفایل</span>
+    </a>
+    <a
+      class="sb-link {% if request.resolver_match.url_name == 'security-edit' %}active{% endif %}"
+      href="{% url 'dashboard:admin:profiles:security-edit' %}"
+    >
+      <i class="bi bi-shield-lock"></i>
+      <span>امنیت</span>
+    </a>
+  </div>
 </nav>
 
 <div class="sb-footer">
-    <a class="sb-link sb-link-danger" href="{% url 'account:logout' %}">
-        <i class="bi bi-box-arrow-right"></i>
-        <span>خروج از حساب</span>
-    </a>
+  <a class="sb-link sb-link-danger" href="{% url 'account:logout' %}">
+    <i class="bi bi-box-arrow-right"></i>
+    <span>خروج از حساب</span>
+  </a>
 </div>

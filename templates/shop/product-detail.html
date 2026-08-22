@@ -92,21 +92,23 @@
     user-select: none;
   }
 
-  .wishlist-btn {
-    transition: all 0.3s ease;
+  /* استایل متنی علاقه‌مندی (طرح شیکسا) */
+  .wishlist-inline-btn {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: #6c757d;
+    transition: color 0.2s ease, transform 0.2s ease;
   }
-  .wishlist-btn:hover {
-    transform: scale(1.1);
+
+  .wishlist-inline-btn:hover {
+    color: #000;
   }
-  .wishlist-btn.active {
-    background: #dc3545;
-    border-color: #dc3545;
-    color: white;
+
+  .wishlist-inline-btn.active i {
+    color: #dc3545 !important;
   }
-  .wishlist-btn.active i {
-    color: white;
-  }
-  
+
   .thumb-img.active-thumb {
     border-color: #1a1a1a !important;
   }
@@ -115,12 +117,12 @@
 <div class="container py-4">
   <div class="row">
     <!-- ستون تصاویر -->
-    <div class="col-md-6 mb-4 mb-md-0">
-      <div class="card shadow-sm border-0 mb-3 bg-light overflow-hidden">
+    <div class="col-md-6 mb-4 mb-md-0 position-relative">
+      <div class="card shadow-sm border-0 mb-3 bg-light overflow-hidden rounded-4">
         <img
           id="mainProductImage"
           src="{{ object.image.url }}"
-          class="card-img-top rounded w-100"
+          class="card-img-top rounded-4 w-100"
           alt="{{ object.title }}"
           style="height: 420px; object-fit: cover"
         />
@@ -152,29 +154,8 @@
 
     <!-- ستون اطلاعات -->
     <div class="col-md-6">
-      <div class="d-flex justify-content-between align-items-start mb-2">
+      <div class="mb-2">
         <h1 class="product-title mb-0">{{ object.title }}</h1>
-
-        {% if user.is_authenticated %}
-        <button
-          type="button"
-          class="btn btn-outline-danger btn-sm rounded-circle wishlist-btn {% if is_wished %}active{% endif %}"
-          onclick="toggleWishlist('{{ object.id }}', this)"
-          style="width: 40px; height: 40px; padding: 0; border-radius: 50%; flex-shrink: 0;"
-          title="افزودن به علاقه‌مندی"
-        >
-          <i class="bi {% if is_wished %}bi-heart-fill{% else %}bi-heart{% endif %} fs-5"></i>
-        </button>
-        {% else %}
-        <a
-          href="{% url 'account:login' %}?next={{ request.path }}"
-          class="btn btn-outline-secondary btn-sm rounded-circle"
-          style="width: 40px; height: 40px; padding: 0; border-radius: 50%; flex-shrink: 0;"
-          title="برای افزودن به علاقه‌مندی وارد شوید"
-        >
-          <i class="bi bi-heart fs-5"></i>
-        </a>
-        {% endif %}
       </div>
 
       <div class="d-flex align-items-center gap-2 mb-3">
@@ -199,7 +180,7 @@
       {% if object.brand %}
       <p class="text-muted mb-2">
         <i class="bi bi-tag"></i> برند:
-        <a href="#" class="text-decoration-none">{{ object.brand.name }}</a>
+        <a href="#" class="text-decoration-none fw-semibold text-dark">{{ object.brand.name }}</a>
       </p>
       {% endif %}
 
@@ -219,7 +200,7 @@
       {% endif %}
 
       <!-- بخش قیمت -->
-      <div class="mb-4 pt-2">
+      <div class="mb-3 pt-2">
         {% if object.is_discounted %}
           <div class="product-price-wrapper mb-1">
             <span class="product-price-amount price-format">{{ object.get_price|floatformat:0 }}</span>
@@ -236,6 +217,28 @@
             <span class="product-price-amount price-format">{{ object.price|floatformat:0 }}</span>
             <span class="product-price-currency">تومان</span>
           </div>
+        {% endif %}
+      </div>
+
+      <!-- دکمه افزودن به علاقه‌مندی متنی (طرح شیکسا) -->
+      <div class="mb-4">
+        {% if user.is_authenticated %}
+        <button
+          type="button"
+          class="btn p-0 wishlist-inline-btn d-inline-flex align-items-center gap-2 {% if is_wished %}active{% endif %}"
+          onclick="toggleWishlist('{{ object.id }}', this)"
+        >
+          <i class="bi {% if is_wished %}bi-heart-fill text-danger{% else %}bi-heart{% endif %} fs-5"></i>
+          <span class="small fw-medium">افزودن به علاقه مندی</span>
+        </button>
+        {% else %}
+        <a
+          href="{% url 'account:login' %}?next={{ request.path }}"
+          class="btn p-0 wishlist-inline-btn d-inline-flex align-items-center gap-2 text-decoration-none"
+        >
+          <i class="bi bi-heart fs-5"></i>
+          <span class="small fw-medium">افزودن به علاقه مندی</span>
+        </a>
         {% endif %}
       </div>
 
@@ -538,12 +541,10 @@
           const icon = element.querySelector("i");
           if (data.is_wished) {
             element.classList.add("active");
-            icon.className = "bi bi-heart-fill";
-            alert("محصول به لیست علاقه‌مندی اضافه شد");
+            icon.className = "bi bi-heart-fill text-danger fs-5";
           } else {
             element.classList.remove("active");
-            icon.className = "bi bi-heart";
-            alert("محصول از لیست علاقه‌مندی حذف شد");
+            icon.className = "bi bi-heart fs-5";
           }
         }
       })

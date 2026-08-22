@@ -22,7 +22,8 @@ class AdminOrderListView(LoginRequiredMixin, HasAdminAccessPermission, ListView)
         return self.request.GET.get('page_size', self.paginate_by)
 
     def get_queryset(self):
-        queryset = Order.objects.all().select_related('user', 'transaction', 'coupon')
+        # اصلاح شد: transaction به payment تغییر یافت
+        queryset = Order.objects.all().select_related('user', 'payment', 'coupon')
         
         search_q = self.request.GET.get("q")
         if search_q:
@@ -58,7 +59,8 @@ class AdminOrderDetailView(LoginRequiredMixin, HasAdminAccessPermission, DetailV
     context_object_name = "order"
 
     def get_queryset(self):
-        return Order.objects.all().select_related('user', 'transaction', 'coupon')
+        # اصلاح شد: transaction به payment تغییر یافت
+        return Order.objects.all().select_related('user', 'payment', 'coupon')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
