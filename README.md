@@ -1,93 +1,129 @@
-# Chaaichi store
+<div dir="rtl">
 
+<h1 align="center">🍃 فروشگاه اینترنتی چایچی</h1>
 
+<p align="center">
+  <strong>فروشگاه آنلاین چای با Django: سبد خرید، پرداخت از کیف پول و زرین‌پال، سیستم نظرات و پنل‌های مدیریت</strong>
+</p>
 
-## Getting started
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3-blue" alt="Python">
+  <img src="https://img.shields.io/badge/Django-E--commerce-darkgreen" alt="Django">
+  <img src="https://img.shields.io/badge/Bootstrap-5%20RTL-purple" alt="Bootstrap 5 RTL">
+  <img src="https://img.shields.io/badge/Payment-Zarinpal-orange" alt="Zarinpal">
+</p>
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+---
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## 📌 درباره پروژه
 
-## Add your files
+چایچی یک فروشگاه اینترنتی کامل برای فروش چای است که با Python و Django نوشته شده. این پروژه شامل کاتالوگ محصولات، سبد خرید، فرایند ثبت سفارش و پرداخت آنلاین است و برای مشتری و مدیر فروشگاه، هرکدام پنل جداگانه دارد.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+---
 
+## ✨ امکانات
+
+### برای مشتری
+- ثبت‌نام و ورود با Session، مدل کاربر سفارشی و آپلود آواتار
+- نمایش محصولات با دسته‌بندی
+- سبد خرید و ثبت سفارش
+- پرداخت از **کیف پول** یا از طریق درگاه **زرین‌پال**
+- ثبت نظر برای محصولات با سیستم تأیید نظر (به سبک دیجی‌کالا)
+- داشبورد کاربری
+
+### برای مدیر فروشگاه
+- پنل Django Admin سفارشی‌شده برای مدیریت محصولات و سفارش‌ها
+- داشبورد مدیریتی
+- تأیید یا رد نظرات کاربران
+- سطح دسترسی بر اساس نقش کاربر
+
+### طراحی
+- چیدمان **RTL** با Bootstrap 5 و فونت **وزیرمتن**
+- سیستم طراحی با CSS Custom Properties (سبز جنگلی، طلایی، رس)
+- پشتیبانی از اسلاگ فارسی
+- طراحی ریسپانسیو
+
+---
+
+## 🧱 تکنولوژی‌ها
+
+- Python و Django
+- Bootstrap 5 (RTL)
+- SQLite (محیط توسعه)
+- درگاه پرداخت زرین‌پال
+
+---
+
+## 🚀 نصب و راه‌اندازی
+
+### پیش‌نیازها
+
+- Python 3.10 یا بالاتر
+- pip
+
+### مراحل نصب
+
+```bash
+git clone https://github.com/Taranemp/chaaichi-store.git
+cd chaaichi-store
+python -m venv .venv
 ```
-cd existing_repo
-git remote add origin https://gitlab.chabokan.net/saliar/chaaichi-store.git
-git branch -M main
-git push -uf origin main
+
+فعال‌سازی محیط مجازی:
+
+```bash
+# ویندوز (Git Bash)
+source .venv/Scripts/activate
+
+# ویندوز (CMD / PowerShell)
+.venv\Scripts\activate
+
+# مک / لینوکس
+source .venv/bin/activate
 ```
 
-## Integrate with your tools
+نصب پیش‌نیازها و راه‌اندازی دیتابیس:
 
-- [ ] [Set up project integrations](https://gitlab.chabokan.net/saliar/chaaichi-store/-/settings/integrations)
+```bash
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
+```
 
-## Collaborate with your team
+سایت روی `http://127.0.0.1:8000/` و پنل مدیریت روی `http://127.0.0.1:8000/admin/` در دسترس است.
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
+### متغیرهای محیطی
 
-## Test and Deploy
+یک فایل `.env` در ریشه‌ی پروژه بساز و مقدارهای لازم مثل `SECRET_KEY` و `DEBUG` را داخلش بگذار. برای تست درگاه پرداخت، از Merchant ID حالت آزمایشی (Sandbox) زرین‌پال استفاده کن.
 
-Use the built-in continuous integration in GitLab.
+> ⚠️ فایل `.env` واقعی را هرگز commit نکن و کلیدهای درگاه پرداخت را در کد قرار نده.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+---
 
-***
+## 🖼️ تصاویر
 
-# Editing this README
+<!-- اسکرین‌شات‌ها را اینجا اضافه کن، مثلاً ![صفحه اصلی](docs/home.png) -->
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+---
 
-## Suggestions for a good README
+## 🗺️ برنامه‌های آینده
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+- [ ] بازنویسی بخش پرداخت با معماری سرویس‌محور (`PaymentService`، `GatewayService`، `OrderService`، `WalletService`)
+- [ ] REST API برای اتصال فرانت‌اند مجزا
+- [ ] سیستم کوپن تخفیف
+- [ ] خروجی فاکتور
 
-## Name
-Choose a self-explaining name for your project.
+---
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+## 👩‍💻 سازنده
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+**Taranemp**: [GitHub](https://github.com/Taranemp)
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+---
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+## 📄 مجوز
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+این پروژه فعلاً مجوز عمومی ندارد و تمام حقوق محفوظ است.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+</div>
