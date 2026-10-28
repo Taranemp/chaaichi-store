@@ -103,7 +103,11 @@ python manage.py runserver
 
 ## 🖼️ تصاویر
 
-<!-- اسکرین‌شات‌ها را اینجا اضافه کن، مثلاً ![صفحه اصلی](docs/home.png) -->
+<p align="center">
+  <img src="docs/IMG_4413.PNG" alt="صفحه اصلی" width="30%">
+  <img src="docs/IMG_4414.PNG" alt="سبد خرید" width="30%">
+  <img src="docs/IMG_4415.PNG" alt="داشبورد" width="30%">
+</p>
 
 ---
 
