@@ -16,6 +16,8 @@ ALLOWED_HOSTS = [
     if host.strip()
 ]
 
+ALLOWED_HOSTS.append(".vercel.app")
+
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
     for origin in os.environ["CSRF_TRUSTED_ORIGINS"].split(",")
