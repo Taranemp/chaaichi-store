@@ -33,6 +33,3 @@ DATABASES = {
 }
 
 DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
-
-print("=== PRODUCTION SETTINGS LOADED ===")
-print("DATABASE_URL EXISTS:", "DATABASE_URL" in os.environ)
