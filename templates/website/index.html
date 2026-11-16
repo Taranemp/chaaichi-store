@@ -3,21 +3,13 @@
 {% load shop_tags %} 
 {% block content %}
 
-<!-- ============ CINEMATIC SINGLE HERO (VIDEO EDITION) ============ -->
-<section class="chaaichi-hero-container ">
-  <video
-    autoplay
-    muted
-    loop
-    playsinline
-    preload="metadata"
-    poster="{% static 'images/ElevenLabs_4.png' %}"
-    class="hero-bg-video"
-    aria-hidden="true"
-  >
-    <source src="{% static 'videos/video4.mp4' %}" type="video/mp4" />
-    مرورگر شما از تگ ویدیو پشتیبانی نمی‌کند.
-  </video>
+<!-- ============ CINEMATIC SINGLE HERO ============ -->
+  <section class="chaaichi-hero-container">
+    <div class="hero-slideshow" aria-hidden="true">
+      <div class="hero-slide hero-slide-1" style="background-image: url('{% static 'img/hero/hero-slide-1.jpg' %}')"></div>
+      <div class="hero-slide hero-slide-2" style="background-image: url('{% static 'img/hero/hero-slide-2.jpg' %}')"></div>
+      
+    </div>
 
   <div class="hero-editorial-grid">
     <div class="hero-text-column">
@@ -474,17 +466,40 @@
     
   }
 
-  .hero-bg-video {
+  .hero-slideshow {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
     z-index: 1;
   }
 
-  .chaaichi-hero-container::after {
+  .hero-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    opacity: 0;
+    animation: hero-slide-cycle 12s ease-in-out infinite;
+  }
+
+  .hero-slide:nth-child(1) { animation-delay: 0s; }
+  .hero-slide:nth-child(2) { animation-delay: 6s; }
+
+  @keyframes hero-slide-cycle {
+    0% { opacity: 0; }
+    4% { opacity: 1; }
+    46% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 0; }
+  }
+
+.chaaichi-hero-container::after {
     content: "";
     position: absolute;
     top: 0;
@@ -493,9 +508,9 @@
     height: 100%;
     background: linear-gradient(
       to left,
-      rgba(0, 0, 0, 0.82) 0%,
-      rgba(0, 0, 0, 0.55) 45%,
-      rgba(0, 0, 0, 0) 100%
+      rgba(22, 54, 42, 0.35) 0%,
+      rgba(22, 54, 42, 0.15) 45%,
+      rgba(22, 54, 42, 0.02) 100%
     );
     z-index: 2;
   }
@@ -603,13 +618,11 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero-bg-video {
-      display: none;
+    .hero-slideshow {
+      animation: none;
     }
-    .chaaichi-hero-container {
-      background-image: url('{% static "images/ElevenLabs_4.png" %}');
-      background-size: cover;
-      background-position: center;
+    .hero-slide {
+      transition: none;
     }
     .hero-scroll-cue {
       animation: none;
@@ -617,13 +630,7 @@
   }
 
   @media (max-width: 767.98px) {
-    .hero-bg-video {
-      display: none;
-    }
     .chaaichi-hero-container {
-      background-image: url('{% static "images/ElevenLabs_4.png" %}');
-      background-size: cover;
-      background-position: center;
       max-height: 560px;
     }
   }
@@ -646,8 +653,8 @@
     .chaaichi-hero-container::after {
       background: linear-gradient(
         to top,
-        rgba(0, 0, 0, 0.9) 30%,
-        rgba(0, 0, 0, 0.5) 100%
+        rgba(22, 54, 42, 0.45) 30%,
+        rgba(22, 54, 42, 0.2) 100%
       );
     }
   }
