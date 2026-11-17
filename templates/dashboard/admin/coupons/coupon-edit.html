@@ -11,7 +11,7 @@
 </div>
 
 <div class="surface-card p-4">
-    <form method="post" novalidate>
+    <form id="coupon-edit-form" method="post" novalidate>
         {% csrf_token %}
 
         {% if form.non_field_errors %}
@@ -120,5 +120,29 @@
         </div>
     </form>
 </div>
+
+<script>
+    (function () {
+        var KEY = 'coupon-edit-saved';
+        var listUrl = "{% url 'dashboard:admin:coupons:coupon-list' %}";
+        var form = document.getElementById('coupon-edit-form');
+        if (form) {
+            form.addEventListener('submit', function () {
+                sessionStorage.setItem(KEY, '1');
+            });
+        }
+        window.addEventListener('pageshow', function (e) {
+            var navEntries = performance.getEntriesByType ? performance.getEntriesByType('navigation') : [];
+            var nav = navEntries && navEntries.length ? navEntries[0] : null;
+            var isBackForward = e.persisted || (nav && nav.type === 'back_forward');
+            if (sessionStorage.getItem(KEY) === '1') {
+                sessionStorage.removeItem(KEY);
+                if (isBackForward) {
+                    location.replace(listUrl);
+                }
+            }
+        });
+    })();
+</script>
 
 {% endblock %}

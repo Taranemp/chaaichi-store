@@ -141,13 +141,7 @@
                     {% for item in order_items %}
                     <div class="d-flex gap-3 p-3 rounded-4" style="background: var(--clr-surface); border: 1px solid var(--clr-border);">
                         <div style="width: 90px; height: 90px;" class="flex-shrink-0 rounded-3 overflow-hidden" style="border:1px solid var(--clr-border);">
-                            {% if item.product.image %}
-                            <img src="{{ item.product.image.url }}" class="w-100 h-100" style="object-fit:cover;" alt="{{ item.product.title }}">
-                            {% else %}
-                            <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: var(--clr-forest-tint);">
-                                <i class="bi bi-cup-hot" style="color: var(--clr-forest);"></i>
-                            </div>
-                            {% endif %}
+                            <img src="{{ item.product.image_url }}" class="w-100 h-100" style="object-fit:cover;background:#F5F1E8;" alt="{{ item.product.title }}">
                         </div>
                         <div class="flex-grow-1 d-flex flex-column justify-content-between">
                             <div>

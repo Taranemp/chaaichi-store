@@ -227,13 +227,7 @@
                             {% for item in cart_items %}
                                 <div class="checkout-product">
                                     <div class="checkout-product-image">
-                                        {% if item.product.image %}
-                                            <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}">
-                                        {% else %}
-                                            <div class="product-placeholder">
-                                                <i class="bi bi-cup-hot"></i>
-                                            </div>
-                                        {% endif %}
+                                        <img src="{{ item.product.image_url }}" alt="{{ item.product.title }}" style="background:#F5F1E8;">
                                     </div>
 
                                     <div class="checkout-product-info">

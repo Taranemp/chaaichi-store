@@ -19,7 +19,7 @@
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-body p-4">
-                    <form method="post" enctype="multipart/form-data">
+                    <form id="brand-form" method="post" enctype="multipart/form-data">
                         {% csrf_token %}
 
                         <div class="mb-3">
@@ -63,4 +63,21 @@
     </div>
 
 </div>
+<script>
+    (function () {
+        var KEY = 'brand-form-saved';
+        var listUrl = "{% url 'dashboard:admin:brands:brand-list' %}";
+        var form = document.getElementById('brand-form');
+        if (form) { form.addEventListener('submit', function () { sessionStorage.setItem(KEY, '1'); }); }
+        window.addEventListener('pageshow', function (e) {
+            var navEntries = performance.getEntriesByType ? performance.getEntriesByType('navigation') : [];
+            var nav = navEntries && navEntries.length ? navEntries[0] : null;
+            var isBackForward = e.persisted || (nav && nav.type === 'back_forward');
+            if (sessionStorage.getItem(KEY) === '1') {
+                sessionStorage.removeItem(KEY);
+                if (isBackForward) { location.replace(listUrl); }
+            }
+        });
+    })();
+</script>
 {% endblock %}

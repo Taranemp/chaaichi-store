@@ -91,8 +91,8 @@
                 <tr>
                     <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
                     <td>
-                        <img src="{{ product.image.url|default:'/static/admin/img/default-product.png' }}" 
-                             class="rounded" width="40" height="40" style="object-fit:cover;">
+                        <img src="{{ product.image_url }}" 
+                             class="rounded" width="40" height="40" style="object-fit:cover;background:#F5F1E8;">
                     </td>
                     <td>{{ product.title }}</td>
                     <td>{{ product.brand.name|default:"---" }}</td>

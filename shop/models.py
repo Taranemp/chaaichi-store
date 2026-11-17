@@ -2,6 +2,7 @@ from django.db import models
 from decimal import Decimal
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.urls import reverse
+from django.templatetags.static import static
 
 
 class ProductStatusType(models.IntegerChoices):
@@ -103,7 +104,8 @@ class Product(models.Model):
 
     image = models.ImageField(
         upload_to="products/img/",
-        default="/default/product-image.png"
+        blank=True,
+        null=True,
     )
 
     description = models.TextField()
@@ -222,6 +224,15 @@ class Product(models.Model):
             "shop:product_detail",
             args=[self.slug]
         )
+
+    @property
+    def image_url(self):
+        if self.image and self.image.name:
+            try:
+                return self.image.url
+            except ValueError:
+                pass
+        return static('img/default-product.svg')
 
 class ProductImage(models.Model):
     product = models.ForeignKey(

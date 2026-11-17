@@ -33,8 +33,15 @@ class ProductForm(forms.ModelForm):
         
         self.fields['slug'].required = False
 
+        # تصویر اصلی اختیاری است: امکان حذف تصویر فعلی و جایگزینی
+        self.fields['image'].required = False
+        self.fields['image'].widget = forms.ClearableFileInput(attrs={
+            'class': 'form-control',
+            'accept': 'image/*',
+        })
+
         for field_name, field in self.fields.items():
-            if field_name not in ['slug', 'category']:
+            if field_name not in ['slug', 'category', 'image']:
                 field.widget.attrs['class'] = 'form-control'
 
         self.fields['brand'].widget.attrs['class'] = 'form-select'

@@ -94,8 +94,8 @@
                     <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
                     <td>
                         <div class="d-flex align-items-center gap-2">
-                            <img src="{{ review.product.image.url|default:'/static/img/default-product.png' }}"
-                                 class="rounded" width="32" height="32" style="object-fit:cover;">
+                            <img src="{{ review.product.image_url }}"
+                                 class="rounded" width="32" height="32" style="object-fit:cover;background:#F5F1E8;">
                             <span class="small fw-semibold">{{ review.product.title|truncatechars:25 }}</span>
                         </div>
                     </td>

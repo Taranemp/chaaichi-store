@@ -124,6 +124,14 @@ class AdminProductEditView(LoginRequiredMixin, HasAdminAccessPermission, Success
     def get_success_url(self):
         return reverse_lazy("dashboard:admin:product-edit", kwargs={"pk": self.get_object().pk})
 
+    def form_valid(self, form):
+        # حذف فایل تصویر اصلی از storage در صورت انتخاب "حذف تصویر فعلی"
+        if form.cleaned_data.get('image') is False:
+            old_image = self.get_object().image
+            if old_image:
+                old_image.delete(save=False)
+        return super().form_valid(form)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["image_form"] = ProductImageForm()
@@ -169,6 +177,13 @@ class AdminProductRemoveImageView(LoginRequiredMixin, HasAdminAccessPermission, 
 
     def get_object(self, queryset=None):
         return self.get_queryset().get(pk=self.kwargs.get('image_id'))
+
+    def form_valid(self, form):
+        self.object = self.get_object()
+        # حذف فایل از storage قبل از حذف رکورد
+        if self.object.file:
+            self.object.file.delete(save=False)
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy('dashboard:admin:product-edit', kwargs={'pk': self.kwargs.get('pk')})

@@ -305,11 +305,7 @@ class CartSession:
 
                 "slug": product.slug,
 
-                "image": (
-                    product.image.url
-                    if product.image
-                    else None
-                ),
+                "image": product.image_url,
 
                 "original_price": float(
                     product.price

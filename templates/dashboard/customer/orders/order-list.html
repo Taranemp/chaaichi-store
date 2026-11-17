@@ -63,13 +63,7 @@
                 {% for item in order.items.all %}
                 <div class="position-relative" style="width:55px; height:55px; flex-shrink:0;">
                     <div class="w-100 h-100 rounded-3 overflow-hidden" style="border:1px solid var(--clr-border);">
-                        {% if item.product.image %}
-                        <img src="{{ item.product.image.url }}" class="w-100 h-100" style="object-fit:cover;" alt="{{ item.product.title }}">
-                        {% else %}
-                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: var(--clr-forest-tint);">
-                            <i class="bi bi-cup-hot" style="color: var(--clr-forest);"></i>
-                        </div>
-                        {% endif %}
+                        <img src="{{ item.product.image_url }}" class="w-100 h-100" style="object-fit:cover;background:#F5F1E8;" alt="{{ item.product.title }}">
                     </div>
                     <span class="position-absolute bottom-0 start-0 rounded-1 px-1"
                           style="background: var(--clr-forest); color:#fff; font-size:.65rem; line-height:1.3;">

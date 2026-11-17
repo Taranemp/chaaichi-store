@@ -78,7 +78,7 @@
 </div>
 
 <div class="surface-card p-4">
-    <form method="post" enctype="multipart/form-data" novalidate>
+    <form id="product-create-form" method="post" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
 
         {% if form.non_field_errors %}
@@ -160,6 +160,13 @@
             </div>
             <div class="col-md-6">
                 <label class="form-label" for="{{ form.image.id_for_label }}">تصویر اصلی</label>
+                <div class="mb-2 p-2 border rounded bg-light d-flex align-items-center gap-3">
+                    <img id="main-image-preview" src="{% static 'img/default-product.svg' %}" alt="پیش‌نمایش تصویر" class="rounded" style="width:96px;height:96px;object-fit:cover;background:#f5f1e8;">
+                    <div class="small text-muted">
+                        <div>پیش‌نمایش</div>
+                        <div class="text-break">اختیاری — در صورت عدم انتخاب، تصویر پیش‌فرض نمایش داده می‌شود.</div>
+                    </div>
+                </div>
                 {{ form.image }}
                 {% if form.image.errors %}
                 <div class="text-danger small">{{ form.image.errors|striptags }}</div>
@@ -208,5 +215,47 @@
             itemSelectText: '',
         });
     });
+
+    // پیش‌نمایش زنده تصویر اصلی
+    (function () {
+        var input = document.getElementById('{{ form.image.id_for_label }}');
+        var preview = document.getElementById('main-image-preview');
+        var placeholder = "{% static 'img/default-product.svg' %}";
+        if (input && preview) {
+            input.addEventListener('change', function (e) {
+                var file = e.target.files && e.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function (ev) { preview.src = ev.target.result; };
+                    reader.readAsDataURL(file);
+                } else {
+                    preview.src = placeholder;
+                }
+            });
+        }
+    })();
+
+    // جلوگیری از بازگشت به صفحه ایجاد پس از ذخیره موفق (Back -> لیست)
+    (function () {
+        var KEY = 'product-edit-saved';
+        var listUrl = "{% url 'dashboard:admin:product-list' %}";
+        var form = document.getElementById('product-create-form');
+        if (form) {
+            form.addEventListener('submit', function () {
+                sessionStorage.setItem(KEY, '1');
+            });
+        }
+        window.addEventListener('pageshow', function (e) {
+            var navEntries = performance.getEntriesByType ? performance.getEntriesByType('navigation') : [];
+            var nav = navEntries && navEntries.length ? navEntries[0] : null;
+            var isBackForward = e.persisted || (nav && nav.type === 'back_forward');
+            if (sessionStorage.getItem(KEY) === '1') {
+                sessionStorage.removeItem(KEY);
+                if (isBackForward) {
+                    location.replace(listUrl);
+                }
+            }
+        });
+    })();
 </script>
 {% endblock %}

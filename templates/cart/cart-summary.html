@@ -28,15 +28,13 @@
             <tr>
                 <td>
                     <div class="d-flex align-items-center gap-3">
-                        {% if item.product.image %}
                         <img
-                            src="{{ item.product.image.url }}"
+                            src="{{ item.product.image_url }}"
                             alt="{{ item.product.title }}"
                             width="60"
                             height="60"
-                            style="object-fit:cover;border-radius:8px"
+                            style="object-fit:cover;border-radius:8px;background:#F5F1E8"
                         >
-                        {% endif %}
 
                         <a href="{{ item.product.get_absolute_url }}"
                            class="text-decoration-none fw-semibold">

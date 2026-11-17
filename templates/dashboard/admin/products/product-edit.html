@@ -69,7 +69,7 @@
 </div>
 
 <div class="surface-card p-4">
-    <form method="post" enctype="multipart/form-data" novalidate>
+    <form id="product-edit-form" method="post" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
         {{ form.slug }}
 
@@ -151,7 +151,19 @@
             </div>
             <div class="col-md-6">
                 <label class="form-label" for="{{ form.image.id_for_label }}">تصویر اصلی</label>
+                <div class="mb-2 p-2 border rounded bg-light d-flex align-items-center gap-3">
+                    <img id="main-image-preview" src="{% if form.instance.pk %}{{ form.instance.image_url }}{% else %}{% static 'img/default-product.svg' %}{% endif %}" alt="{{ form.instance.title|default:'پیش‌نمایش' }}" class="rounded" style="width:96px;height:96px;object-fit:cover;background:#f5f1e8;">
+                    <div class="small text-muted">
+                        <div>تصویر فعلی / پیش‌نمایش</div>
+                        {% if form.instance.pk and form.instance.image %}
+                        <div class="text-break">{{ form.instance.image.name }}</div>
+                        {% else %}
+                        <div class="text-break">در صورت عدم انتخاب، تصویر پیش‌فرض نمایش داده می‌شود.</div>
+                        {% endif %}
+                    </div>
+                </div>
                 {{ form.image }}
+                <div class="form-text">می‌توانید تصویر جدید انتخاب کنید یا با گزینه «حذف تصویر فعلی» تصویر را حذف کنید.</div>
                 {% if form.image.errors %}
                 <div class="text-danger small">{{ form.image.errors|striptags }}</div>
                 {% endif %}
@@ -202,15 +214,16 @@
         </div>
     </form>
 
-    <div class="row mt-3">
+    <div class="row mt-3 g-3">
         {% for img in product_images %}
-        <div class="col-md-2 text-center">
-            <div class="position-relative">
-                <img src="{{ img.file.url }}" class="img-fluid rounded" style="height:100px; object-fit:cover;">
-                <form action="{% url 'dashboard:admin:product-remove-image' product.pk img.pk %}" method="post">
+        <div class="col-6 col-md-3 col-lg-2">
+            <div class="border rounded p-2 h-100 d-flex flex-column bg-white">
+                <img src="{{ img.file.url }}" alt="تصویر محصول" class="img-fluid rounded mb-2" style="height:120px; width:100%; object-fit:cover; background:#f8f9fa;">
+                <div class="small text-muted text-truncate mb-2" title="{{ img.file.name }}">{{ img.file.name }}</div>
+                <form action="{% url 'dashboard:admin:product-remove-image' product.pk img.pk %}" method="post" class="mt-auto" onsubmit="return confirm('آیا از حذف این تصویر مطمئن هستید؟ این عملیات قابل بازگشت نیست.');">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-sm btn-danger position-absolute top-0 end-0" style="border-radius:50%;">
-                        <i class="bi bi-x"></i>
+                    <button type="submit" class="btn btn-sm btn-outline-danger w-100">
+                        <i class="bi bi-trash"></i> حذف
                     </button>
                 </form>
             </div>
@@ -237,5 +250,58 @@
             itemSelectText: '',
         });
     });
+
+    // پیش‌نمایش زنده تصویر اصلی + استایل RTL برای ClearableFileInput
+    (function () {
+        var input = document.getElementById('{{ form.image.id_for_label }}');
+        var preview = document.getElementById('main-image-preview');
+        var placeholder = "{% static 'img/default-product.svg' %}";
+        if (input) {
+            // استایل چک‌باکس حذف برای RTL/Bootstrap
+            var clear = input.closest('.col-md-6') ? input.closest('.col-md-6').querySelector('input[type="checkbox"]') : null;
+            if (clear) {
+                var label = clear.closest('label') || clear.parentElement;
+                if (label) { label.classList.add('form-check-label', 'mt-2', 'd-block'); }
+                clear.classList.add('form-check-input', 'ms-2');
+                // متن فارسی‌تر در صورت وجود
+                if (label && /clear/i.test(label.textContent)) {
+                    label.lastChild && (label.lastChild.textContent = ' حذف تصویر فعلی');
+                }
+            }
+            input.addEventListener('change', function (e) {
+                var file = e.target.files && e.target.files[0];
+                if (file && preview) {
+                    var reader = new FileReader();
+                    reader.onload = function (ev) { preview.src = ev.target.result; };
+                    reader.readAsDataURL(file);
+                } else if (preview) {
+                    preview.src = placeholder;
+                }
+            });
+        }
+    })();
+
+    // جلوگیری از بازگشت به صفحه ویرایش پس از ذخیره موفق (Back -> لیست)
+    (function () {
+        var KEY = 'product-edit-saved';
+        var listUrl = "{% url 'dashboard:admin:product-list' %}";
+        var form = document.getElementById('product-edit-form');
+        if (form) {
+            form.addEventListener('submit', function () {
+                sessionStorage.setItem(KEY, '1');
+            });
+        }
+        window.addEventListener('pageshow', function (e) {
+            var navEntries = performance.getEntriesByType ? performance.getEntriesByType('navigation') : [];
+            var nav = navEntries && navEntries.length ? navEntries[0] : null;
+            var isBackForward = e.persisted || (nav && nav.type === 'back_forward');
+            if (sessionStorage.getItem(KEY) === '1') {
+                sessionStorage.removeItem(KEY);
+                if (isBackForward) {
+                    location.replace(listUrl);
+                }
+            }
+        });
+    })();
 </script>
 {% endblock %}

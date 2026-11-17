@@ -41,7 +41,7 @@
 <div class="container py-5">
   <!-- ============ CATEGORIES ============ -->
   <section id="categories-section" class="py-4">
-    <div class="text-center mx-auto mb-5" style="max-width: 560px">
+    <div class="text-center mx-auto mb-5 categories-heading" style="max-width: 560px">
       <span
         class="text-uppercase small fw-bold"
         style="letter-spacing: 0.05em; color: #16362a"
@@ -52,22 +52,22 @@
       </h2>
     </div>
 
-    <div class="row g-4">
+    <div class="row g-4 categories-grid">
       {% for cat in categories %}
-      <div class="col-sm-6 col-lg-3">
+      <div class="col-sm-6 col-lg-3 category-col">
         <a
           href="{% url 'shop:product_grid' %}"
-          class="card shadow-sm h-100 text-center p-4 text-decoration-none hover-tea"
+          class="card shadow-sm h-100 text-center p-4 text-decoration-none hover-tea category-card"
           style="
             border: 1px solid rgba(22, 54, 42, 0.08);
             background-color: #ffffff;
             border-radius: 16px;
           "
         >
-          <h5 class="mb-1 fw-semibold" style="color: #16362a">
+          <h5 class="mb-1 fw-semibold category-title" style="color: #16362a">
             {{ cat.title }}
           </h5>
-          <p class="small text-muted mb-0">مشاهده محصولات</p>
+          <p class="small text-muted mb-0 category-subtitle">مشاهده محصولات</p>
         </a>
       </div>
       {% empty %}
@@ -85,14 +85,14 @@
     class="rounded-4 p-4 p-lg-5 my-5"
     style="background: #faf8f5; border: 1px solid rgba(22, 54, 42, 0.05)"
   >
-    <div class="text-center mx-auto mb-5" style="max-width: 560px">
+    <div class="text-center mx-auto mb-5 featured-heading" style="max-width: 560px">
       <span
         class="text-uppercase small fw-bold"
         style="letter-spacing: 0.05em; color: #d4af37"
       >
         مجموعه خاص
       </span>
-      <h2 class="mt-2 fw-bold" style="color: #16362a">محصولات منتخب چایچی</h2>
+      <h2 class="mt-2 fw-bold featured-title" style="color: #16362a">محصولات منتخب چایچی</h2>
     </div>
     {% show_latest_products %}
   </section>
@@ -184,159 +184,70 @@
     </div>
   </section>
   <!-- ============ END PROMO BANNER ============ -->
-
   <!-- ================= DISCOUNT PRODUCTS ================= -->
 
-<section id="discount-products" class="py-5">
-
+  <section id="discount-products" class="py-5">
     <div class="container">
-
-
-        <div class="text-center mb-5">
-
-            <span class="small fw-bold"
-                  style="color:#D4AF37;">
-                پیشنهاد ویژه
-            </span>
-
-
-            <h2 class="fw-bold mt-2"
-                style="color:#16362A;">
-
-                محصولات تخفیف‌دار
-
-            </h2>
-
-
-            <p class="text-muted">
-
-                بهترین چای‌ها با قیمت ویژه
-
-            </p>
-
-        </div>
-
-
-
-        <div class="row g-4">
-
-
-            {% for product in discount_products %}
-
-
-            <div class="col-lg-3 col-md-6">
-
-
-                <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
-
-
-                    <div class="position-relative">
-
-
-                        <img src="{{ product.image.url }}"
-                             class="w-100"
-                             style="height:260px; object-fit:cover;"
-                             alt="{{ product.title }}">
-
-
-
-                        <span class="position-absolute top-0 end-0 m-3 badge rounded-pill"
-                              style="background:#D4AF37;color:#16362A;">
-
-                            {{ product.discount_percent }}٪ تخفیف
-
-                        </span>
-
-
-                    </div>
-
-
-
-                    <div class="card-body text-center">
-
-
-                        <h5 class="fw-bold mb-3">
-
-                            {{ product.title }}
-
-                        </h5>
-
-
-
-                        <div class="mb-3">
-
-
-                            <span class="text-decoration-line-through text-muted me-2">
-
-                                {{ product.price|floatformat:0 }}
-
-                                تومان
-
-                            </span>
-
-
-
-                            <span class="fw-bold"
-                                  style="color:#2c5f2d;">
-
-
-                                {{ product.final_price|floatformat:0 }}
-
-                                تومان
-
-
-                            </span>
-
-
-                        </div>
-
-
-
-                        <a href="{{ product.get_absolute_url }}"
-                           class="btn btn-sm rounded-pill px-4"
-                           style="background:#16362A;color:white;">
-
-                            مشاهده محصول
-
-                        </a>
-
-
-                    </div>
-
-
+      <div class="text-center mb-5 discount-products-heading">
+        <span class="small fw-bold" style="color:#D4AF37;">پیشنهاد ویژه</span>
+        <h2 class="fw-bold mt-2" style="color:#16362A;">محصولات تخفیف‌دار</h2>
+        <p class="text-muted">بهترین چای‌ها با قیمت ویژه</p>
+      </div>
+
+      <div class="discount-carousel-wrapper">
+        <button type="button" class="discount-carousel-nav discount-prev" aria-label="قبلی" disabled>
+          <i class="bi bi-chevron-right"></i>
+        </button>
+        <div class="row g-4 discount-products-grid" tabindex="0" aria-label="محصولات تخفیف‌دار">
+          {% for product in discount_products %}
+          <div class="col-lg-3 col-md-6 discount-product-col">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 discount-product-card">
+              <div class="position-relative discount-product-image-wrap">
+                <img src="{{ product.image_url }}"
+                     class="w-100 discount-product-image"
+                     alt="{{ product.title }}"
+                     onerror="this.onerror=null;this.src='{% static 'img/default-product.svg' %}'">
+                <span class="position-absolute top-0 end-0 m-3 badge rounded-pill discount-badge"
+                      style="background:#D4AF37;color:#16362A;">
+                  {{ product.discount_percent }}٪ تخفیف
+                </span>
+              </div>
+
+              <div class="card-body text-center discount-product-body">
+                <h5 class="fw-bold mb-3 discount-product-title">{{ product.title }}</h5>
+
+                <div class="mb-3 discount-price-block">
+                  <span class="text-decoration-line-through text-muted me-2 discount-price-old">
+                    {{ product.price|floatformat:0 }} تومان
+                  </span>
+                  <span class="fw-bold discount-price-current" style="color:#2c5f2d;">
+                    {{ product.final_price|floatformat:0 }} تومان
+                  </span>
                 </div>
 
-
+                <a href="{{ product.get_absolute_url }}"
+                   class="btn btn-sm rounded-pill px-4 discount-product-btn"
+                   style="background:#16362A;color:white;">
+                  مشاهده محصول
+                </a>
+              </div>
             </div>
-
-
-            {% empty %}
-
-
-            <div class="col-12 text-center">
-
-                <p class="text-muted">
-
-                    در حال حاضر محصول تخفیف‌داری موجود نیست.
-
-                </p>
-
-            </div>
-
-
-            {% endfor %}
-
-
+          </div>
+          {% empty %}
+          <div class="col-12 text-center discount-products-empty">
+            <p class="text-muted">در حال حاضر محصول تخفیف‌داری موجود نیست.</p>
+          </div>
+          {% endfor %}
         </div>
-
-
+        <button type="button" class="discount-carousel-nav discount-next" aria-label="بعدی">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <div class="discount-carousel-dots" role="tablist" aria-label="صفحه‌بندی محصولات تخفیف‌دار"></div>
+      </div>
     </div>
+  </section>
 
-
-</section>
-
-
-<!-- ================= END DISCOUNT PRODUCTS ================= -->
+  <!-- ================= END DISCOUNT PRODUCTS ================= -->
 
   <!-- ============ NEWSLETTER ============ -->
   <section
@@ -580,8 +491,9 @@
   .hero-scroll-cue {
     position: absolute;
     bottom: 24px;
-    right: 50%;
-    transform: translateX(50%);
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
     z-index: 3;
     width: 38px;
     height: 38px;
@@ -597,10 +509,10 @@
   @keyframes sw-bounce {
     0%,
     100% {
-      transform: translateX(50%) translateY(0);
+      transform: translateX(-50%) translateY(0);
     }
     50% {
-      transform: translateX(50%) translateY(6px);
+      transform: translateX(-50%) translateY(6px);
     }
   }
 
@@ -617,6 +529,20 @@
     border-color: #16362a !important;
   }
 
+  .discount-product-image {
+    height: 260px;
+    object-fit: cover;
+  }
+
+  .discount-carousel-wrapper {
+    position: relative;
+  }
+
+  .discount-carousel-nav,
+  .discount-carousel-dots {
+    display: none;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .hero-slideshow {
       animation: none;
@@ -626,12 +552,6 @@
     }
     .hero-scroll-cue {
       animation: none;
-    }
-  }
-
-  @media (max-width: 767.98px) {
-    .chaaichi-hero-container {
-      max-height: 560px;
     }
   }
 
@@ -658,6 +578,231 @@
       );
     }
   }
+
+  @media (max-width: 575.98px) {
+    .chaaichi-hero-container {
+      height: 68vh;
+      min-height: 340px;
+      max-height: 420px;
+    }
+    .hero-editorial-grid {
+      padding: 40px 6% 56px;
+      align-content: center;
+    }
+    .hero-custom-title {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+    .hero-custom-desc {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      margin-bottom: 20px;
+      max-width: 100%;
+    }
+    .hero-custom-btn {
+      padding: 10px 28px;
+      font-size: 0.95rem;
+    }
+    .hero-scroll-cue {
+      bottom: 12px;
+      width: 32px;
+      height: 32px;
+    }
+
+    /* Categories: compact 2-column grid */
+    #categories-section {
+      padding-top: 32px;
+      padding-bottom: 32px;
+    }
+    #categories-section .categories-heading {
+      margin-bottom: 16px;
+    }
+    #categories-section .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      --bs-gutter-x: 0;
+      --bs-gutter-y: 0;
+      margin-left: 0;
+      margin-right: 0;
+    }
+    #categories-section .categories-grid > .category-col {
+      width: auto;
+      max-width: 100%;
+      min-width: 0;
+      padding-left: 0;
+      padding-right: 0;
+      flex: none;
+    }
+    #categories-section .categories-grid > .category-col:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+    #categories-section .category-card {
+      padding: 14px 10px;
+      min-height: 74px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    #categories-section .category-title {
+      font-size: 1rem;
+      margin-bottom: 4px;
+    }
+    #categories-section .category-subtitle {
+      font-size: 0.75rem;
+    }
+
+    /* Featured products section: compact heading/padding */
+    #featured-products {
+      padding: 32px 16px;
+      margin-top: 2rem;
+      margin-bottom: 2rem;
+    }
+    #featured-products .featured-heading {
+      margin-bottom: 16px;
+    }
+    #featured-products .featured-title {
+      font-size: 1.4rem;
+    }
+
+    /* Discount products: horizontal carousel */
+    #discount-products .discount-products-heading {
+      margin-bottom: 16px;
+    }
+    #discount-products .discount-products-grid {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 12px;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding: 4px 16px 16px;
+      padding-inline: 16px;
+      margin: 0;
+      --bs-gutter-x: 0;
+      --bs-gutter-y: 0;
+      scrollbar-width: none;
+      align-items: stretch;
+      scroll-padding-inline: 16px;
+    }
+    #discount-products .discount-products-grid::-webkit-scrollbar {
+      display: none;
+    }
+    #discount-products .discount-products-grid > .discount-product-col {
+      flex: 0 0 72%;
+      max-width: 72%;
+      width: auto;
+      padding: 0;
+      scroll-snap-align: center;
+      display: flex;
+      min-width: 0;
+    }
+    #discount-products .discount-products-grid > .discount-products-empty {
+      flex: 0 0 100%;
+      max-width: 100%;
+    }
+    #discount-products .discount-product-card {
+      width: 100%;
+    }
+    #discount-products .discount-product-image-wrap {
+      background: #F5F1E8;
+    }
+    #discount-products .discount-product-image {
+      height: auto;
+      aspect-ratio: 1 / 1;
+      object-fit: contain;
+      background: #F5F1E8;
+    }
+    #discount-products .discount-product-body {
+      padding: 10px;
+    }
+    #discount-products .discount-product-title {
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
+    }
+    #discount-products .discount-price-block {
+      margin-bottom: 0.5rem;
+    }
+    #discount-products .discount-price-old,
+    #discount-products .discount-price-current {
+      font-size: 0.85rem;
+    }
+    #discount-products .discount-badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      margin: 0.4rem;
+    }
+
+    #discount-products .discount-carousel-wrapper {
+      position: relative;
+      padding-bottom: 28px;
+    }
+    #discount-products .discount-products-grid:focus-visible {
+      outline: 2px solid #d4af37;
+      outline-offset: 2px;
+      border-radius: 8px;
+    }
+    #discount-products .discount-carousel-nav {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: calc(50% - 14px);
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: #fff;
+      color: #16362a;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      z-index: 5;
+      cursor: pointer;
+      padding: 0;
+    }
+    #discount-products .discount-carousel-nav.discount-prev {
+      right: 4px;
+    }
+    #discount-products .discount-carousel-nav.discount-next {
+      left: 4px;
+    }
+    #discount-products .discount-carousel-nav:focus-visible {
+      outline: 2px solid #d4af37;
+      outline-offset: 2px;
+    }
+    #discount-products .discount-carousel-nav:disabled {
+      opacity: 0.35;
+      cursor: default;
+      pointer-events: none;
+    }
+    #discount-products .discount-carousel-dots {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      min-height: 10px;
+    }
+    #discount-products .discount-carousel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      border: none;
+      padding: 0;
+      background: rgba(22, 54, 42, 0.25);
+      cursor: pointer;
+      transition: width 0.2s ease, background 0.2s ease;
+    }
+    #discount-products .discount-carousel-dot.active {
+      width: 20px;
+      background: #d4af37;
+    }
+    #discount-products .discount-carousel-dot:focus-visible {
+      outline: 2px solid #16362a;
+      outline-offset: 2px;
+    }
+  }
 </style>
 
 <!-- COUNTDOWN TIMER SCRIPT -->
@@ -682,6 +827,119 @@
     }
     updateCountdown();
     setInterval(updateCountdown, 60000);
+  })();
+</script>
+
+<!-- DISCOUNT CAROUSEL NAVIGATION (mobile) -->
+<script>
+  (function () {
+    function initDiscountCarousel() {
+      var wrapper = document.querySelector('#discount-products .discount-carousel-wrapper');
+      if (!wrapper) return;
+      var scroller = wrapper.querySelector('.discount-products-grid');
+      var prevBtn = wrapper.querySelector('.discount-prev');
+      var nextBtn = wrapper.querySelector('.discount-next');
+      var dotsWrap = wrapper.querySelector('.discount-carousel-dots');
+      if (!scroller || !prevBtn || !nextBtn || !dotsWrap) return;
+
+      var cards = Array.prototype.slice.call(scroller.querySelectorAll('.discount-product-col'));
+      if (cards.length <= 1) {
+        prevBtn.hidden = true;
+        nextBtn.hidden = true;
+        dotsWrap.hidden = true;
+        return;
+      }
+
+      dotsWrap.innerHTML = '';
+      cards.forEach(function (_, i) {
+        var dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'discount-carousel-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'رفتن به محصول ' + (i + 1));
+        dot.addEventListener('click', function () {
+          cards[i].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        });
+        dotsWrap.appendChild(dot);
+      });
+      var dots = Array.prototype.slice.call(dotsWrap.querySelectorAll('.discount-carousel-dot'));
+
+      function getStep() {
+        var card = cards[0];
+        var gap = parseFloat(getComputedStyle(scroller).gap) || 12;
+        return card ? (card.offsetWidth + gap) : scroller.clientWidth * 0.72;
+      }
+
+      function scrollToDir(dir) {
+        var step = getStep();
+        var before = scroller.scrollLeft;
+        scroller.scrollBy({ left: dir * step, behavior: 'smooth' });
+        setTimeout(function () {
+          if (Math.abs(scroller.scrollLeft - before) < 2) {
+            scroller.scrollBy({ left: -dir * step, behavior: 'smooth' });
+          }
+        }, 120);
+      }
+
+      // RTL: "next" (later cards) = left arrow moves visually left; try -step then normalize if needed
+      nextBtn.addEventListener('click', function () { scrollToDir(-1); });
+      prevBtn.addEventListener('click', function () { scrollToDir(1); });
+
+      function updateState() {
+        var sl = scroller.scrollLeft;
+        var max = scroller.scrollWidth - scroller.clientWidth;
+        var tol = 4;
+        var canScroll = max > tol;
+        var atStart, atEnd;
+        // Normalize RTL scrollLeft across browsers (Chrome/Safari/Firefox differences)
+        if (sl > tol) {
+          atStart = false; atEnd = (sl >= max - tol);
+        } else if (sl < -tol) {
+          atStart = (Math.abs(sl) >= max - tol); atEnd = false;
+        } else {
+          // ~0: assume start at inline-start (right in RTL)
+          atStart = true; atEnd = !canScroll;
+        }
+        prevBtn.disabled = atStart || !canScroll;
+        nextBtn.disabled = atEnd || !canScroll;
+
+        // active dot = card nearest to visual center
+        var sRect = scroller.getBoundingClientRect();
+        var center = sRect.left + sRect.width / 2;
+        var active = 0, best = Infinity;
+        cards.forEach(function (card, i) {
+          var r = card.getBoundingClientRect();
+          var d = Math.abs((r.left + r.width / 2) - center);
+          if (d < best) { best = d; active = i; }
+        });
+        dots.forEach(function (dot, i) {
+          dot.classList.toggle('active', i === active);
+          if (i === active) dot.setAttribute('aria-current', 'true');
+          else dot.removeAttribute('aria-current');
+        });
+      }
+
+      var ticking = false;
+      scroller.addEventListener('scroll', function () {
+        if (!ticking) {
+          window.requestAnimationFrame(function () { updateState(); ticking = false; });
+          ticking = true;
+        }
+      }, { passive: true });
+      window.addEventListener('resize', updateState);
+
+      scroller.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); scrollToDir(-1); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); scrollToDir(1); }
+      });
+
+      updateState();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initDiscountCarousel);
+    } else {
+      initDiscountCarousel();
+    }
   })();
 </script>
 

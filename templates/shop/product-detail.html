@@ -121,21 +121,23 @@
       <div class="card shadow-sm border-0 mb-3 bg-light overflow-hidden rounded-4">
         <img
           id="mainProductImage"
-          src="{{ object.image.url }}"
+          src="{{ object.image_url }}"
           class="card-img-top rounded-4 w-100"
           alt="{{ object.title }}"
-          style="height: 420px; object-fit: cover"
+          style="height: 420px; object-fit: cover; background:#F5F1E8;"
+          onerror="this.onerror=null;this.src='{% static 'img/default-product.svg' %}'"
         />
       </div>
 
       <div class="row g-2">
         <div class="col-3">
           <img
-            src="{{ object.image.url }}"
+            src="{{ object.image_url }}"
             class="img-fluid rounded border thumb-img active-thumb"
             alt="{{ object.title }}"
-            style="height: 80px; width: 100%; object-fit: cover; cursor: pointer;"
+            style="height: 80px; width: 100%; object-fit: cover; cursor: pointer; background:#F5F1E8;"
             onclick="changeMainImage(this)"
+            onerror="this.onerror=null;this.src='{% static 'img/default-product.svg' %}'"
           />
         </div>
         {% for img in object.images.all %}
@@ -428,7 +430,7 @@
     {% for product in related_products %}
     <div class="col-md-3 col-6 mt-3">
       <div class="card h-100 shadow-sm">
-        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.title }}" style="height: 150px; object-fit: cover" />
+        <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.title }}" style="height: 150px; object-fit: cover; background:#F5F1E8;" onerror="this.onerror=null;this.src='{% static 'img/default-product.svg' %}'" />
         <div class="card-body text-center">
           <h6 class="card-title">{{ product.title }}</h6>
           <p class="card-text text-primary fw-bold">

@@ -10,10 +10,8 @@
 
             <!-- خلاصه محصول -->
             <div class="d-flex align-items-center gap-3 mb-4 p-3 rounded-4" style="background:#F5F1E8;">
-                {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.title }}"
-                     class="rounded-3" style="width:64px; height:64px; object-fit:cover;">
-                {% endif %}
+                <img src="{{ product.image_url }}" alt="{{ product.title }}"
+                     class="rounded-3" style="width:64px; height:64px; object-fit:cover;background:#F5F1E8;">
                 <div>
                     <span class="text-muted small d-block">ثبت دیدگاه برای</span>
                     <h6 class="mb-0 fw-bold">{{ product.title }}</h6>

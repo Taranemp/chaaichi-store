@@ -47,8 +47,9 @@
         <div class="surface-card h-100 overflow-hidden">
             <!-- تصویر محصول -->
             <div class="position-relative" style="height: 220px; overflow:hidden;">
-                <img src="{{ item.product.image.url|default:'/static/img/default-product.png' }}"
+                <img src="{{ item.product.image_url }}"
                      class="w-100 h-100 object-fit-cover"
+                     style="background:#F5F1E8;"
                      alt="{{ item.product.title }}">
                 <!-- دکمه حذف (قلب) -->
                 <form method="post" action="{% url 'dashboard:customer:wishlists:wishlist-delete' item.pk %}"
